@@ -47,7 +47,7 @@ export default function RevenuePaymentsPage() {
     },
   });
 
-  const payments = data?.data ?? [];
+  const payments = data?.data.data ?? [];
 
   return (
     <div className="space-y-6">
@@ -134,7 +134,7 @@ export default function RevenuePaymentsPage() {
                         <Button
                           size="sm"
                           leftIcon={<CheckCircle size={12} />}
-                          isLoading={verify.isPending}
+                          loading={verify.isPending}
                           onClick={() => verify.mutate(p.id)}
                         >
                           Verify

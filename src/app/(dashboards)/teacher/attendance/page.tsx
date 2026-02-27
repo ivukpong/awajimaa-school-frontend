@@ -41,11 +41,13 @@ export default function TeacherAttendancePage() {
   const { data: studentsData } = useQuery({
     queryKey: ["class-students", classId],
     queryFn: () =>
-      get<{ data: Student[] }>(`/students?class_room_id=${classId}`),
+      get<{ data: Student[] }>(`/students`, {
+        params: { class_room_id: classId },
+      }),
     enabled: !!classId,
   });
 
-  const students = studentsData?.data ?? [];
+  const students = studentsData?.data.data ?? [];
 
   const batch = useMutation({
     mutationFn: (payload: any) => post("/attendance/batch", payload),
@@ -85,7 +87,7 @@ export default function TeacherAttendancePage() {
               onChange={(e) => setClassId(e.target.value)}
             >
               <option value="">Select class</option>
-              {(classes?.data ?? []).map((c: ClassRoom) => (
+              {(classes?.data.data ?? []).map((c: ClassRoom) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
                 </option>
@@ -127,7 +129,7 @@ export default function TeacherAttendancePage() {
               <Button
                 size="sm"
                 onClick={handleSubmit}
-                isLoading={batch.isPending}
+                loading={batch.isPending}
               >
                 Save
               </Button>

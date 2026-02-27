@@ -47,7 +47,7 @@ export default function StudentELearningPage() {
     },
   });
 
-  const courses = data?.data ?? [];
+  const courses = data?.data.data ?? [];
 
   return (
     <div className="space-y-6">

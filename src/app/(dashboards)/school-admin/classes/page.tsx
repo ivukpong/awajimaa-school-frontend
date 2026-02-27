@@ -24,7 +24,7 @@ export default function ClassesPage() {
     queryFn: () => get<ClassRoom[]>("/classes"),
   });
 
-  const classes = data ?? [];
+  const classes = data?.data ?? [];
 
   if (isLoading) {
     return (

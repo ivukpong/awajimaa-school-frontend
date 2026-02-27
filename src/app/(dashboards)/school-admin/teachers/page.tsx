@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Table, Column } from "@/components/ui/Table";
 import toast from "react-hot-toast";
 
-interface Teacher {
+interface Teacher extends Record<string, unknown> {
   id: number;
   name: string;
   email: string;
@@ -29,7 +29,9 @@ export default function TeachersPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["teachers", search],
     queryFn: () =>
-      get<{ data: Teacher[] }>("/users", { role: "teacher", search }),
+      get<{ data: Teacher[] }>("/users", {
+        params: { role: "teacher", search },
+      }),
   });
 
   const toggleActive = useMutation({
@@ -83,7 +85,7 @@ export default function TeachersPage() {
     },
   ];
 
-  const teachers = data?.data ?? [];
+  const teachers = data?.data.data ?? [];
 
   return (
     <div className="space-y-6">
@@ -141,7 +143,12 @@ export default function TeachersPage() {
           />
         </CardHeader>
         <CardContent>
-          <Table columns={columns} data={teachers} loading={isLoading} />
+          <Table
+            columns={columns}
+            data={teachers}
+            keyField="id"
+            loading={isLoading}
+          />
         </CardContent>
       </Card>
     </div>

@@ -21,7 +21,7 @@ export default function RevenueDashboard() {
     queryFn: () => get<any>("/dashboard"),
   });
 
-  const d = data ?? {};
+  const d = data?.data ?? {};
   const chartData = d.monthly_collections ?? [];
 
   return (

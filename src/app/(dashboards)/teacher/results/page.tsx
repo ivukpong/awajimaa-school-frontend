@@ -45,11 +45,13 @@ export default function TeacherResultsPage() {
   const { data: studentsData } = useQuery({
     queryKey: ["class-students", classId],
     queryFn: () =>
-      get<{ data: Student[] }>(`/students?class_room_id=${classId}`),
+      get<{ data: Student[] }>(`/students`, {
+        params: { class_room_id: classId },
+      }),
     enabled: !!classId,
   });
 
-  const students = studentsData?.data ?? [];
+  const students = studentsData?.data.data ?? [];
 
   const batch = useMutation({
     mutationFn: (payload: any) => post("/results/batch", payload),
@@ -93,21 +95,21 @@ export default function TeacherResultsPage() {
               label: "Class",
               val: classId,
               set: setClassId,
-              items: classes?.data ?? [],
+              items: classes?.data.data ?? [],
               key: "name",
             },
             {
               label: "Subject",
               val: subjectId,
               set: setSubjectId,
-              items: subjects?.data ?? [],
+              items: subjects?.data.data ?? [],
               key: "name",
             },
             {
               label: "Term",
               val: termId,
               set: setTermId,
-              items: terms?.data ?? [],
+              items: terms?.data.data ?? [],
               key: "name",
             },
           ].map(({ label, val, set, items, key }) => (
@@ -140,7 +142,7 @@ export default function TeacherResultsPage() {
               size="sm"
               leftIcon={<Save size={14} />}
               onClick={handleSubmit}
-              isLoading={batch.isPending}
+              loading={batch.isPending}
             >
               Save Results
             </Button>

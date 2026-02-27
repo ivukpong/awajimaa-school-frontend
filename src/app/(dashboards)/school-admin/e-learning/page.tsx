@@ -25,7 +25,7 @@ export default function ELearningPage() {
     queryFn: () => get<Course[]>("/courses"),
   });
 
-  const courses = data ?? [];
+  const courses = data?.data ?? [];
 
   return (
     <div className="space-y-6">

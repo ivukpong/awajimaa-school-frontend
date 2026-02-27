@@ -7,7 +7,7 @@ import { Table, type Column } from "@/components/ui/Table";
 import { Plus, Eye, CheckCircle, XCircle, Clock } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 
-interface FormRow {
+interface FormRow extends Record<string, unknown> {
   id: number;
   title: string;
   target: string;
@@ -156,7 +156,7 @@ export default function RegulatorFormsPage() {
       {tab === "forms" ? (
         <Table
           columns={columns}
-          data={mockForms as unknown as Record<string, unknown>[]}
+          data={mockForms}
           keyField="id"
         />
       ) : (

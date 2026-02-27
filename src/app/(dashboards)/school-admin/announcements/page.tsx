@@ -36,7 +36,7 @@ export default function AnnouncementsPage() {
     },
   });
 
-  const announcements = data?.data ?? [];
+  const announcements = data?.data.data ?? [];
 
   return (
     <div className="space-y-6">

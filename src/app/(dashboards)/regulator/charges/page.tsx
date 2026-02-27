@@ -8,7 +8,7 @@ import { Table, type Column } from "@/components/ui/Table";
 import { Plus, CreditCard, AlertCircle } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
-interface ChargeRow {
+interface ChargeRow extends Record<string, unknown> {
   id: number;
   name: string;
   amount: number;
@@ -192,11 +192,7 @@ export default function RegulatorChargesPage() {
         ))}
       </div>
 
-      <Table
-        columns={columns}
-        data={mockCharges as unknown as Record<string, unknown>[]}
-        keyField="id"
-      />
+      <Table columns={columns} data={mockCharges} keyField="id" />
 
       {/* Create Charge Modal placeholder */}
       {showModal && (

@@ -9,7 +9,7 @@ import { Plus, Search, Download, Eye, Edit, QrCode, Copy } from "lucide-react";
 import { buildStudentPublicUrl } from "@/lib/utils";
 import toast from "react-hot-toast";
 
-interface StudentRow {
+interface StudentRow extends Record<string, unknown> {
   id: number;
   reg_number: string;
   full_name: string;
@@ -208,7 +208,7 @@ export default function SchoolAdminStudentsPage() {
 
       <Table
         columns={columns}
-        data={filtered as unknown as Record<string, unknown>[]}
+        data={filtered}
         keyField="id"
         emptyMessage="No students found."
       />

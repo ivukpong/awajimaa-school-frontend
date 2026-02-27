@@ -20,7 +20,7 @@ export default function StudentProfilePage() {
     queryKey: ["me"],
     queryFn: () => get<any>("/auth/me"),
   });
-  const me = data ?? user;
+  const me = data?.data ?? user;
 
   return (
     <div className="space-y-6">

@@ -56,7 +56,7 @@ export default function ParentMessagesPage() {
     },
   });
 
-  const messages = data?.data ?? [];
+  const messages = data?.data.data ?? [];
 
   return (
     <div className="space-y-4">
@@ -108,7 +108,7 @@ export default function ParentMessagesPage() {
               </Button>
               <Button
                 size="sm"
-                isLoading={sendMsg.isPending}
+                loading={sendMsg.isPending}
                 onClick={() =>
                   sendMsg.mutate({
                     ...newMsg,
@@ -209,7 +209,7 @@ export default function ParentMessagesPage() {
                 <Button
                   size="sm"
                   leftIcon={<Send size={14} />}
-                  isLoading={sendReply.isPending}
+                  loading={sendReply.isPending}
                   onClick={() =>
                     reply.trim() &&
                     sendReply.mutate({

@@ -37,9 +37,11 @@ export default function RegisterPage() {
     mutationFn: (payload: typeof form) =>
       post<{ token: string; user: any }>("/auth/register", payload),
     onSuccess: (data) => {
-      setAuth(data.token, data.user);
+      setAuth(data.data.token, data.data.user);
       toast.success("Account created!");
-      router.replace(`/${data.user.role?.replaceAll("_", "-") ?? "dashboard"}`);
+      router.replace(
+        `/${data.data.user.role?.replaceAll("_", "-") ?? "dashboard"}`,
+      );
     },
     onError: (err: any) =>
       toast.error(err?.response?.data?.message ?? "Registration failed"),
@@ -176,11 +178,3 @@ export default function RegisterPage() {
     </Card>
   );
 }
-
-const ROLES = [
-  { value: "school_admin", label: "School Administrator" },
-  { value: "teacher", label: "Teacher" },
-  { value: "parent", label: "Parent / Guardian" },
-  { value: "sponsor", label: "Sponsor" },
-  { value: "revenue_collector", label: "Revenue Collector" },
-];

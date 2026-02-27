@@ -149,7 +149,7 @@ export default function RegulatorMessagesPage() {
                 <Button
                   onClick={() => sendMutation.mutate()}
                   leftIcon={<Send className="h-4 w-4" />}
-                  isLoading={sendMutation.isPending}
+                  loading={sendMutation.isPending}
                 >
                   Send
                 </Button>

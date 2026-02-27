@@ -38,7 +38,7 @@ const roleBadge: Record<
   revenue_collector: "yellow",
 };
 
-interface User {
+interface User extends Record<string, unknown> {
   id: number;
   name: string;
   email: string;

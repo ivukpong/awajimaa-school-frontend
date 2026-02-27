@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Table, type Column } from "@/components/ui/Table";
 import { Plus, Search, Filter, Download, MapPin } from "lucide-react";
 
-interface SchoolRow {
+interface SchoolRow extends Record<string, unknown> {
   id: number;
   name: string;
   lga: string;
@@ -140,7 +140,7 @@ export default function RegulatorSchoolsPage() {
       (lgaFilter ? s.lga === lgaFilter : true),
   );
 
-  const lgas = [...new Set(mockSchools.map((s) => s.lga))];
+  const lgas = Array.from(new Set(mockSchools.map((s) => s.lga)));
 
   return (
     <div className="space-y-6">
@@ -213,7 +213,7 @@ export default function RegulatorSchoolsPage() {
 
       <Table
         columns={columns}
-        data={filtered as unknown as Record<string, unknown>[]}
+        data={filtered}
         keyField="id"
         emptyMessage="No schools found."
         onRowClick={(row) => console.log("View school", row.id)}

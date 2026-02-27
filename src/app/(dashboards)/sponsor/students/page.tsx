@@ -26,7 +26,7 @@ export default function SponsorStudentsPage() {
     queryFn: () => get<{ data: SponsoredStudent[] }>("/sponsor/students"),
   });
 
-  const students = data?.data ?? [];
+  const students = data?.data.data ?? [];
 
   return (
     <div className="space-y-6">

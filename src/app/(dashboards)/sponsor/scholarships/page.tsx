@@ -34,7 +34,7 @@ export default function SponsorScholarshipsPage() {
     queryFn: () => get<{ data: Scholarship[] }>("/scholarships"),
   });
 
-  const scholarships = data?.data ?? [];
+  const scholarships = data?.data.data ?? [];
   const totalAmount = scholarships.reduce((a, s) => a + s.total_amount, 0);
   const totalStudents = scholarships.reduce((a, s) => a + s.students_count, 0);
 

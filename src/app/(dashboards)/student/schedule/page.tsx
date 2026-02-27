@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Table, Column } from "@/components/ui/Table";
 
-interface ExamSchedule {
+interface ExamSchedule extends Record<string, unknown> {
   id: number;
   exam_date: string;
   start_time: string;

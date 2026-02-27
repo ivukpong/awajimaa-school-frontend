@@ -16,7 +16,7 @@ export default function StudentDashboard() {
     queryFn: () => get<any>("/dashboard"),
   });
 
-  const d = data ?? {};
+  const d = data?.data ?? {};
 
   return (
     <div className="space-y-6">

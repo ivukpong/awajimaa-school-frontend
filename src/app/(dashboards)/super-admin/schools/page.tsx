@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Table, Column } from "@/components/ui/Table";
 import toast from "react-hot-toast";
 
-interface School {
+interface School extends Record<string, unknown> {
   id: number;
   name: string;
   code: string;
