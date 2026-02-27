@@ -4,66 +4,76 @@
 
 @layer base {
   :root {
-    /* Brand */
-    --brand: 213 57% 27%;
+    /* Brand — logo palette: deep navy, orange-red, golden yellow */
+    --brand: 18 100% 46%;
     --brand-foreground: 0 0% 100%;
 
-    /* Semantic tokens */
-    --background: 210 20% 98%;
-    --foreground: 222 47% 11%;
+    /* Semantic tokens — light mode */
+    --background: 40 20% 97%; /* warm near-white */
+    --foreground: 213 53% 11%; /* deep navy */
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 213 53% 11%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 30 20% 94%;
+    --muted-foreground: 213 20% 40%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 213 57% 27%;
+    --border: 30 15% 88%;
+    --input: 30 15% 88%;
+    --ring: 18 100% 46%; /* orange-red */
 
-    --primary: 213 57% 27%;
+    --primary: 18 100% 46%; /* orange-red  #E84000 */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 30 20% 94%;
+    --secondary-foreground: 213 53% 11%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --accent: 210 40% 96%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 43 100% 50%; /* golden yellow  #FFB800 */
+    --accent-foreground: 213 53% 11%;
 
     --success: 142 70% 45%;
     --success-foreground: 0 0% 100%;
 
-    --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 100%;
+    --warning: 43 100% 50%; /* golden yellow */
+    --warning-foreground: 213 53% 11%;
 
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 222 47% 7%;
-    --foreground: 210 40% 98%;
+    --background: 213 53% 8%; /* deep navy  #0A1525 */
+    --foreground: 40 20% 97%; /* warm white */
 
-    --card: 222 47% 10%;
-    --card-foreground: 210 40% 98%;
+    --card: 213 53% 11%; /* navy  #0D1B2A */
+    --card-foreground: 40 20% 97%;
 
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 213 40% 16%;
+    --muted-foreground: 213 20% 60%;
 
-    --border: 217 33% 18%;
-    --input: 217 33% 18%;
+    --border: 213 40% 18%;
+    --input: 213 40% 18%;
+    --ring: 26 100% 50%; /* bright orange */
 
-    --primary: 213 57% 50%;
+    --primary: 26 100% 50%; /* bright orange  #FF6B00 */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 213 40% 16%;
+    --secondary-foreground: 40 20% 97%;
 
-    --accent: 217 33% 17%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 43 100% 50%; /* golden yellow */
+    --accent-foreground: 213 53% 11%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 70% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 43 100% 50%;
+    --warning-foreground: 213 53% 11%;
   }
 
   *,

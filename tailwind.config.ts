@@ -14,11 +14,13 @@ const config: Config = {
     theme: {
         extend: {
             colors: {
-                /* Hard-coded brand palette */
+                /* Hard-coded brand palette — logo colours */
                 brand: {
-                    DEFAULT: "#1B4F72",
-                    light: "#2980B9",
-                    dark: "#154360",
+                    DEFAULT: "#E84000",  /* orange-red */
+                    light: "#FF6B00",   /* bright orange */
+                    dark: "#B83200",    /* deep red-orange */
+                    navy: "#0D1B2A",   /* logo background navy */
+                    gold: "#FFB800",   /* golden yellow */
                 },
                 /* CSS-variable semantic tokens */
                 background: hsl("--background"),
