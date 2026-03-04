@@ -141,6 +141,7 @@ export default function SchoolAdminGovernmentProgramsPage() {
         </CardHeader>
         <CardContent>
           <Table
+            keyField="id"
             columns={programColumns}
             data={
               (programs?.data ?? []) as unknown as (GovernmentProgram &
@@ -157,6 +158,7 @@ export default function SchoolAdminGovernmentProgramsPage() {
         </CardHeader>
         <CardContent>
           <Table
+            keyField="id"
             columns={appColumns}
             data={
               (myApplications?.data ?? []) as unknown as (ProgramApplication &

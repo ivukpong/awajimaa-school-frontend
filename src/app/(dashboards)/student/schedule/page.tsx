@@ -108,10 +108,10 @@ export default function StudentSchedulePage() {
       </div>
       <Card padding={false}>
         <Table
+          keyField="id"
           columns={columns}
           data={exams as any}
-          keyField="id"
-          loading={isLoading}
+                    loading={isLoading}
           emptyMessage="No exams scheduled."
         />
       </Card>

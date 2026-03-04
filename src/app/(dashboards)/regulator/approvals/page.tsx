@@ -44,7 +44,7 @@ export default function RegulatorApprovalsPage() {
     try {
       await reviewRequest(reviewModal.request.id, {
         status: reviewModal.action,
-        reviewer_notes: reviewNotes,
+        review_notes: reviewNotes,
       });
       toast.success(`Request ${reviewModal.action}`);
       setReviewModal(null);
@@ -153,6 +153,7 @@ export default function RegulatorApprovalsPage() {
         </CardHeader>
         <CardContent>
           <Table
+            keyField="id"
             columns={columns}
             data={
               rows as unknown as (SchoolApprovalRequest &
@@ -170,7 +171,7 @@ export default function RegulatorApprovalsPage() {
               {reviewModal.action} Request
             </h2>
             <div className="rounded-lg bg-gray-50 dark:bg-gray-800 p-3 text-sm">
-              <p className="font-medium">{reviewModal.request.subject}</p>
+              <p className="font-medium">{reviewModal.request.title}</p>
               <p className="text-gray-500 mt-1">
                 {reviewModal.request.description}
               </p>

@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Input";
 import { Table, type Column } from "@/components/ui/Table";
 import { useGovernmentEvents } from "@/hooks/useGovernment";
-import type { GovernmentEvent } from "@/types/government";
+import type { GovernmentEvent, EventCategory } from "@/types/government";
 import { Plus, Calendar } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -70,6 +70,7 @@ export default function RegulatorEventsPage() {
     try {
       const payload = {
         ...form,
+        category: form.category as EventCategory,
         max_participants: form.max_participants
           ? Number(form.max_participants)
           : undefined,
@@ -156,6 +157,7 @@ export default function RegulatorEventsPage() {
       <Card>
         <CardContent className="pt-6">
           <Table
+            keyField="id"
             columns={columns}
             data={
               (events?.data ?? []) as unknown as (GovernmentEvent &

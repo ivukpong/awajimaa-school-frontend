@@ -73,10 +73,10 @@ export default function TeacherLeavePage() {
       ),
     },
     {
-      key: "reviewer_notes",
+      key: "review_note",
       header: "Reviewer Note",
       render: (r) => (
-        <span className="text-sm text-gray-500">{r.reviewer_notes ?? "—"}</span>
+        <span className="text-sm text-gray-500">{r.review_note ?? "—"}</span>
       ),
     },
     {
@@ -127,14 +127,14 @@ export default function TeacherLeavePage() {
                   <p className="text-sm font-medium">{type.name}</p>
                 </div>
                 <p className="text-2xl font-bold text-blue-600">
-                  {type.max_days_per_year - used}
+                  {type.days_allowed - used}
                   <span className="text-sm font-normal text-gray-500">
                     {" "}
                     days left
                   </span>
                 </p>
                 <p className="text-xs text-gray-500">
-                  {used} used of {type.max_days_per_year}
+                  {used} used of {type.days_allowed}
                 </p>
               </CardContent>
             </Card>
@@ -148,6 +148,7 @@ export default function TeacherLeavePage() {
         </CardHeader>
         <CardContent>
           <Table
+            keyField="id"
             columns={columns}
             data={
               myRequests as unknown as (LeaveRequest &

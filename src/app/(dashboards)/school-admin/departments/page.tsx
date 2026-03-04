@@ -24,7 +24,7 @@ export default function DepartmentsPage() {
   const [form, setForm] = useState({
     name: "",
     description: "",
-    head_teacher_id: "",
+    head_id: "",
   });
   const [saving, setSaving] = useState(false);
 
@@ -34,7 +34,7 @@ export default function DepartmentsPage() {
 
   const openCreate = () => {
     setEditing(null);
-    setForm({ name: "", description: "", head_teacher_id: "" });
+    setForm({ name: "", description: "", head_id: "" });
     setShowModal(true);
   };
 
@@ -43,7 +43,7 @@ export default function DepartmentsPage() {
     setForm({
       name: dept.name,
       description: dept.description ?? "",
-      head_teacher_id: dept.head_teacher_id?.toString() ?? "",
+      head_id: dept.head_id?.toString() ?? "",
     });
     setShowModal(true);
   };
@@ -55,8 +55,8 @@ export default function DepartmentsPage() {
       const payload = {
         name: form.name,
         description: form.description || undefined,
-        head_teacher_id: form.head_teacher_id
-          ? Number(form.head_teacher_id)
+        head_id: form.head_id
+          ? Number(form.head_id)
           : undefined,
       };
       if (editing) {
@@ -153,6 +153,7 @@ export default function DepartmentsPage() {
         </CardHeader>
         <CardContent>
           <Table
+            keyField="id"
             columns={columns}
             data={
               filtered as unknown as (Department & Record<string, unknown>)[]

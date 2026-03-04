@@ -214,10 +214,10 @@ export default function UsersPage() {
       {/* Table */}
       <Card padding={false}>
         <Table
+          keyField="id"
           columns={columns}
           data={filtered as any}
-          keyField="id"
-          loading={isLoading}
+                    loading={isLoading}
           emptyMessage="No users found."
         />
       </Card>

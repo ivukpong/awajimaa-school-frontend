@@ -16,7 +16,7 @@ const statusVariant: Record<
   "gray" | "yellow" | "green" | "blue" | "red"
 > = {
   draft: "gray",
-  pending_approval: "yellow",
+  submitted: "yellow",
   approved: "blue",
   received: "green",
   cancelled: "red",
@@ -103,7 +103,7 @@ export default function PurchaseOrdersPage() {
       header: "Actions",
       render: (r) => (
         <div className="flex gap-1">
-          {r.status === "pending_approval" && (
+          {r.status === "submitted" && (
             <Button
               size="sm"
               onClick={() =>
@@ -128,7 +128,7 @@ export default function PurchaseOrdersPage() {
               <PackageCheck className="h-3 w-3" />
             </Button>
           )}
-          {["draft", "pending_approval"].includes(r.status) && (
+          {["draft", "submitted"].includes(r.status) && (
             <Button
               size="sm"
               variant="danger"
@@ -166,6 +166,7 @@ export default function PurchaseOrdersPage() {
       <Card>
         <CardContent className="pt-6">
           <Table
+            keyField="id"
             columns={columns}
             data={
               (orders?.data ?? []) as unknown as (PurchaseOrder &

@@ -178,10 +178,10 @@ export default function SchoolsPage() {
           />
         </div>
         <Table
+          keyField="id"
           columns={columns}
           data={filtered as any}
-          keyField="id"
-          loading={isLoading}
+                    loading={isLoading}
           emptyMessage="No schools found."
         />
       </Card>

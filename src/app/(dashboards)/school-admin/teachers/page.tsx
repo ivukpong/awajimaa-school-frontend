@@ -144,10 +144,10 @@ export default function TeachersPage() {
         </CardHeader>
         <CardContent>
           <Table
+            keyField="id"
             columns={columns}
             data={teachers}
-            keyField="id"
-            loading={isLoading}
+                        loading={isLoading}
           />
         </CardContent>
       </Card>

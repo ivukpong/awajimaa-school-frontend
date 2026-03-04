@@ -16,9 +16,9 @@ const statusVariant: Record<
 > = {
   submitted: "yellow",
   under_review: "blue",
-  accepted: "green",
+  admitted: "green",
   rejected: "red",
-  enrolled: "blue",
+  
 };
 
 export default function AdmissionsPage() {
@@ -34,10 +34,10 @@ export default function AdmissionsPage() {
   const [showSessionModal, setShowSessionModal] = useState(false);
   const [sessionForm, setSessionForm] = useState({
     name: "",
-    academic_year: "",
-    start_date: "",
-    end_date: "",
-    max_applicants: "",
+    open_date: "",
+    close_date: "",
+    slots: "",
+    application_fee: "",
   });
   const [saving, setSaving] = useState(false);
 
@@ -54,9 +54,8 @@ export default function AdmissionsPage() {
     try {
       await createSession({
         ...sessionForm,
-        max_applicants: sessionForm.max_applicants
-          ? Number(sessionForm.max_applicants)
-          : undefined,
+        slots: sessionForm.slots ? Number(sessionForm.slots) : undefined,
+        application_fee: sessionForm.application_fee ? Number(sessionForm.application_fee) : 0,
       });
       toast.success("Session created");
       setShowSessionModal(false);
@@ -138,7 +137,7 @@ export default function AdmissionsPage() {
           )}
           {r.status === "under_review" && (
             <>
-              <Button size="sm" onClick={() => handleStatus(r.id, "accepted")}>
+              <Button size="sm" onClick={() => handleStatus(r.id, "admitted")}>
                 <UserCheck className="h-3 w-3 mr-1" />
                 Accept
               </Button>
@@ -151,7 +150,7 @@ export default function AdmissionsPage() {
               </Button>
             </>
           )}
-          {r.status === "accepted" && (
+          {r.status === "admitted" && (
             <Button size="sm" onClick={() => handleConvert(r.id)}>
               Enroll
             </Button>
@@ -190,7 +189,7 @@ export default function AdmissionsPage() {
                       {s.name}
                     </p>
                     <p className="text-xs text-gray-500 mt-0.5">
-                      {s.academic_year}
+                      {s.open_date} – {s.close_date}
                     </p>
                   </div>
                   <Badge variant={s.is_active ? "green" : "gray"}>
@@ -221,6 +220,7 @@ export default function AdmissionsPage() {
         </CardHeader>
         <CardContent>
           <Table
+            keyField="id"
             columns={columns}
             data={
               rows as unknown as (AdmissionApplication &
@@ -247,59 +247,59 @@ export default function AdmissionsPage() {
                   className="mt-1"
                 />
               </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-sm font-medium">Open Date</label>
+                  <Input
+                    type="date"
+                    value={sessionForm.open_date}
+                    onChange={(e) =>
+                      setSessionForm({
+                        ...sessionForm,
+                        open_date: e.target.value,
+                      })
+                    }
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Close Date</label>
+                  <Input
+                    type="date"
+                    value={sessionForm.close_date}
+                    onChange={(e) =>
+                      setSessionForm({
+                        ...sessionForm,
+                        close_date: e.target.value,
+                      })
+                    }
+                    className="mt-1"
+                  />
+                </div>
+              </div>
               <div>
-                <label className="text-sm font-medium">Academic Year</label>
+                <label className="text-sm font-medium">Available Slots</label>
                 <Input
-                  value={sessionForm.academic_year}
+                  type="number"
+                  value={sessionForm.slots}
                   onChange={(e) =>
                     setSessionForm({
                       ...sessionForm,
-                      academic_year: e.target.value,
+                      slots: e.target.value,
                     })
                   }
-                  placeholder="e.g. 2025/2026"
                   className="mt-1"
                 />
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="text-sm font-medium">Start Date</label>
-                  <Input
-                    type="date"
-                    value={sessionForm.start_date}
-                    onChange={(e) =>
-                      setSessionForm({
-                        ...sessionForm,
-                        start_date: e.target.value,
-                      })
-                    }
-                    className="mt-1"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium">End Date</label>
-                  <Input
-                    type="date"
-                    value={sessionForm.end_date}
-                    onChange={(e) =>
-                      setSessionForm({
-                        ...sessionForm,
-                        end_date: e.target.value,
-                      })
-                    }
-                    className="mt-1"
-                  />
-                </div>
-              </div>
               <div>
-                <label className="text-sm font-medium">Max Applicants</label>
+                <label className="text-sm font-medium">Application Fee (₦)</label>
                 <Input
                   type="number"
-                  value={sessionForm.max_applicants}
+                  value={sessionForm.application_fee}
                   onChange={(e) =>
                     setSessionForm({
                       ...sessionForm,
-                      max_applicants: e.target.value,
+                      application_fee: e.target.value,
                     })
                   }
                   className="mt-1"

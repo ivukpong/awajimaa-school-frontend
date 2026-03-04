@@ -154,11 +154,7 @@ export default function RegulatorFormsPage() {
       </div>
 
       {tab === "forms" ? (
-        <Table
-          columns={columns}
-          data={mockForms}
-          keyField="id"
-        />
+        <Table keyField="id" columns={columns} data={mockForms} />
       ) : (
         <Card>
           <CardHeader>

@@ -6,7 +6,11 @@ import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Input";
 import { Table, type Column } from "@/components/ui/Table";
 import { useGovernmentPrograms } from "@/hooks/useGovernment";
-import type { GovernmentProgram, ProgramApplication } from "@/types/government";
+import type {
+  GovernmentProgram,
+  ProgramApplication,
+  ProgramCategory,
+} from "@/types/government";
 import { Plus, DollarSign } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -70,9 +74,12 @@ export default function RegulatorProgramsPage() {
     if (!form.title) return toast.error("Name required");
     setSaving(true);
     try {
+      const { eligibility_criteria: ec, ...rest } = form;
       await createProgram({
-        ...form,
+        ...rest,
+        category: form.category as ProgramCategory,
         budget: form.budget ? Number(form.budget) : undefined,
+        eligibility_criteria: ec ? ec.split("\n").filter(Boolean) : undefined,
       });
       toast.success("Program created");
       setShowModal(false);
@@ -250,6 +257,7 @@ export default function RegulatorProgramsPage() {
       <Card>
         <CardContent className="pt-6">
           <Table
+            keyField="id"
             columns={programColumns}
             data={
               (programs?.data ?? []) as unknown as (GovernmentProgram &

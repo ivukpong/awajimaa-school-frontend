@@ -212,10 +212,10 @@ export default function RegulatorSchoolsPage() {
       </div>
 
       <Table
+        keyField="id"
         columns={columns}
         data={filtered}
-        keyField="id"
-        emptyMessage="No schools found."
+                emptyMessage="No schools found."
         onRowClick={(row) => console.log("View school", row.id)}
       />
     </div>

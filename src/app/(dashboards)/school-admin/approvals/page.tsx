@@ -6,7 +6,10 @@ import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Input";
 import { Table, type Column } from "@/components/ui/Table";
 import { useSchoolApprovals } from "@/hooks/useGovernment";
-import type { SchoolApprovalRequest } from "@/types/government";
+import type {
+  SchoolApprovalRequest,
+  ApprovalRequestType,
+} from "@/types/government";
 import { Plus, FileCheck } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -36,7 +39,7 @@ export default function SchoolApprovalsPage() {
     request_type: "new_registration",
     title: "",
     description: "",
-    supporting_documents: "",
+    documents: "",
   });
   const [saving, setSaving] = useState(false);
 
@@ -44,7 +47,12 @@ export default function SchoolApprovalsPage() {
     if (!form.title) return toast.error("Subject required");
     setSaving(true);
     try {
-      await createRequest(form);
+      const { documents: docsStr, ...rest } = form;
+      await createRequest({
+        ...rest,
+        request_type: form.request_type as ApprovalRequestType,
+        documents: docsStr ? docsStr.split("\n").filter(Boolean) : undefined,
+      });
       toast.success("Request submitted");
       setShowModal(false);
     } catch {
@@ -120,6 +128,7 @@ export default function SchoolApprovalsPage() {
       <Card>
         <CardContent className="pt-6">
           <Table
+            keyField="id"
             columns={columns}
             data={
               (requests?.data ?? []) as unknown as (SchoolApprovalRequest &

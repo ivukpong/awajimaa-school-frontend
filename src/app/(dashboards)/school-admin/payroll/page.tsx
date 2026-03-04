@@ -153,9 +153,13 @@ export default function PayrollPage() {
 
   const itemColumns: Column<PayrollItem>[] = [
     {
-      key: "teacher_id",
+      key: "teacher_profile_id",
       header: "Teacher",
-      render: (r) => <span>{r.teacher_name ?? `ID ${r.teacher_id}`}</span>,
+      render: (r) => (
+        <span>
+          {r.teacher_profile?.staff_id ?? `ID ${r.teacher_profile_id}`}
+        </span>
+      ),
     },
     {
       key: "basic_salary",
@@ -259,6 +263,7 @@ export default function PayrollPage() {
         </CardHeader>
         <CardContent>
           <Table
+            keyField="id"
             columns={runColumns}
             data={
               (runs?.data ?? []) as unknown as (PayrollRun &
@@ -282,6 +287,7 @@ export default function PayrollPage() {
               </Button>
             </div>
             <Table
+              keyField="id"
               columns={itemColumns}
               data={
                 (runDetail.items ?? []) as unknown as (PayrollItem &

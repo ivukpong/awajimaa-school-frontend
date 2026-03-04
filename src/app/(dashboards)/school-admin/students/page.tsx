@@ -207,10 +207,10 @@ export default function SchoolAdminStudentsPage() {
       </Card>
 
       <Table
+        keyField="id"
         columns={columns}
         data={filtered}
-        keyField="id"
-        emptyMessage="No students found."
+                emptyMessage="No students found."
       />
     </div>
   );

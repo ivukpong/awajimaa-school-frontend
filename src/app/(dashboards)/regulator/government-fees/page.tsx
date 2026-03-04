@@ -164,6 +164,7 @@ export default function RegulatorGovernmentFeesPage() {
         </CardHeader>
         <CardContent>
           <Table
+            keyField="id"
             columns={feeTypeColumns}
             data={
               feeTypes as unknown as (GovernmentFeeType &
@@ -179,6 +180,7 @@ export default function RegulatorGovernmentFeesPage() {
         </CardHeader>
         <CardContent>
           <Table
+            keyField="id"
             columns={paymentColumns}
             data={
               (payments?.data ?? []) as unknown as (GovernmentFeePayment &
@@ -217,15 +219,15 @@ export default function RegulatorGovernmentFeesPage() {
                 />
               </div>
               <div>
-                <label className="text-sm font-medium">Frequency</label>
+                <label className="text-sm font-medium">Category</label>
                 <select
-                  value={ftForm.frequency}
+                  value={ftForm.category}
                   onChange={(e) =>
-                    setFtForm({ ...ftForm, frequency: e.target.value })
+                    setFtForm({ ...ftForm, category: e.target.value })
                   }
                   className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
                 >
-                  {frequencies.map((f) => (
+                  {feeCategories.map((f) => (
                     <option key={f} value={f}>
                       {f.replace(/_/g, " ")}
                     </option>

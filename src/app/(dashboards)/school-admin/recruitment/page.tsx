@@ -22,7 +22,7 @@ const appStatusColors: Record<
   string,
   "gray" | "yellow" | "green" | "blue" | "red"
 > = {
-  applied: "gray",
+  submitted: "gray",
   shortlisted: "yellow",
   interviewed: "blue",
   hired: "green",
@@ -48,9 +48,9 @@ export default function RecruitmentPage() {
     title: "",
     description: "",
     requirements: "",
-    department: "",
     employment_type: "full_time",
-    deadline: "",
+    application_deadline: "",
+    slots: "1",
   });
   const [saving, setSaving] = useState(false);
 
@@ -58,7 +58,13 @@ export default function RecruitmentPage() {
     if (!form.title) return toast.error("Title required");
     setSaving(true);
     try {
-      await createPosting(form);
+      const { requirements: reqStr, ...rest } = form;
+      await createPosting({
+        ...rest,
+        employment_type: form.employment_type as JobPosting["employment_type"],
+        requirements: reqStr ? reqStr.split("\n").filter(Boolean) : undefined,
+        slots: Number(form.slots) || 1,
+      });
       toast.success("Job posting created");
       setShowPostModal(false);
     } catch {
@@ -111,7 +117,7 @@ export default function RecruitmentPage() {
         <Badge variant={statusColors[r.status] ?? "gray"}>{r.status}</Badge>
       ),
     },
-    { key: "deadline", header: "Deadline" },
+    { key: "application_deadline", header: "Deadline" },
     {
       key: "id" as keyof JobPosting,
       header: "Actions",
@@ -160,7 +166,7 @@ export default function RecruitmentPage() {
       header: "Actions",
       render: (r) => (
         <div className="flex gap-1 flex-wrap">
-          {r.status === "applied" && (
+          {r.status === "submitted" && (
             <Button
               size="sm"
               variant="secondary"
@@ -217,6 +223,7 @@ export default function RecruitmentPage() {
       <Card>
         <CardContent className="pt-6">
           <Table
+            keyField="id"
             columns={columns}
             data={
               (postings?.data ?? []) as unknown as (JobPosting &
@@ -259,9 +266,9 @@ export default function RecruitmentPage() {
                 <label className="text-sm font-medium">Deadline</label>
                 <Input
                   type="date"
-                  value={form.deadline}
+                  value={form.application_deadline}
                   onChange={(e) =>
-                    setForm({ ...form, deadline: e.target.value })
+                    setForm({ ...form, application_deadline: e.target.value })
                   }
                   className="mt-1"
                 />
@@ -318,6 +325,7 @@ export default function RecruitmentPage() {
               </Button>
             </div>
             <Table
+              keyField="id"
               columns={appColumns}
               data={
                 viewApps.apps as unknown as (JobApplication &

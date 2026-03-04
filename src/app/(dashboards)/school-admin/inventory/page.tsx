@@ -53,7 +53,7 @@ export default function InventoryPage() {
         name: form.name,
         category_id: Number(form.category_id),
         unit: form.unit,
-        quantity: Number(form.quantity) || 0,
+        quantity_in_stock: Number(form.quantity) || 0,
         reorder_level: Number(form.reorder_level) || 5,
         unit_cost: Number(form.unit_cost) || 0,
       });
@@ -100,14 +100,14 @@ export default function InventoryPage() {
         </Badge>
       ),
     },
-    { key: "quantity", header: "Qty", sortable: true },
+    { key: "quantity_in_stock", header: "Qty", sortable: true },
     { key: "unit", header: "Unit" },
     { key: "reorder_level", header: "Reorder Level" },
     {
-      key: "quantity" as keyof InventoryItem,
+      key: "quantity_in_stock" as keyof InventoryItem,
       header: "Stock Status",
       render: (r) =>
-        r.quantity <= r.reorder_level ? (
+        r.quantity_in_stock <= r.reorder_level ? (
           <Badge variant="red">
             <AlertTriangle className="h-3 w-3 mr-1 inline" />
             Low Stock
@@ -193,6 +193,7 @@ export default function InventoryPage() {
         </CardHeader>
         <CardContent>
           <Table
+            keyField="id"
             columns={columns}
             data={
               rows as unknown as (InventoryItem & Record<string, unknown>)[]

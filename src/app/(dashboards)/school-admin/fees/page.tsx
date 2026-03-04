@@ -145,10 +145,10 @@ export default function FeesPage() {
         </CardHeader>
         <CardContent>
           <Table
+            keyField="id"
             columns={columns}
             data={invoices}
-            keyField="id"
-            loading={isLoading}
+                        loading={isLoading}
           />
         </CardContent>
       </Card>

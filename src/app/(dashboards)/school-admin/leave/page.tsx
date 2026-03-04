@@ -28,7 +28,7 @@ export default function LeaveManagementPage() {
   const [rejectNote, setRejectNote] = useState("");
 
   const rows = (requests?.data ?? []).filter(
-    (r) => r.teacher_name?.toLowerCase().includes(search.toLowerCase()) ?? true,
+    (r) => r.teacher_profile?.staff_id?.toLowerCase().includes(search.toLowerCase()) ?? true,
   );
 
   const handleApprove = async (id: number) => {
@@ -55,9 +55,9 @@ export default function LeaveManagementPage() {
 
   const columns: Column<LeaveRequest>[] = [
     {
-      key: "teacher_name",
+      key: "teacher_profile_id" as keyof LeaveRequest,
       header: "Staff",
-      render: (r) => <span className="font-medium">{r.teacher_name}</span>,
+      render: (r) => <span className="font-medium">{r.teacher_profile?.staff_id}</span>,
     },
     {
       key: "leave_type_id",
@@ -127,7 +127,7 @@ export default function LeaveManagementPage() {
               <CardContent className="pt-3 pb-3">
                 <p className="text-sm font-medium">{t.name}</p>
                 <p className="text-xs text-gray-500 mt-1">
-                  Max {t.max_days_per_year} days/year
+                  Max {t.days_allowed} days/year
                 </p>
               </CardContent>
             </Card>
@@ -146,6 +146,7 @@ export default function LeaveManagementPage() {
         </CardHeader>
         <CardContent>
           <Table
+            keyField="id"
             columns={columns}
             data={rows as unknown as (LeaveRequest & Record<string, unknown>)[]}
             loading={loading}

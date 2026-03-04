@@ -133,9 +133,7 @@ export default function SchoolGovernmentFeesPage() {
                     ₦{Number(f.amount).toLocaleString()}
                   </p>
                 )}
-                <p className="text-xs text-gray-500 mt-1">
-                  {f.frequency?.replace(/_/g, " ")}
-                </p>
+                <p className="text-xs text-gray-500 mt-1">{f.category}</p>
               </CardContent>
             </Card>
           ))}
@@ -148,6 +146,7 @@ export default function SchoolGovernmentFeesPage() {
         </CardHeader>
         <CardContent>
           <Table
+            keyField="id"
             columns={columns}
             data={
               (payments?.data ?? []) as unknown as (GovernmentFeePayment &
