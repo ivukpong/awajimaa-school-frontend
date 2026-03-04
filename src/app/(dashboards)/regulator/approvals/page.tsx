@@ -61,7 +61,9 @@ export default function RegulatorApprovalsPage() {
       key: "id",
       header: "Reference",
       render: (r) => (
-        <span className="font-mono text-sm">#{String(r.id).padStart(6, "0")}</span>
+        <span className="font-mono text-sm">
+          #{String(r.id).padStart(6, "0")}
+        </span>
       ),
     },
     {
@@ -99,7 +101,9 @@ export default function RegulatorApprovalsPage() {
       key: "id" as keyof SchoolApprovalRequest,
       header: "Actions",
       render: (r) =>
-        ["submitted", "under_review", "additional_info_required"].includes(r.status) ? (
+        ["submitted", "under_review", "additional_info_required"].includes(
+          r.status,
+        ) ? (
           <div className="flex gap-1">
             <Button
               size="sm"

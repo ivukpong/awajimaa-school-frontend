@@ -18,7 +18,13 @@ const statusColors: Record<string, "gray" | "yellow" | "green" | "red"> = {
   confirmed: "green",
   failed: "red",
 };
-const feeCategories = ["registration", "renewal", "levy", "inspection", "other"] as const;
+const feeCategories = [
+  "registration",
+  "renewal",
+  "levy",
+  "inspection",
+  "other",
+] as const;
 
 export default function RegulatorGovernmentFeesPage() {
   const { feeTypes, payments, loading, confirmPayment } = useGovernmentFees();
@@ -55,9 +61,7 @@ export default function RegulatorGovernmentFeesPage() {
     {
       key: "category",
       header: "Category",
-      render: (r) => (
-        <Badge variant="gray">{r.category}</Badge>
-      ),
+      render: (r) => <Badge variant="gray">{r.category}</Badge>,
     },
     {
       key: "is_mandatory",
@@ -83,7 +87,8 @@ export default function RegulatorGovernmentFeesPage() {
       header: "Fee Type",
       render: (r) => (
         <span>
-          {feeTypes.find((f) => f.id === r.government_fee_type_id)?.name ?? r.government_fee_type_id}
+          {feeTypes.find((f) => f.id === r.government_fee_type_id)?.name ??
+            r.government_fee_type_id}
         </span>
       ),
     },
@@ -109,7 +114,12 @@ export default function RegulatorGovernmentFeesPage() {
         <Badge variant={statusColors[r.status] ?? "gray"}>{r.status}</Badge>
       ),
     },
-    { key: "created_at", header: "Date", render: (r) => r.created_at ? new Date(r.created_at).toLocaleDateString() : "—" },
+    {
+      key: "created_at",
+      header: "Date",
+      render: (r) =>
+        r.created_at ? new Date(r.created_at).toLocaleDateString() : "—",
+    },
     {
       key: "id" as keyof GovernmentFeePayment,
       header: "Actions",

@@ -59,7 +59,9 @@ export default function SchoolApprovalsPage() {
       key: "id",
       header: "Reference",
       render: (r) => (
-        <span className="font-mono text-sm">#{String(r.id).padStart(6, "0")}</span>
+        <span className="font-mono text-sm">
+          #{String(r.id).padStart(6, "0")}
+        </span>
       ),
     },
     {
@@ -156,9 +158,7 @@ export default function SchoolApprovalsPage() {
                 <label className="text-sm font-medium">Subject *</label>
                 <Input
                   value={form.title}
-                  onChange={(e) =>
-                    setForm({ ...form, title: e.target.value })
-                  }
+                  onChange={(e) => setForm({ ...form, title: e.target.value })}
                   placeholder="Brief subject line"
                   className="mt-1"
                 />

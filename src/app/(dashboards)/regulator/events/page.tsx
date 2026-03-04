@@ -101,7 +101,12 @@ export default function RegulatorEventsPage() {
       render: (r) => <Badge variant="blue">{r.category}</Badge>,
     },
     { key: "venue", header: "Venue" },
-    { key: "start_datetime", header: "Date", render: (r) => r.start_datetime ? new Date(r.start_datetime).toLocaleString() : "—" },
+    {
+      key: "start_datetime",
+      header: "Date",
+      render: (r) =>
+        r.start_datetime ? new Date(r.start_datetime).toLocaleString() : "—",
+    },
     {
       key: "registrations_count",
       header: "Registered",
