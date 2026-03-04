@@ -11,19 +11,22 @@ import { Plus, FileCheck } from "lucide-react";
 import toast from "react-hot-toast";
 
 const statusColors: Record<string, "gray" | "yellow" | "green" | "red"> = {
-  pending: "yellow",
+  submitted: "yellow",
   under_review: "yellow",
+  additional_info_required: "yellow",
   approved: "green",
   rejected: "red",
+  withdrawn: "gray",
 };
 
 const requestTypes = [
   "new_registration",
-  "inspection",
-  "license_renewal",
+  "renewal",
+  "upgrade",
+  "branch_addition",
   "curriculum_change",
-  "branch_opening",
-  "other",
+  "ownership_change",
+  "closure",
 ] as const;
 
 export default function SchoolApprovalsPage() {
@@ -31,14 +34,14 @@ export default function SchoolApprovalsPage() {
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({
     request_type: "new_registration",
-    subject: "",
+    title: "",
     description: "",
     supporting_documents: "",
   });
   const [saving, setSaving] = useState(false);
 
   const handleSubmit = async () => {
-    if (!form.subject) return toast.error("Subject required");
+    if (!form.title) return toast.error("Subject required");
     setSaving(true);
     try {
       await createRequest(form);
@@ -53,10 +56,10 @@ export default function SchoolApprovalsPage() {
 
   const columns: Column<SchoolApprovalRequest>[] = [
     {
-      key: "request_number",
+      key: "id",
       header: "Reference",
       render: (r) => (
-        <span className="font-mono text-sm">{r.request_number}</span>
+        <span className="font-mono text-sm">#{String(r.id).padStart(6, "0")}</span>
       ),
     },
     {
@@ -67,9 +70,9 @@ export default function SchoolApprovalsPage() {
       ),
     },
     {
-      key: "subject",
+      key: "title",
       header: "Subject",
-      render: (r) => <span className="font-medium">{r.subject}</span>,
+      render: (r) => <span className="font-medium">{r.title}</span>,
     },
     {
       key: "status",
@@ -87,10 +90,10 @@ export default function SchoolApprovalsPage() {
         r.created_at ? new Date(r.created_at).toLocaleDateString() : "—",
     },
     {
-      key: "reviewer_notes",
+      key: "review_notes",
       header: "Notes",
       render: (r) => (
-        <span className="text-sm text-gray-500">{r.reviewer_notes ?? "—"}</span>
+        <span className="text-sm text-gray-500">{r.review_notes ?? "—"}</span>
       ),
     },
   ];
@@ -152,9 +155,9 @@ export default function SchoolApprovalsPage() {
               <div>
                 <label className="text-sm font-medium">Subject *</label>
                 <Input
-                  value={form.subject}
+                  value={form.title}
                   onChange={(e) =>
-                    setForm({ ...form, subject: e.target.value })
+                    setForm({ ...form, title: e.target.value })
                   }
                   placeholder="Brief subject line"
                   className="mt-1"

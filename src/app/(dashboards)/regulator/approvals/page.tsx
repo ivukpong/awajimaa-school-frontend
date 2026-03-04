@@ -11,10 +11,12 @@ import { CheckCircle, XCircle } from "lucide-react";
 import toast from "react-hot-toast";
 
 const statusColors: Record<string, "gray" | "yellow" | "green" | "red"> = {
-  pending: "yellow",
+  submitted: "yellow",
   under_review: "yellow",
+  additional_info_required: "yellow",
   approved: "green",
   rejected: "red",
+  withdrawn: "gray",
 };
 
 export default function RegulatorApprovalsPage() {
@@ -29,7 +31,7 @@ export default function RegulatorApprovalsPage() {
 
   const rows = (requests?.data ?? []).filter(
     (r) =>
-      r.subject?.toLowerCase().includes(search.toLowerCase()) ||
+      r.title?.toLowerCase().includes(search.toLowerCase()) ||
       r.request_type
         ?.replace(/_/g, " ")
         .toLowerCase()
@@ -56,10 +58,10 @@ export default function RegulatorApprovalsPage() {
 
   const columns: Column<SchoolApprovalRequest>[] = [
     {
-      key: "request_number",
+      key: "id",
       header: "Reference",
       render: (r) => (
-        <span className="font-mono text-sm">{r.request_number}</span>
+        <span className="font-mono text-sm">#{String(r.id).padStart(6, "0")}</span>
       ),
     },
     {
@@ -70,9 +72,9 @@ export default function RegulatorApprovalsPage() {
       ),
     },
     {
-      key: "subject",
+      key: "title",
       header: "Subject",
-      render: (r) => <span className="font-medium">{r.subject}</span>,
+      render: (r) => <span className="font-medium">{r.title}</span>,
     },
     {
       key: "school_id" as keyof SchoolApprovalRequest,
@@ -97,7 +99,7 @@ export default function RegulatorApprovalsPage() {
       key: "id" as keyof SchoolApprovalRequest,
       header: "Actions",
       render: (r) =>
-        ["pending", "under_review"].includes(r.status) ? (
+        ["submitted", "under_review", "additional_info_required"].includes(r.status) ? (
           <div className="flex gap-1">
             <Button
               size="sm"

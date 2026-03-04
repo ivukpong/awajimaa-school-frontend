@@ -15,8 +15,11 @@ const statusColors: Record<
   "gray" | "yellow" | "green" | "blue" | "red"
 > = {
   draft: "gray",
-  published: "blue",
+  open: "blue",
   closed: "gray",
+  ongoing: "green",
+  completed: "green",
+  cancelled: "red",
 };
 const appStatusColors: Record<
   string,
@@ -50,10 +53,10 @@ export default function RegulatorProgramsPage() {
   } = useGovernmentPrograms();
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({
-    name: "",
+    title: "",
     category: "grant",
     description: "",
-    amount: "",
+    budget: "",
     application_deadline: "",
     eligibility_criteria: "",
   });
@@ -64,12 +67,12 @@ export default function RegulatorProgramsPage() {
   const [saving, setSaving] = useState(false);
 
   const handleCreate = async () => {
-    if (!form.name) return toast.error("Name required");
+    if (!form.title) return toast.error("Name required");
     setSaving(true);
     try {
       await createProgram({
         ...form,
-        amount: form.amount ? Number(form.amount) : undefined,
+        budget: form.budget ? Number(form.budget) : undefined,
       });
       toast.success("Program created");
       setShowModal(false);
@@ -104,9 +107,9 @@ export default function RegulatorProgramsPage() {
 
   const programColumns: Column<GovernmentProgram>[] = [
     {
-      key: "name",
+      key: "title",
       header: "Program",
-      render: (r) => <span className="font-medium">{r.name}</span>,
+      render: (r) => <span className="font-medium">{r.title}</span>,
     },
     {
       key: "category",
@@ -114,10 +117,10 @@ export default function RegulatorProgramsPage() {
       render: (r) => <Badge variant="blue">{r.category}</Badge>,
     },
     {
-      key: "amount",
+      key: "budget",
       header: "Amount",
       render: (r) =>
-        r.amount ? `₦${Number(r.amount).toLocaleString()}` : "Open",
+        r.budget ? `₦${Number(r.budget).toLocaleString()}` : "Open",
     },
     { key: "application_deadline", header: "Deadline" },
     {
@@ -136,7 +139,7 @@ export default function RegulatorProgramsPage() {
             <Button
               size="sm"
               onClick={() =>
-                updateProgram(r.id, { status: "published" })
+                updateProgram(r.id, { status: "open" })
                   .then(() => toast.success("Published"))
                   .catch(() => toast.error("Failed"))
               }
@@ -144,7 +147,7 @@ export default function RegulatorProgramsPage() {
               Publish
             </Button>
           )}
-          {r.status === "published" && (
+          {r.status === "open" && (
             <Button
               size="sm"
               variant="secondary"
@@ -265,8 +268,8 @@ export default function RegulatorProgramsPage() {
               <div>
                 <label className="text-sm font-medium">Name *</label>
                 <Input
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  value={form.title}
+                  onChange={(e) => setForm({ ...form, title: e.target.value })}
                   className="mt-1"
                 />
               </div>
@@ -287,11 +290,11 @@ export default function RegulatorProgramsPage() {
                 </select>
               </div>
               <div>
-                <label className="text-sm font-medium">Total Amount (₦)</label>
+                <label className="text-sm font-medium">Total Budget (₦)</label>
                 <Input
                   type="number"
-                  value={form.amount}
-                  onChange={(e) => setForm({ ...form, amount: e.target.value })}
+                  value={form.budget}
+                  onChange={(e) => setForm({ ...form, budget: e.target.value })}
                   className="mt-1"
                 />
               </div>

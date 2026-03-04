@@ -18,7 +18,7 @@ const statusColors: Record<string, "gray" | "yellow" | "green" | "red"> = {
   confirmed: "green",
   failed: "red",
 };
-const frequencies = ["one_time", "annual", "per_term", "monthly"] as const;
+const feeCategories = ["registration", "renewal", "levy", "inspection", "other"] as const;
 
 export default function RegulatorGovernmentFeesPage() {
   const { feeTypes, payments, loading, confirmPayment } = useGovernmentFees();
@@ -26,7 +26,7 @@ export default function RegulatorGovernmentFeesPage() {
   const [ftForm, setFtForm] = useState({
     name: "",
     amount: "",
-    frequency: "annual",
+    category: "registration",
     description: "",
   });
   const [saving, setSaving] = useState(false);
@@ -53,10 +53,10 @@ export default function RegulatorGovernmentFeesPage() {
         r.amount ? `₦${Number(r.amount).toLocaleString()}` : "Variable",
     },
     {
-      key: "frequency",
-      header: "Frequency",
+      key: "category",
+      header: "Category",
       render: (r) => (
-        <Badge variant="gray">{r.frequency?.replace(/_/g, " ") ?? "—"}</Badge>
+        <Badge variant="gray">{r.category}</Badge>
       ),
     },
     {
@@ -79,11 +79,11 @@ export default function RegulatorGovernmentFeesPage() {
       ),
     },
     {
-      key: "fee_type_id",
+      key: "government_fee_type_id",
       header: "Fee Type",
       render: (r) => (
         <span>
-          {feeTypes.find((f) => f.id === r.fee_type_id)?.name ?? r.fee_type_id}
+          {feeTypes.find((f) => f.id === r.government_fee_type_id)?.name ?? r.government_fee_type_id}
         </span>
       ),
     },
@@ -109,7 +109,7 @@ export default function RegulatorGovernmentFeesPage() {
         <Badge variant={statusColors[r.status] ?? "gray"}>{r.status}</Badge>
       ),
     },
-    { key: "payment_date", header: "Date" },
+    { key: "created_at", header: "Date", render: (r) => r.created_at ? new Date(r.created_at).toLocaleDateString() : "—" },
     {
       key: "id" as keyof GovernmentFeePayment,
       header: "Actions",

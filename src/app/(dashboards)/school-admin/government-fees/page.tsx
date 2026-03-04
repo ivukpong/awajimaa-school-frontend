@@ -62,11 +62,11 @@ export default function SchoolGovernmentFeesPage() {
       ),
     },
     {
-      key: "fee_type_id",
+      key: "government_fee_type_id",
       header: "Fee Type",
       render: (r) => (
         <span>
-          {feeTypes.find((f) => f.id === r.fee_type_id)?.name ?? r.fee_type_id}
+          {feeTypes.find((f) => f.id === r.government_fee_type_id)?.name ?? r.government_fee_type_id}
         </span>
       ),
     },
@@ -95,7 +95,7 @@ export default function SchoolGovernmentFeesPage() {
         <Badge variant={statusColors[r.status] ?? "gray"}>{r.status}</Badge>
       ),
     },
-    { key: "payment_date", header: "Date" },
+    { key: "created_at", header: "Date", render: (r) => r.created_at ? new Date(r.created_at).toLocaleDateString() : "—" },
   ];
 
   return (

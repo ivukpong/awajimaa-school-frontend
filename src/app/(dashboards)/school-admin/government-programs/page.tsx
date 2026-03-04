@@ -49,9 +49,9 @@ export default function SchoolAdminGovernmentProgramsPage() {
 
   const programColumns: Column<GovernmentProgram>[] = [
     {
-      key: "name",
+      key: "title",
       header: "Program",
-      render: (r) => <span className="font-medium">{r.name}</span>,
+      render: (r) => <span className="font-medium">{r.title}</span>,
     },
     {
       key: "category",
@@ -59,9 +59,9 @@ export default function SchoolAdminGovernmentProgramsPage() {
       render: (r) => <Badge variant="blue">{r.category}</Badge>,
     },
     {
-      key: "amount",
+      key: "budget",
       header: "Amount",
-      render: (r) => (r.amount ? `₦${Number(r.amount).toLocaleString()}` : "—"),
+      render: (r) => (r.budget ? `₦${Number(r.budget).toLocaleString()}` : "—"),
     },
     { key: "application_deadline", header: "Deadline" },
     {
@@ -84,12 +84,11 @@ export default function SchoolAdminGovernmentProgramsPage() {
 
   const appColumns: Column<ProgramApplication>[] = [
     {
-      key: "program_id",
+      key: "government_program_id",
       header: "Program",
       render: (r) => (
         <span className="font-medium">
-          {(r as ProgramApplication & { program?: { name: string } }).program
-            ?.name ?? r.program_id}
+          {r.program?.title ?? r.government_program_id}
         </span>
       ),
     },
@@ -170,7 +169,7 @@ export default function SchoolAdminGovernmentProgramsPage() {
       {applying && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="w-full max-w-md rounded-xl bg-white dark:bg-gray-900 p-6 shadow-2xl space-y-4">
-            <h2 className="text-lg font-bold">Apply — {applying.name}</h2>
+            <h2 className="text-lg font-bold">Apply — {applying.title}</h2>
             <div className="space-y-3">
               <div>
                 <label className="text-sm font-medium">Proposal</label>
@@ -184,7 +183,7 @@ export default function SchoolAdminGovernmentProgramsPage() {
                   placeholder="Describe how your school will use this program…"
                 />
               </div>
-              {applying.amount && (
+              {applying.budget && (
                 <div>
                   <label className="text-sm font-medium">
                     Requested Amount (₦)

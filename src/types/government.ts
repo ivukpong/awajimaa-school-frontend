@@ -45,6 +45,7 @@ export interface ProgramApplication {
     review_notes?: string;
     reviewed_by?: number;
     reviewed_at?: string;
+    requested_amount?: number;
     amount_approved?: number;
     amount_disbursed?: number;
     disbursed_at?: string;

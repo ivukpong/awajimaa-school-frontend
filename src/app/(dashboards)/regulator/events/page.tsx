@@ -12,10 +12,12 @@ import toast from "react-hot-toast";
 
 const categories = [
   "workshop",
-  "seminar",
   "training",
   "conference",
   "inspection",
+  "sports",
+  "competition",
+  "census",
   "other",
 ] as const;
 
@@ -29,8 +31,8 @@ export default function RegulatorEventsPage() {
     category: "workshop",
     description: "",
     venue: "",
-    event_date: "",
-    registration_deadline: "",
+    start_datetime: "",
+    end_datetime: "",
     max_participants: "",
   });
   const [saving, setSaving] = useState(false);
@@ -42,8 +44,8 @@ export default function RegulatorEventsPage() {
       category: "workshop",
       description: "",
       venue: "",
-      event_date: "",
-      registration_deadline: "",
+      start_datetime: "",
+      end_datetime: "",
       max_participants: "",
     });
     setShowModal(true);
@@ -55,8 +57,8 @@ export default function RegulatorEventsPage() {
       category: e.category,
       description: e.description ?? "",
       venue: e.venue ?? "",
-      event_date: e.event_date ?? "",
-      registration_deadline: e.registration_deadline ?? "",
+      start_datetime: e.start_datetime ?? "",
+      end_datetime: e.end_datetime ?? "",
       max_participants: e.max_participants?.toString() ?? "",
     });
     setShowModal(true);
@@ -99,7 +101,7 @@ export default function RegulatorEventsPage() {
       render: (r) => <Badge variant="blue">{r.category}</Badge>,
     },
     { key: "venue", header: "Venue" },
-    { key: "event_date", header: "Date" },
+    { key: "start_datetime", header: "Date", render: (r) => r.start_datetime ? new Date(r.start_datetime).toLocaleString() : "—" },
     {
       key: "registrations_count",
       header: "Registered",
@@ -195,26 +197,23 @@ export default function RegulatorEventsPage() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-sm font-medium">Event Date</label>
+                  <label className="text-sm font-medium">Start Date/Time</label>
                   <Input
                     type="datetime-local"
-                    value={form.event_date}
+                    value={form.start_datetime}
                     onChange={(e) =>
-                      setForm({ ...form, event_date: e.target.value })
+                      setForm({ ...form, start_datetime: e.target.value })
                     }
                     className="mt-1"
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Reg. Deadline</label>
+                  <label className="text-sm font-medium">End Date/Time</label>
                   <Input
-                    type="date"
-                    value={form.registration_deadline}
+                    type="datetime-local"
+                    value={form.end_datetime}
                     onChange={(e) =>
-                      setForm({
-                        ...form,
-                        registration_deadline: e.target.value,
-                      })
+                      setForm({ ...form, end_datetime: e.target.value })
                     }
                     className="mt-1"
                   />
