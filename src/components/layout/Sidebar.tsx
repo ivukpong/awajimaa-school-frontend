@@ -24,6 +24,15 @@ import {
   Banknote,
   MapPin,
   LogOut,
+  Package,
+  Building2,
+  UserPlus,
+  DollarSign,
+  CalendarDays,
+  Globe,
+  FileCheck,
+  ShoppingCart,
+  CalendarOff,
 } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
@@ -85,6 +94,26 @@ const navByRole: Record<UserRole, NavItem[]> = {
       label: "Meetings",
       href: "/regulator/meetings",
       icon: <Video className="h-4 w-4" />,
+    },
+    {
+      label: "Programs",
+      href: "/regulator/programs",
+      icon: <Globe className="h-4 w-4" />,
+    },
+    {
+      label: "Events",
+      href: "/regulator/events",
+      icon: <CalendarDays className="h-4 w-4" />,
+    },
+    {
+      label: "Approvals",
+      href: "/regulator/approvals",
+      icon: <FileCheck className="h-4 w-4" />,
+    },
+    {
+      label: "Gov Fees",
+      href: "/regulator/government-fees",
+      icon: <CreditCard className="h-4 w-4" />,
     },
     {
       label: "Messages",
@@ -149,6 +178,56 @@ const navByRole: Record<UserRole, NavItem[]> = {
       icon: <MessageSquare className="h-4 w-4" />,
     },
     {
+      label: "Departments",
+      href: "/school-admin/departments",
+      icon: <Building2 className="h-4 w-4" />,
+    },
+    {
+      label: "Recruitment",
+      href: "/school-admin/recruitment",
+      icon: <UserPlus className="h-4 w-4" />,
+    },
+    {
+      label: "Payroll",
+      href: "/school-admin/payroll",
+      icon: <DollarSign className="h-4 w-4" />,
+    },
+    {
+      label: "Leave",
+      href: "/school-admin/leave",
+      icon: <CalendarOff className="h-4 w-4" />,
+    },
+    {
+      label: "Inventory",
+      href: "/school-admin/inventory",
+      icon: <Package className="h-4 w-4" />,
+    },
+    {
+      label: "Purchase Orders",
+      href: "/school-admin/purchase-orders",
+      icon: <ShoppingCart className="h-4 w-4" />,
+    },
+    {
+      label: "Admissions",
+      href: "/school-admin/admissions",
+      icon: <ClipboardList className="h-4 w-4" />,
+    },
+    {
+      label: "Gov Programs",
+      href: "/school-admin/government-programs",
+      icon: <Globe className="h-4 w-4" />,
+    },
+    {
+      label: "Approvals",
+      href: "/school-admin/approvals",
+      icon: <FileCheck className="h-4 w-4" />,
+    },
+    {
+      label: "Gov Fees",
+      href: "/school-admin/government-fees",
+      icon: <CreditCard className="h-4 w-4" />,
+    },
+    {
       label: "Settings",
       href: "/school-admin/settings",
       icon: <Settings className="h-4 w-4" />,
@@ -201,6 +280,16 @@ const navByRole: Record<UserRole, NavItem[]> = {
       label: "E-Learning",
       href: "/teacher/e-learning",
       icon: <BookOpen className="h-4 w-4" />,
+    },
+    {
+      label: "My Salary",
+      href: "/teacher/salary",
+      icon: <DollarSign className="h-4 w-4" />,
+    },
+    {
+      label: "Leave",
+      href: "/teacher/leave",
+      icon: <CalendarOff className="h-4 w-4" />,
     },
     {
       label: "Messages",
