@@ -37,6 +37,7 @@ import {
 import { cn, getInitials } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
 import type { UserRole } from "@/types";
+import { Logo, LogoIcon } from "@/components/ui/Logo";
 
 interface NavItem {
   label: string;
@@ -62,6 +63,21 @@ const navByRole: Record<UserRole, NavItem[]> = {
       label: "Users",
       href: "/super-admin/users",
       icon: <Users className="h-4 w-4" />,
+    },
+    {
+      label: "Regulators",
+      href: "/super-admin/regulators",
+      icon: <Shield className="h-4 w-4" />,
+    },
+    {
+      label: "Sponsors",
+      href: "/super-admin/sponsors",
+      icon: <HeartHandshake className="h-4 w-4" />,
+    },
+    {
+      label: "Scholarships",
+      href: "/super-admin/scholarships",
+      icon: <GraduationCap className="h-4 w-4" />,
     },
     {
       label: "Settings",
@@ -226,6 +242,21 @@ const navByRole: Record<UserRole, NavItem[]> = {
       label: "Gov Fees",
       href: "/school-admin/government-fees",
       icon: <CreditCard className="h-4 w-4" />,
+    },
+    {
+      label: "Regulators",
+      href: "/school-admin/regulators",
+      icon: <Shield className="h-4 w-4" />,
+    },
+    {
+      label: "Sponsors",
+      href: "/school-admin/sponsors",
+      icon: <HeartHandshake className="h-4 w-4" />,
+    },
+    {
+      label: "Scholarships",
+      href: "/school-admin/scholarships",
+      icon: <GraduationCap className="h-4 w-4" />,
     },
     {
       label: "Settings",
@@ -423,7 +454,7 @@ export function Sidebar() {
     <aside
       className={cn(
         "flex flex-col transition-all duration-200 shrink-0",
-        "bg-[#1B4F72] text-white",
+        "bg-brand text-white",
         collapsed ? "w-16" : "w-64",
       )}
     >
@@ -434,23 +465,8 @@ export function Sidebar() {
           collapsed ? "justify-center" : "justify-between",
         )}
       >
-        {!collapsed && (
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20 font-bold text-white text-sm shrink-0">
-              A
-            </div>
-            <span className="text-sm font-bold text-white leading-tight">
-              Awajimaa
-              <br />
-              <span className="font-normal text-white/70 text-xs">School</span>
-            </span>
-          </div>
-        )}
-        {collapsed && (
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20 font-bold text-white text-sm">
-            A
-          </div>
-        )}
+        {!collapsed && <Logo height={34} onDark />}
+        {collapsed && <LogoIcon size={26} onDark />}
         {!collapsed && (
           <button
             onClick={() => setCollapsed(true)}

@@ -62,7 +62,7 @@ const config: Config = {
                 },
             },
             fontFamily: {
-                sans: ["var(--font-inter)", "ui-sans-serif", "system-ui", "sans-serif"],
+                sans: ["var(--font-montserrat)", "ui-sans-serif", "system-ui", "sans-serif"],
             },
             borderRadius: {
                 lg: "var(--radius)",
