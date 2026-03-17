@@ -2,6 +2,8 @@
 export type UserRole =
     | "super_admin"
     | "regulator"
+    | "state_regulator"
+    | "lga_regulator"
     | "school_admin"
     | "branch_admin"
     | "teacher"

@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/Button";
 import { COUNTRIES, NIGERIA } from "@/lib/countries";
 import { cn } from "@/lib/utils";
 import Cookies from "js-cookie";
+import { getDeviceId, getDeviceInfo } from "@/lib/auth";
 
 const ROLES = [
   { value: "school_admin", label: "School Administrator" },
@@ -31,6 +32,8 @@ const ROLES = [
   { value: "parent", label: "Parent / Guardian" },
   { value: "sponsor", label: "Sponsor" },
   { value: "revenue_collector", label: "Revenue Collector" },
+  { value: "state_regulator", label: "Regulator — State Agency" },
+  { value: "lga_regulator", label: "Regulator — LGA Agency" },
 ];
 
 const SELECT_CLS =
@@ -135,6 +138,10 @@ export default function RegisterPage() {
     } else if (form.state_province) {
       payload.state_province = form.state_province;
     }
+    const { name: deviceName, type: deviceType } = getDeviceInfo();
+    payload.device_id = getDeviceId();
+    payload.device_name = deviceName;
+    payload.device_type = deviceType;
     registerMutation.mutate(payload);
   };
 

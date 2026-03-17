@@ -85,6 +85,80 @@ const navByRole: Record<UserRole, NavItem[]> = {
       icon: <Settings className="h-4 w-4" />,
     },
   ],
+  state_regulator: [
+    {
+      label: "Overview",
+      href: "/regulator",
+      icon: <LayoutDashboard className="h-4 w-4" />,
+    },
+    {
+      label: "Schools",
+      href: "/regulator/schools",
+      icon: <School className="h-4 w-4" />,
+    },
+    {
+      label: "Charges",
+      href: "/regulator/charges",
+      icon: <CreditCard className="h-4 w-4" />,
+    },
+    {
+      label: "Forms & Verification",
+      href: "/regulator/forms",
+      icon: <FileText className="h-4 w-4" />,
+    },
+    {
+      label: "Approvals",
+      href: "/regulator/approvals",
+      icon: <FileCheck className="h-4 w-4" />,
+    },
+    {
+      label: "Programs",
+      href: "/regulator/programs",
+      icon: <Globe className="h-4 w-4" />,
+    },
+    {
+      label: "Events",
+      href: "/regulator/events",
+      icon: <CalendarDays className="h-4 w-4" />,
+    },
+    {
+      label: "Messages",
+      href: "/regulator/messages",
+      icon: <MessageSquare className="h-4 w-4" />,
+    },
+  ],
+  lga_regulator: [
+    {
+      label: "Overview",
+      href: "/regulator",
+      icon: <LayoutDashboard className="h-4 w-4" />,
+    },
+    {
+      label: "Schools",
+      href: "/regulator/schools",
+      icon: <School className="h-4 w-4" />,
+    },
+    {
+      label: "Charges",
+      href: "/regulator/charges",
+      icon: <CreditCard className="h-4 w-4" />,
+    },
+    {
+      label: "Forms & Verification",
+      href: "/regulator/forms",
+      icon: <FileText className="h-4 w-4" />,
+    },
+    {
+      label: "Approvals",
+      href: "/regulator/approvals",
+      icon: <FileCheck className="h-4 w-4" />,
+    },
+    {
+      label: "Messages",
+      href: "/regulator/messages",
+      icon: <MessageSquare className="h-4 w-4" />,
+    },
+  ],
   regulator: [
     {
       label: "Overview",
