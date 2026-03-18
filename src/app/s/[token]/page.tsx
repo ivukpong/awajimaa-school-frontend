@@ -13,7 +13,11 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { usePublicFees, usePublicPay } from "@/hooks/useFees";
-import type { InvoiceWithFee, ReceiptData, PublicPayPayload } from "@/types/finance";
+import type {
+  InvoiceWithFee,
+  ReceiptData,
+  PublicPayPayload,
+} from "@/types/finance";
 
 const statusVariant: Record<string, "green" | "yellow" | "red" | "gray"> = {
   paid: "green",
@@ -26,7 +30,13 @@ function formatCurrency(n: number) {
   return `₦${Number(n).toLocaleString("en-NG", { minimumFractionDigits: 2 })}`;
 }
 
-function ReceiptCard({ receipt, onClose }: { receipt: ReceiptData; onClose: () => void }) {
+function ReceiptCard({
+  receipt,
+  onClose,
+}: {
+  receipt: ReceiptData;
+  onClose: () => void;
+}) {
   const printRef = useRef<HTMLDivElement>(null);
 
   function handlePrint() {
@@ -60,30 +70,42 @@ function ReceiptCard({ receipt, onClose }: { receipt: ReceiptData; onClose: () =
           <div className="flex items-start justify-between mb-6">
             <div className="flex items-center gap-3">
               {receipt.school_logo ? (
-                <img src={receipt.school_logo} alt="logo" className="h-12 w-12 object-contain rounded-lg" />
+                <img
+                  src={receipt.school_logo}
+                  alt="logo"
+                  className="h-12 w-12 object-contain rounded-lg"
+                />
               ) : (
                 <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center">
                   <Building2 size={24} className="text-blue-600" />
                 </div>
               )}
               <div>
-                <p className="font-bold text-gray-900 dark:text-white">{receipt.school_name}</p>
+                <p className="font-bold text-gray-900 dark:text-white">
+                  {receipt.school_name}
+                </p>
                 <p className="text-xs text-gray-500">{receipt.school_email}</p>
                 <p className="text-xs text-gray-500">{receipt.school_phone}</p>
               </div>
             </div>
-            <span className="text-xs font-semibold text-green-700 bg-green-100 rounded-full px-3 py-1">RECEIPT</span>
+            <span className="text-xs font-semibold text-green-700 bg-green-100 rounded-full px-3 py-1">
+              RECEIPT
+            </span>
           </div>
 
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-xs text-gray-500">Receipt No.</p>
-              <p className="font-bold text-gray-900 dark:text-white">{receipt.receipt_number}</p>
+              <p className="font-bold text-gray-900 dark:text-white">
+                {receipt.receipt_number}
+              </p>
             </div>
             <div className="text-right">
               <p className="text-xs text-gray-500">Date</p>
               <p className="font-bold text-gray-900 dark:text-white">
-                {new Date(receipt.paid_at).toLocaleDateString("en-NG", { dateStyle: "long" })}
+                {new Date(receipt.paid_at).toLocaleDateString("en-NG", {
+                  dateStyle: "long",
+                })}
               </p>
             </div>
           </div>
@@ -92,53 +114,77 @@ function ReceiptCard({ receipt, onClose }: { receipt: ReceiptData; onClose: () =
             <tbody>
               <tr className="border-b border-gray-100 dark:border-gray-700">
                 <td className="py-2 text-gray-500">Payer Name</td>
-                <td className="py-2 font-semibold text-right text-gray-900 dark:text-white">{receipt.payer_name ?? "—"}</td>
+                <td className="py-2 font-semibold text-right text-gray-900 dark:text-white">
+                  {receipt.payer_name ?? "—"}
+                </td>
               </tr>
               <tr className="border-b border-gray-100 dark:border-gray-700">
                 <td className="py-2 text-gray-500">Payer Email</td>
-                <td className="py-2 font-semibold text-right text-gray-900 dark:text-white">{receipt.payer_email ?? "—"}</td>
+                <td className="py-2 font-semibold text-right text-gray-900 dark:text-white">
+                  {receipt.payer_email ?? "—"}
+                </td>
               </tr>
               <tr className="border-b border-gray-100 dark:border-gray-700">
                 <td className="py-2 text-gray-500">Payer Phone</td>
-                <td className="py-2 font-semibold text-right text-gray-900 dark:text-white">{receipt.payer_phone ?? "—"}</td>
+                <td className="py-2 font-semibold text-right text-gray-900 dark:text-white">
+                  {receipt.payer_phone ?? "—"}
+                </td>
               </tr>
               <tr className="border-b border-gray-100 dark:border-gray-700">
                 <td className="py-2 text-gray-500">Student</td>
-                <td className="py-2 font-semibold text-right text-gray-900 dark:text-white">{receipt.student_name}</td>
+                <td className="py-2 font-semibold text-right text-gray-900 dark:text-white">
+                  {receipt.student_name}
+                </td>
               </tr>
               <tr className="border-b border-gray-100 dark:border-gray-700">
                 <td className="py-2 text-gray-500">Admission No.</td>
-                <td className="py-2 font-semibold text-right text-gray-900 dark:text-white">{receipt.student_number}</td>
+                <td className="py-2 font-semibold text-right text-gray-900 dark:text-white">
+                  {receipt.student_number}
+                </td>
               </tr>
               <tr className="border-b border-gray-100 dark:border-gray-700">
                 <td className="py-2 text-gray-500">Fee</td>
-                <td className="py-2 font-semibold text-right text-gray-900 dark:text-white">{receipt.fee_name}</td>
+                <td className="py-2 font-semibold text-right text-gray-900 dark:text-white">
+                  {receipt.fee_name}
+                </td>
               </tr>
               {receipt.academic_year && (
                 <tr className="border-b border-gray-100 dark:border-gray-700">
                   <td className="py-2 text-gray-500">Academic Year</td>
-                  <td className="py-2 font-semibold text-right text-gray-900 dark:text-white">{receipt.academic_year}</td>
+                  <td className="py-2 font-semibold text-right text-gray-900 dark:text-white">
+                    {receipt.academic_year}
+                  </td>
                 </tr>
               )}
               {receipt.term && (
                 <tr className="border-b border-gray-100 dark:border-gray-700">
                   <td className="py-2 text-gray-500">Term</td>
-                  <td className="py-2 font-semibold text-right text-gray-900 dark:text-white">{receipt.term}</td>
+                  <td className="py-2 font-semibold text-right text-gray-900 dark:text-white">
+                    {receipt.term}
+                  </td>
                 </tr>
               )}
               {receipt.narration && (
                 <tr className="border-b border-gray-100 dark:border-gray-700">
                   <td className="py-2 text-gray-500">Narration</td>
-                  <td className="py-2 font-semibold text-right text-gray-900 dark:text-white">{receipt.narration}</td>
+                  <td className="py-2 font-semibold text-right text-gray-900 dark:text-white">
+                    {receipt.narration}
+                  </td>
                 </tr>
               )}
               <tr className="border-b border-gray-100 dark:border-gray-700">
                 <td className="py-2 text-gray-500">Reference</td>
-                <td className="py-2 font-mono text-xs text-right text-gray-900 dark:text-white">{receipt.reference}</td>
+                <td className="py-2 font-mono text-xs text-right text-gray-900 dark:text-white">
+                  {receipt.reference}
+                </td>
               </tr>
               <tr>
-                <td className="py-3 font-bold text-gray-900 dark:text-white text-base">Amount Paid</td>
-                <td className="py-3 font-bold text-green-600 text-right text-base">{formatCurrency(receipt.amount)}</td>
+                <td className="py-3 font-bold text-gray-900 dark:text-white text-base">
+                  Amount Paid
+                </td>
+                <td className="py-3 font-bold text-green-600 text-right text-base">
+                  {formatCurrency(receipt.amount)}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -174,7 +220,9 @@ interface PaymentFormProps {
 }
 
 function PaymentForm({ token, invoices, onSuccess }: PaymentFormProps) {
-  const unpaid = invoices.filter(i => i.status !== "paid" && i.status !== "waived");
+  const unpaid = invoices.filter(
+    (i) => i.status !== "paid" && i.status !== "waived",
+  );
   const { mutate, isPending, error } = usePublicPay(token);
 
   const [form, setForm] = useState<PublicPayPayload>({
@@ -186,11 +234,19 @@ function PaymentForm({ token, invoices, onSuccess }: PaymentFormProps) {
     narration: "",
   });
 
-  const selectedInvoice = unpaid.find(i => i.id === Number(form.invoice_id));
+  const selectedInvoice = unpaid.find((i) => i.id === Number(form.invoice_id));
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
+  function handleChange(
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: name === "invoice_id" || name === "amount" ? Number(value) : value }));
+    setForm((prev) => ({
+      ...prev,
+      [name]:
+        name === "invoice_id" || name === "amount" ? Number(value) : value,
+    }));
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -204,7 +260,9 @@ function PaymentForm({ token, invoices, onSuccess }: PaymentFormProps) {
     return (
       <div className="flex flex-col items-center gap-3 py-8 text-center">
         <CheckCircle size={48} className="text-green-500" />
-        <p className="font-semibold text-gray-700 dark:text-gray-300">All fees are fully paid!</p>
+        <p className="font-semibold text-gray-700 dark:text-gray-300">
+          All fees are fully paid!
+        </p>
       </div>
     );
   }
@@ -218,7 +276,9 @@ function PaymentForm({ token, invoices, onSuccess }: PaymentFormProps) {
       )}
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Select Fee</label>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Select Fee
+        </label>
         <select
           name="invoice_id"
           value={form.invoice_id}
@@ -226,9 +286,10 @@ function PaymentForm({ token, invoices, onSuccess }: PaymentFormProps) {
           required
           className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          {unpaid.map(inv => (
+          {unpaid.map((inv) => (
             <option key={inv.id} value={inv.id}>
-              {inv.fee?.name ?? `Invoice #${inv.id}`} — Balance: {formatCurrency(inv.balance)}
+              {inv.fee?.name ?? `Invoice #${inv.id}`} — Balance:{" "}
+              {formatCurrency(inv.balance)}
             </option>
           ))}
         </select>
@@ -240,7 +301,9 @@ function PaymentForm({ token, invoices, onSuccess }: PaymentFormProps) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Amount (₦)</label>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Amount (₦)
+        </label>
         <input
           type="number"
           name="amount"
@@ -257,7 +320,9 @@ function PaymentForm({ token, invoices, onSuccess }: PaymentFormProps) {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Your Full Name</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Your Full Name
+          </label>
           <input
             type="text"
             name="payer_name"
@@ -269,7 +334,9 @@ function PaymentForm({ token, invoices, onSuccess }: PaymentFormProps) {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Email Address
+          </label>
           <input
             type="email"
             name="payer_email"
@@ -283,7 +350,9 @@ function PaymentForm({ token, invoices, onSuccess }: PaymentFormProps) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Phone Number</label>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Phone Number
+        </label>
         <input
           type="tel"
           name="payer_phone"
@@ -296,7 +365,9 @@ function PaymentForm({ token, invoices, onSuccess }: PaymentFormProps) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Narration (optional)</label>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Narration (optional)
+        </label>
         <textarea
           name="narration"
           value={form.narration}
@@ -312,9 +383,12 @@ function PaymentForm({ token, invoices, onSuccess }: PaymentFormProps) {
         disabled={isPending}
         className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white rounded-lg py-3 text-sm font-semibold transition-colors"
       >
-        {isPending ? "Processing…" : (
+        {isPending ? (
+          "Processing…"
+        ) : (
           <>
-            <CreditCard size={16} /> Pay {form.amount > 0 ? formatCurrency(form.amount) : "Now"}
+            <CreditCard size={16} /> Pay{" "}
+            {form.amount > 0 ? formatCurrency(form.amount) : "Now"}
           </>
         )}
       </button>
@@ -339,18 +413,24 @@ export default function PublicStudentFeesPage() {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col items-center justify-center gap-3 p-8 text-center">
         <GraduationCap size={48} className="text-gray-300" />
-        <p className="text-gray-500 dark:text-gray-400 text-lg font-medium">Student not found.</p>
-        <p className="text-gray-400 dark:text-gray-500 text-sm">The payment link may be invalid or expired.</p>
+        <p className="text-gray-500 dark:text-gray-400 text-lg font-medium">
+          Student not found.
+        </p>
+        <p className="text-gray-400 dark:text-gray-500 text-sm">
+          The payment link may be invalid or expired.
+        </p>
       </div>
     );
   }
 
   const { student, school, summary, grouped } = data;
-  const allInvoices = grouped.flatMap(g => g.invoices);
+  const allInvoices = grouped.flatMap((g) => g.invoices);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-      {receipt && <ReceiptCard receipt={receipt} onClose={() => setReceipt(null)} />}
+      {receipt && (
+        <ReceiptCard receipt={receipt} onClose={() => setReceipt(null)} />
+      )}
 
       {/* Hero */}
       <div className="bg-gradient-to-r from-blue-700 to-blue-500 text-white py-10 px-4">
@@ -373,35 +453,63 @@ export default function PublicStudentFeesPage() {
         {/* Fee summary */}
         <div className="grid grid-cols-3 gap-4">
           {[
-            { label: "Total Fees", value: formatCurrency(summary.total), color: "text-gray-900 dark:text-white" },
-            { label: "Amount Paid", value: formatCurrency(summary.paid), color: "text-green-600 dark:text-green-400" },
-            { label: "Outstanding", value: formatCurrency(summary.balance), color: "text-red-600 dark:text-red-400" },
-          ].map(s => (
-            <div key={s.label} className="bg-white dark:bg-gray-900 rounded-xl shadow-sm p-4 text-center">
-              <p className="text-xs text-gray-500 dark:text-gray-400">{s.label}</p>
+            {
+              label: "Total Fees",
+              value: formatCurrency(summary.total),
+              color: "text-gray-900 dark:text-white",
+            },
+            {
+              label: "Amount Paid",
+              value: formatCurrency(summary.paid),
+              color: "text-green-600 dark:text-green-400",
+            },
+            {
+              label: "Outstanding",
+              value: formatCurrency(summary.balance),
+              color: "text-red-600 dark:text-red-400",
+            },
+          ].map((s) => (
+            <div
+              key={s.label}
+              className="bg-white dark:bg-gray-900 rounded-xl shadow-sm p-4 text-center"
+            >
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {s.label}
+              </p>
               <p className={`font-bold text-sm mt-1 ${s.color}`}>{s.value}</p>
             </div>
           ))}
         </div>
 
         {/* Fee breakdown */}
-        {grouped.map(group => (
+        {grouped.map((group) => (
           <Card key={group.academic_year}>
             <CardHeader>
               <CardTitle className="text-base">{group.academic_year}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              {group.invoices.map(inv => (
-                <div key={inv.id} className="flex items-center justify-between text-sm py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
+              {group.invoices.map((inv) => (
+                <div
+                  key={inv.id}
+                  className="flex items-center justify-between text-sm py-2 border-b border-gray-100 dark:border-gray-700 last:border-0"
+                >
                   <div>
-                    <p className="font-medium text-gray-900 dark:text-white">{inv.fee?.name ?? `Invoice #${inv.id}`}</p>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      {inv.fee?.name ?? `Invoice #${inv.id}`}
+                    </p>
                     {inv.fee?.term?.name && (
-                      <p className="text-xs text-gray-500">{inv.fee.term.name}</p>
+                      <p className="text-xs text-gray-500">
+                        {inv.fee.term.name}
+                      </p>
                     )}
                   </div>
                   <div className="flex items-center gap-3">
-                    <Badge variant={statusVariant[inv.status] ?? "gray"}>{inv.status}</Badge>
-                    <span className="font-semibold text-gray-900 dark:text-white">{formatCurrency(inv.balance)}</span>
+                    <Badge variant={statusVariant[inv.status] ?? "gray"}>
+                      {inv.status}
+                    </Badge>
+                    <span className="font-semibold text-gray-900 dark:text-white">
+                      {formatCurrency(inv.balance)}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -421,7 +529,7 @@ export default function PublicStudentFeesPage() {
             <PaymentForm
               token={token}
               invoices={allInvoices}
-              onSuccess={r => setReceipt(r)}
+              onSuccess={(r) => setReceipt(r)}
             />
           </CardContent>
         </Card>
