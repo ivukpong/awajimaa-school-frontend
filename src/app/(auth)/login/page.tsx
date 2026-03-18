@@ -6,7 +6,7 @@ import { z } from "zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { Mail, Lock, ArrowLeft, RefreshCw, User } from "lucide-react";
+import { Mail, Lock, ArrowLeft, User as UserIcon } from "lucide-react";
 import Cookies from "js-cookie";
 import { useAuthStore } from "@/store/authStore";
 import {
@@ -282,7 +282,7 @@ export default function LoginPage() {
           label="Email or Matric Number"
           type="text"
           placeholder="email@school.ng or MAT/2024/001"
-          leftIcon={<User className="h-4 w-4" />}
+          leftIcon={<UserIcon className="h-4 w-4" />}
           error={errors.identifier?.message}
           required
           {...register("identifier")}
