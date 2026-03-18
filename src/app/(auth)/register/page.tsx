@@ -119,7 +119,14 @@ export default function RegisterPage() {
 
   // Reset location fields when country changes
   useEffect(() => {
-    setForm((f) => ({ ...f, state_id: "", state_province: "", lga_id: "", ward_id: "", unit_id: "" }));
+    setForm((f) => ({
+      ...f,
+      state_id: "",
+      state_province: "",
+      lga_id: "",
+      ward_id: "",
+      unit_id: "",
+    }));
   }, [form.country]);
 
   // Reset LGA/ward/unit when state changes

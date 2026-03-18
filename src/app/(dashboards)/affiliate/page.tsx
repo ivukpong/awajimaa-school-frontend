@@ -189,7 +189,9 @@ export default function AffiliateDashboardPage() {
               <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
                 Payout Schedule
               </h3>
-              <p className="text-sm text-gray-500 mb-2">{payoutSchedule.note}</p>
+              <p className="text-sm text-gray-500 mb-2">
+                {payoutSchedule.note}
+              </p>
               <div className="flex gap-2">
                 {payoutSchedule.options.map((opt) => (
                   <span
@@ -227,7 +229,9 @@ export default function AffiliateDashboardPage() {
               <div
                 key={entry.rank}
                 className={`flex items-center gap-4 py-3 ${
-                  entry.rank <= 5 ? "bg-yellow-50/40 dark:bg-yellow-900/5 -mx-4 px-4 first:-mt-1" : ""
+                  entry.rank <= 5
+                    ? "bg-yellow-50/40 dark:bg-yellow-900/5 -mx-4 px-4 first:-mt-1"
+                    : ""
                 }`}
               >
                 {/* Rank badge */}
