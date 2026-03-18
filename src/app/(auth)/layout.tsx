@@ -6,6 +6,7 @@ import {
   BookOpen,
   Users,
   Trophy,
+  TrendingUp,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -22,7 +23,13 @@ const SLIDES = [
     bg: "from-[#E84000] to-[#B83200]",
     shape1: "bg-white/10",
     shape2: "bg-brand-gold/20",
-    dots: ["bg-white/80", "bg-white/30", "bg-white/30", "bg-white/30"],
+    dots: [
+      "bg-white/80",
+      "bg-white/30",
+      "bg-white/30",
+      "bg-white/30",
+      "bg-white/30",
+    ],
   },
   {
     label: "Teachers",
@@ -32,7 +39,13 @@ const SLIDES = [
     bg: "from-[#1e3a5f] to-[#0D1B2A]",
     shape1: "bg-white/10",
     shape2: "bg-brand-gold/20",
-    dots: ["bg-white/30", "bg-white/80", "bg-white/30", "bg-white/30"],
+    dots: [
+      "bg-white/30",
+      "bg-white/80",
+      "bg-white/30",
+      "bg-white/30",
+      "bg-white/30",
+    ],
   },
   {
     label: "Parents",
@@ -42,7 +55,13 @@ const SLIDES = [
     bg: "from-[#1a6340] to-[#0f3d27]",
     shape1: "bg-white/10",
     shape2: "bg-brand-gold/20",
-    dots: ["bg-white/30", "bg-white/30", "bg-white/80", "bg-white/30"],
+    dots: [
+      "bg-white/30",
+      "bg-white/30",
+      "bg-white/80",
+      "bg-white/30",
+      "bg-white/30",
+    ],
   },
   {
     label: "Excellence",
@@ -52,7 +71,29 @@ const SLIDES = [
     bg: "from-[#7c3800] to-[#4a2000]",
     shape1: "bg-white/10",
     shape2: "bg-brand-gold/20",
-    dots: ["bg-white/30", "bg-white/30", "bg-white/30", "bg-white/80"],
+    dots: [
+      "bg-white/30",
+      "bg-white/30",
+      "bg-white/30",
+      "bg-white/80",
+      "bg-white/30",
+    ],
+  },
+  {
+    label: "Affiliates",
+    tagline: "Refer schools and earn\n10% recurring commissions.",
+    sub: "Grow your income by connecting schools to Awajimaa. Payouts every 6–12 months.",
+    icon: TrendingUp,
+    bg: "from-[#1e5f3a] to-[#0a3d21]",
+    shape1: "bg-white/10",
+    shape2: "bg-brand-gold/20",
+    dots: [
+      "bg-white/30",
+      "bg-white/30",
+      "bg-white/30",
+      "bg-white/30",
+      "bg-white/80",
+    ],
   },
 ];
 
