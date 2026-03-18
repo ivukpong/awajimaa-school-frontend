@@ -10,7 +10,8 @@ export type UserRole =
     | "student"
     | "parent"
     | "sponsor"
-    | "revenue_collector";
+    | "revenue_collector"
+    | "affiliate";
 
 // ─── Auth ─────────────────────────────────────────────────────────────────────
 export interface User {

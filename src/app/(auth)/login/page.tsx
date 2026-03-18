@@ -6,7 +6,7 @@ import { z } from "zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { Mail, Lock, ArrowLeft, RefreshCw } from "lucide-react";
+import { Mail, Lock, ArrowLeft, RefreshCw, User } from "lucide-react";
 import Cookies from "js-cookie";
 import { useAuthStore } from "@/store/authStore";
 import {
@@ -27,7 +27,7 @@ import { PinInput } from "@/components/ui/PinInput";
 // ── Form schema ───────────────────────────────────────────────────────────────
 
 const schema = z.object({
-  email: z.string().email("Invalid email address"),
+  identifier: z.string().min(1, "Please enter your email or matric number"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 type FormData = z.infer<typeof schema>;
@@ -67,7 +67,7 @@ export default function LoginPage() {
 
     const storedEmail = localStorage.getItem("awajimaa_last_email");
     if (!storedEmail || !id) return;
-    setValue("email", storedEmail);
+    setValue("identifier", storedEmail);
     setPendingEmail(storedEmail);
 
     checkDevice(storedEmail, id)
@@ -108,7 +108,7 @@ export default function LoginPage() {
       finalizeLogin(result.token, result.user);
     } catch (err) {
       if (err instanceof OtpRequiredError) {
-        setPendingEmail(data.email);
+        setPendingEmail(data.identifier);
         setScreen("otp");
         setOtp("");
         toast.success("Verification code sent to your email.");
@@ -279,13 +279,13 @@ export default function LoginPage() {
       </div>
       <form onSubmit={handleSubmit(onPasswordSubmit)} className="space-y-4">
         <Input
-          label="Email Address"
-          type="email"
-          placeholder="you@school.edu.ng"
-          leftIcon={<Mail className="h-4 w-4" />}
-          error={errors.email?.message}
+          label="Email or Matric Number"
+          type="text"
+          placeholder="email@school.ng or MAT/2024/001"
+          leftIcon={<User className="h-4 w-4" />}
+          error={errors.identifier?.message}
           required
-          {...register("email")}
+          {...register("identifier")}
         />
         <Input
           label="Password"

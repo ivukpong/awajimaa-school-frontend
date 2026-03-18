@@ -50,7 +50,7 @@ export class OtpRequiredError extends Error {
 // ── Auth payloads & responses ─────────────────────────────────────────────────
 
 export interface LoginPayload {
-    email: string;
+    identifier: string;   // email address OR student admission/matric number
     password: string;
 }
 
@@ -83,7 +83,7 @@ export async function login(payload: LoginPayload): Promise<LoginResponse> {
     if (response.status === 202) {
         // Backend signals OTP is required
         throw new OtpRequiredError(
-            payload.email,
+            payload.identifier,
             (response.data as { message: string }).message ?? "Verification required"
         );
     }
@@ -102,7 +102,9 @@ export async function login(payload: LoginPayload): Promise<LoginResponse> {
         secure: process.env.NODE_ENV === "production",
     });
     if (typeof window !== "undefined") {
-        localStorage.setItem("awajimaa_last_email", payload.email);
+        // Store the email for future device-check on next visit
+        const email = data.user?.email ?? payload.identifier;
+        localStorage.setItem("awajimaa_last_email", email);
     }
     return data;
 }
@@ -193,5 +195,6 @@ export const roleDashboardPath: Record<string, string> = {
     parent: "/parent",
     sponsor: "/sponsor",
     revenue_collector: "/revenue",
+    affiliate: "/affiliate",
 };
 

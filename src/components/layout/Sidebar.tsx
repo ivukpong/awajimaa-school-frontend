@@ -33,6 +33,7 @@ import {
   FileCheck,
   ShoppingCart,
   CalendarOff,
+  Wallet,
 } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
@@ -513,6 +514,28 @@ const navByRole: Record<UserRole, NavItem[]> = {
       label: "Reports",
       href: "/revenue/reports",
       icon: <BarChart3 className="h-4 w-4" />,
+    },
+  ],
+  affiliate: [
+    {
+      label: "Dashboard",
+      href: "/affiliate",
+      icon: <LayoutDashboard className="h-4 w-4" />,
+    },
+    {
+      label: "My Schools",
+      href: "/affiliate/schools",
+      icon: <School className="h-4 w-4" />,
+    },
+    {
+      label: "Wallet",
+      href: "/affiliate/wallet",
+      icon: <Wallet className="h-4 w-4" />,
+    },
+    {
+      label: "Messages",
+      href: "/affiliate/messages",
+      icon: <MessageSquare className="h-4 w-4" />,
     },
   ],
 };
