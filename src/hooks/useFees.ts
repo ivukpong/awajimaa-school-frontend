@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { get, post, del } from '@/lib/api';
+import type { StudentFeesResponse, PublicPayPayload, ReceiptData } from '@/types/finance';
 
 export interface Invoice {
     id: number; invoice_number: string; amount_due: number; amount_paid: number;
@@ -69,5 +70,42 @@ export function usePaymentReceipt(id: number) {
         queryKey: ['payment-receipt', id],
         queryFn: () => get<any>(`/finance/payments/${id}/receipt`),
         enabled: !!id,
+    });
+}
+
+// ─── Student & Public Fee Hooks ────────────────────────────────────────────────
+
+export function useStudentFees() {
+    return useQuery({
+        queryKey: ['student-fees'],
+        queryFn: () => get<StudentFeesResponse>('/student/fees').then(r => r.data),
+    });
+}
+
+export function usePublicFees(token: string) {
+    return useQuery({
+        queryKey: ['public-fees', token],
+        queryFn: () => get<StudentFeesResponse>(`/public/fees/${token}`).then(r => r.data),
+        enabled: !!token,
+    });
+}
+
+export function usePublicPay(token: string) {
+    const qc = useQueryClient();
+    return useMutation({
+        mutationFn: (payload: PublicPayPayload) =>
+            post<{ success: boolean; reference: string; receipt: ReceiptData }>(
+                `/public/fees/${token}/pay`,
+                payload,
+            ).then(r => r.data),
+        onSuccess: () => qc.invalidateQueries({ queryKey: ['public-fees', token] }),
+    });
+}
+
+export function usePublicReceipt(reference: string) {
+    return useQuery({
+        queryKey: ['public-receipt', reference],
+        queryFn: () => get<ReceiptData>(`/public/receipt/${reference}`).then(r => r.data),
+        enabled: !!reference,
     });
 }

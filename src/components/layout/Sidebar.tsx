@@ -420,6 +420,11 @@ const navByRole: Record<UserRole, NavItem[]> = {
       icon: <BookOpen className="h-4 w-4" />,
     },
     {
+      label: "School Fees",
+      href: "/student/fees",
+      icon: <DollarSign className="h-4 w-4" />,
+    },
+    {
       label: "Profile",
       href: "/student/profile",
       icon: <GraduationCap className="h-4 w-4" />,

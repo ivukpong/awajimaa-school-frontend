@@ -35,6 +35,85 @@ export interface Payment {
     paid_at: string;
     verified_by?: number;
     receipt_url?: string;
+    payer_name?: string;
+    payer_email?: string;
+    payer_phone?: string;
+    payer_type?: "student" | "third_party";
+    narration?: string;
+}
+
+export interface InvoiceWithFee extends Invoice {
+    fee?: {
+        id: number;
+        name: string;
+        category: Fee["category"];
+        academic_year?: { id: number; name: string };
+        term?: { id: number; name: string };
+    };
+    payments?: Payment[];
+}
+
+export interface FeeGroup {
+    academic_year: string;
+    total: number;
+    paid: number;
+    balance: number;
+    invoices: InvoiceWithFee[];
+}
+
+export interface StudentFeesResponse {
+    student: {
+        name: string;
+        admission_number: string;
+        public_token: string;
+        current_class?: string;
+    };
+    school: {
+        id: number;
+        name: string;
+        logo?: string;
+        email?: string;
+        phone?: string;
+        address?: string;
+    };
+    summary: { total: number; paid: number; balance: number };
+    grouped: FeeGroup[];
+}
+
+export interface PublicPayPayload {
+    invoice_id: number;
+    amount: number;
+    payer_name: string;
+    payer_email: string;
+    payer_phone: string;
+    narration?: string;
+}
+
+export interface ReceiptData {
+    receipt_number: string;
+    reference: string;
+    paid_at: string;
+    amount: number;
+    payer_name?: string;
+    payer_email?: string;
+    payer_phone?: string;
+    payer_type?: string;
+    narration?: string;
+    channel?: string;
+    fee_name: string;
+    fee_category: string;
+    academic_year?: string;
+    term?: string;
+    invoice_number: string;
+    invoice_total: number;
+    invoice_balance: number;
+    student_name: string;
+    student_number: string;
+    school_name: string;
+    school_logo?: string;
+    school_email?: string;
+    school_phone?: string;
+    school_address?: string;
 }
 
 // ─── Regulatory ───────────────────────────────────────────────────────────────
