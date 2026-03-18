@@ -538,17 +538,6 @@ export default function PublicStudentFeesPage() {
   );
 }
 
-import {
-  GraduationCap,
-  Activity,
-  BarChart3,
-  Calendar,
-  Download,
-  Heart,
-} from "lucide-react";
-
-// In production this would fetch from the API using the token
-async function getStudentByToken(token: string) {
   // Mocked — replace with `fetch(${process.env.NEXT_PUBLIC_API_URL}/students/public/${token})`
   if (token === "demo") {
     return {
