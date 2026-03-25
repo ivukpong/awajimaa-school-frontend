@@ -795,9 +795,12 @@ export default function RegisterPage() {
       });
       setAuth(result.token, result.user);
       toast.success("Account created!");
-      router.replace(
-        `/${result.user.role?.replaceAll("_", "-") ?? "dashboard"}`,
-      );
+      const role = result.user.role as string | undefined;
+      const destination =
+        role === "school_admin"
+          ? "/school-admin/onboarding"
+          : `/${role?.replaceAll("_", "-") ?? "dashboard"}`;
+      router.replace(destination);
     },
     onError: (err: any) =>
       toast.error(err?.response?.data?.message ?? "Registration failed"),

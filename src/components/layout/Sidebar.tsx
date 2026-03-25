@@ -235,6 +235,11 @@ const navByRole: Record<UserRole, NavItem[]> = {
       icon: <LayoutDashboard className="h-4 w-4" />,
     },
     {
+      label: "Setup Guide",
+      href: "/school-admin/onboarding",
+      icon: <ClipboardList className="h-4 w-4" />,
+    },
+    {
       label: "Branches",
       href: "/school-admin/branches",
       icon: <MapPin className="h-4 w-4" />,
