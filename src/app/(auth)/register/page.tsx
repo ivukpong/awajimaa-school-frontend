@@ -1115,71 +1115,73 @@ export default function RegisterPage() {
             </div>
           )}
 
-          {/* CAC */}
-          <div className="rounded-lg border border-gray-200 dark:border-gray-700 p-4 space-y-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
-              Business / CAC Details (Optional)
-            </p>
-            <Input
-              label="CAC Registration Number"
-              type="text"
-              value={form.cac_number}
-              onChange={set("cac_number")}
-              placeholder="RC 123456"
-              leftIcon={<FileText className="h-4 w-4" />}
-            />
-            <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                CAC Certificate / Document
-              </label>
-              <div
-                className={cn(
-                  "relative flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 text-center cursor-pointer transition-colors",
-                  "border-gray-300 dark:border-gray-600 hover:border-brand hover:bg-brand/5",
-                  form.cac_document_url &&
-                    "border-green-400 bg-green-50 dark:bg-green-900/20",
-                )}
-                onClick={() =>
-                  document.getElementById("cac-file-input")?.click()
-                }
-              >
-                {cacUploading ? (
-                  <>
-                    <Loader2 className="h-6 w-6 animate-spin text-gray-400 mb-1" />
-                    <p className="text-sm text-gray-500">Uploading…</p>
-                  </>
-                ) : form.cac_document_url ? (
-                  <>
-                    <CheckCircle2 className="h-6 w-6 text-green-500 mb-1" />
-                    <p className="text-sm text-green-700 dark:text-green-400">
-                      {cacFile?.name ?? "Document uploaded"}
-                    </p>
-                    <p className="text-xs text-gray-400 mt-1">
-                      Click to replace
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <FileText className="h-6 w-6 text-gray-400 mb-1" />
-                    <p className="text-sm text-gray-500">
-                      Click to upload PDF, JPG or PNG
-                    </p>
-                    <p className="text-xs text-gray-400">Max 5 MB</p>
-                  </>
-                )}
-                <input
-                  id="cac-file-input"
-                  type="file"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  className="hidden"
-                  onChange={(e) => {
-                    const f = e.target.files?.[0];
-                    if (f) handleCacUpload(f);
-                  }}
-                />
+          {/* CAC — only for school_admin (not state/LGA regulators) */}
+          {form.role === "school_admin" && (
+            <div className="rounded-lg border border-gray-200 dark:border-gray-700 p-4 space-y-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                Business / CAC Details (Optional)
+              </p>
+              <Input
+                label="CAC Registration Number"
+                type="text"
+                value={form.cac_number}
+                onChange={set("cac_number")}
+                placeholder="RC 123456"
+                leftIcon={<FileText className="h-4 w-4" />}
+              />
+              <div className="flex flex-col gap-1">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  CAC Certificate / Document
+                </label>
+                <div
+                  className={cn(
+                    "relative flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 text-center cursor-pointer transition-colors",
+                    "border-gray-300 dark:border-gray-600 hover:border-brand hover:bg-brand/5",
+                    form.cac_document_url &&
+                      "border-green-400 bg-green-50 dark:bg-green-900/20",
+                  )}
+                  onClick={() =>
+                    document.getElementById("cac-file-input")?.click()
+                  }
+                >
+                  {cacUploading ? (
+                    <>
+                      <Loader2 className="h-6 w-6 animate-spin text-gray-400 mb-1" />
+                      <p className="text-sm text-gray-500">Uploading…</p>
+                    </>
+                  ) : form.cac_document_url ? (
+                    <>
+                      <CheckCircle2 className="h-6 w-6 text-green-500 mb-1" />
+                      <p className="text-sm text-green-700 dark:text-green-400">
+                        {cacFile?.name ?? "Document uploaded"}
+                      </p>
+                      <p className="text-xs text-gray-400 mt-1">
+                        Click to replace
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <FileText className="h-6 w-6 text-gray-400 mb-1" />
+                      <p className="text-sm text-gray-500">
+                        Click to upload PDF, JPG or PNG
+                      </p>
+                      <p className="text-xs text-gray-400">Max 5 MB</p>
+                    </>
+                  )}
+                  <input
+                    id="cac-file-input"
+                    type="file"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) handleCacUpload(f);
+                    }}
+                  />
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       )}
 

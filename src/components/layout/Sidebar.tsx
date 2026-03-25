@@ -34,6 +34,7 @@ import {
   ShoppingCart,
   CalendarOff,
   Wallet,
+  Mail,
 } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
@@ -127,6 +128,11 @@ const navByRole: Record<UserRole, NavItem[]> = {
       href: "/regulator/messages",
       icon: <MessageSquare className="h-4 w-4" />,
     },
+    {
+      label: "Broadcast",
+      href: "/regulator/broadcast",
+      icon: <Mail className="h-4 w-4" />,
+    },
   ],
   lga_regulator: [
     {
@@ -158,6 +164,11 @@ const navByRole: Record<UserRole, NavItem[]> = {
       label: "Messages",
       href: "/regulator/messages",
       icon: <MessageSquare className="h-4 w-4" />,
+    },
+    {
+      label: "Broadcast",
+      href: "/regulator/broadcast",
+      icon: <Mail className="h-4 w-4" />,
     },
   ],
   regulator: [
@@ -210,6 +221,11 @@ const navByRole: Record<UserRole, NavItem[]> = {
       label: "Messages",
       href: "/regulator/messages",
       icon: <MessageSquare className="h-4 w-4" />,
+    },
+    {
+      label: "Broadcast",
+      href: "/regulator/broadcast",
+      icon: <Mail className="h-4 w-4" />,
     },
   ],
   school_admin: [

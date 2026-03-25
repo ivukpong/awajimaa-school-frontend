@@ -1,81 +1,27 @@
 "use client";
 import React, { useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
+import { useQuery } from "@tanstack/react-query";
+import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Badge } from "@/components/ui/Badge";
 import { Table, type Column } from "@/components/ui/Table";
-import { Plus, Search, Filter, Download, MapPin } from "lucide-react";
+import { Search, Download, MapPin, AlertTriangle, X } from "lucide-react";
+import { get } from "@/lib/api";
+import toast from "react-hot-toast";
 
 interface SchoolRow extends Record<string, unknown> {
   id: number;
   name: string;
-  lga: string;
-  town: string;
+  lga?: { id: number; name: string };
+  town?: { id: number; name: string };
   type: string;
   ownership: string;
-  students: number;
-  status: string;
-  reg_number: string;
+  is_active: boolean;
+  reg_number?: string;
+  email?: string;
+  phone?: string;
 }
-
-const mockSchools: SchoolRow[] = [
-  {
-    id: 1,
-    name: "Govt. Secondary School, Uyo",
-    lga: "Uyo",
-    town: "Uyo",
-    type: "secondary",
-    ownership: "public",
-    students: 1240,
-    status: "active",
-    reg_number: "AKS/SS/001",
-  },
-  {
-    id: 2,
-    name: "Greenfield Academy",
-    lga: "Ikot Ekpene",
-    town: "Ikot Ekpene",
-    type: "secondary",
-    ownership: "private",
-    students: 520,
-    status: "active",
-    reg_number: "AKS/SS/002",
-  },
-  {
-    id: 3,
-    name: "Heritage Nursery & Primary",
-    lga: "Eket",
-    town: "Eket",
-    type: "primary",
-    ownership: "private",
-    students: 310,
-    status: "pending",
-    reg_number: "AKS/PR/027",
-  },
-  {
-    id: 4,
-    name: "Star of the Sea College",
-    lga: "Uyo",
-    town: "Uyo",
-    type: "secondary",
-    ownership: "mission",
-    students: 890,
-    status: "active",
-    reg_number: "AKS/SS/015",
-  },
-  {
-    id: 5,
-    name: "Sunrise Nursery School",
-    lga: "Abak",
-    town: "Abak",
-    type: "nursery",
-    ownership: "private",
-    students: 120,
-    status: "active",
-    reg_number: "AKS/NR/043",
-  },
-];
 
 const columns: Column<SchoolRow>[] = [
   {
@@ -88,8 +34,17 @@ const columns: Column<SchoolRow>[] = [
       </span>
     ),
   },
-  { key: "lga", header: "LGA", sortable: true },
-  { key: "town", header: "Town" },
+  {
+    key: "lga",
+    header: "LGA",
+    sortable: true,
+    render: (r) => r.lga?.name ?? "—",
+  },
+  {
+    key: "town",
+    header: "Town",
+    render: (r) => r.town?.name ?? "—",
+  },
   {
     key: "type",
     header: "Type",
@@ -113,34 +68,71 @@ const columns: Column<SchoolRow>[] = [
     ),
   },
   {
-    key: "students",
-    header: "Students",
-    sortable: true,
-    render: (r) => r.students.toLocaleString(),
-  },
-  {
-    key: "status",
+    key: "is_active",
     header: "Status",
     render: (r) => (
-      <Badge variant={r.status === "active" ? "green" : "yellow"}>
-        {r.status}
+      <Badge variant={r.is_active ? "green" : "yellow"}>
+        {r.is_active ? "Active" : "Inactive"}
       </Badge>
     ),
   },
-  { key: "reg_number", header: "Reg. No." },
+  { key: "reg_number", header: "Reg. No.", render: (r) => r.reg_number ?? "—" },
 ];
 
 export default function RegulatorSchoolsPage() {
   const [search, setSearch] = useState("");
-  const [lgaFilter, setLgaFilter] = useState("");
-
-  const filtered = mockSchools.filter(
-    (s) =>
-      s.name.toLowerCase().includes(search.toLowerCase()) &&
-      (lgaFilter ? s.lga === lgaFilter : true),
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"" | "active" | "inactive">(
+    "",
   );
 
-  const lgas = Array.from(new Set(mockSchools.map((s) => s.lga)));
+  // Name clash checker state
+  const [clashQuery, setClashQuery] = useState("");
+  const [showClashModal, setShowClashModal] = useState(false);
+
+  // Debounce search input
+  const handleSearchChange = (val: string) => {
+    setSearch(val);
+    clearTimeout(
+      (
+        handleSearchChange as unknown as {
+          timer: ReturnType<typeof setTimeout>;
+        }
+      ).timer,
+    );
+    (
+      handleSearchChange as unknown as { timer: ReturnType<typeof setTimeout> }
+    ).timer = setTimeout(() => {
+      setDebouncedSearch(val);
+    }, 400);
+  };
+
+  const params: Record<string, string> = {};
+  if (debouncedSearch) params.search = debouncedSearch;
+  if (statusFilter) params.is_active = statusFilter === "active" ? "1" : "0";
+
+  const schoolsQ = useQuery({
+    queryKey: ["schools", params],
+    queryFn: () =>
+      get<{ data: SchoolRow[] }>(
+        `/schools?${new URLSearchParams(params).toString()}`,
+      ),
+  });
+
+  // Name clash query — only runs when showClashModal is true
+  const clashQ = useQuery({
+    queryKey: ["schools-clash", clashQuery],
+    queryFn: () =>
+      get<{ data: SchoolRow[] }>(
+        `/schools?name_clash=${encodeURIComponent(clashQuery)}`,
+      ),
+    enabled: showClashModal && clashQuery.trim().length > 1,
+  });
+
+  const schools: SchoolRow[] =
+    (schoolsQ.data?.data as unknown as { data: SchoolRow[] })?.data ?? [];
+  const clashSchools: SchoolRow[] =
+    (clashQ.data?.data as unknown as { data: SchoolRow[] })?.data ?? [];
 
   return (
     <div className="space-y-6">
@@ -157,12 +149,17 @@ export default function RegulatorSchoolsPage() {
           <Button
             variant="outline"
             size="sm"
+            leftIcon={<AlertTriangle className="h-4 w-4" />}
+            onClick={() => setShowClashModal(true)}
+          >
+            Check Name Clash
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
             leftIcon={<Download className="h-4 w-4" />}
           >
             Export
-          </Button>
-          <Button size="sm" leftIcon={<MapPin className="h-4 w-4" />}>
-            View Map
           </Button>
         </div>
       </div>
@@ -171,53 +168,112 @@ export default function RegulatorSchoolsPage() {
       <Card>
         <div className="flex flex-col gap-3 sm:flex-row">
           <Input
-            placeholder="Search schools..."
+            placeholder="Search by name, email, phone, or town…"
             leftIcon={<Search className="h-4 w-4" />}
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
             wrapperClassName="flex-1"
           />
           <select
             className="h-10 rounded-lg border border-gray-300 px-3 text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-            value={lgaFilter}
-            onChange={(e) => setLgaFilter(e.target.value)}
+            value={statusFilter}
+            onChange={(e) =>
+              setStatusFilter(e.target.value as "" | "active" | "inactive")
+            }
           >
-            <option value="">All LGAs</option>
-            {lgas.map((lga) => (
-              <option key={lga} value={lga}>
-                {lga}
-              </option>
-            ))}
+            <option value="">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
           </select>
-          <Button
-            variant="outline"
-            size="md"
-            leftIcon={<Filter className="h-4 w-4" />}
-          >
-            More Filters
-          </Button>
         </div>
       </Card>
-
-      {/* Summary chips */}
-      <div className="flex gap-2 flex-wrap text-sm">
-        {["All", "Active", "Pending", "Suspended"].map((s) => (
-          <button
-            key={s}
-            className="rounded-full border px-3 py-1 text-xs font-medium hover:bg-gray-100 dark:hover:bg-gray-800"
-          >
-            {s}
-          </button>
-        ))}
-      </div>
 
       <Table
         keyField="id"
         columns={columns}
-        data={filtered}
-                emptyMessage="No schools found."
+        data={schools}
+        emptyMessage={schoolsQ.isLoading ? "Loading…" : "No schools found."}
         onRowClick={(row) => console.log("View school", row.id)}
       />
+
+      {/* Name Clash Modal */}
+      {showClashModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-2xl rounded-xl bg-white shadow-2xl dark:bg-gray-900">
+            <div className="flex items-center justify-between border-b p-4 dark:border-gray-700">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                School Name Clash Checker
+              </h2>
+              <button
+                onClick={() => {
+                  setShowClashModal(false);
+                  setClashQuery("");
+                }}
+                className="rounded p-1 hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                <X className="h-5 w-5 text-gray-500" />
+              </button>
+            </div>
+            <div className="p-4 space-y-4">
+              <p className="text-sm text-gray-500">
+                Enter a school name to check whether a similar name already
+                exists within your jurisdiction. This helps avoid naming
+                conflicts.
+              </p>
+              <Input
+                placeholder="Type school name to check…"
+                leftIcon={<Search className="h-4 w-4" />}
+                value={clashQuery}
+                onChange={(e) => setClashQuery(e.target.value)}
+              />
+              {clashQ.isLoading && (
+                <p className="text-sm text-gray-500">Checking…</p>
+              )}
+              {!clashQ.isLoading && clashSchools.length > 0 && (
+                <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 dark:border-amber-800 dark:bg-amber-950">
+                  <p className="text-sm font-medium text-amber-800 dark:text-amber-300 mb-2">
+                    {clashSchools.length} similar school name(s) found:
+                  </p>
+                  <ul className="space-y-1">
+                    {clashSchools.map((s) => (
+                      <li
+                        key={s.id}
+                        className="text-sm text-amber-700 dark:text-amber-400"
+                      >
+                        <span className="font-medium">{s.name}</span>
+                        {s.lga && (
+                          <span className="ml-2 text-xs">({s.lga.name})</span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {!clashQ.isLoading &&
+                clashQuery.trim().length > 1 &&
+                clashSchools.length === 0 && (
+                  <div className="rounded-lg border border-green-200 bg-green-50 p-3 dark:border-green-800 dark:bg-green-950">
+                    <p className="text-sm text-green-700 dark:text-green-400">
+                      No existing schools match this name. The name appears to
+                      be unique.
+                    </p>
+                  </div>
+                )}
+            </div>
+            <div className="flex justify-end gap-2 border-t p-4 dark:border-gray-700">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowClashModal(false);
+                  setClashQuery("");
+                }}
+              >
+                Close
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
