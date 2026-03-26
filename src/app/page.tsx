@@ -24,9 +24,9 @@ export default function Home() {
             <p className="text-gray-600 mb-4">
               Support a child's education and make a difference today.
             </p>
-            <Button asChild className="w-full">
-              <Link href="/sponsor">Sponsor a Student</Link>
-            </Button>
+            <Link href="/sponsor">
+              <Button className="w-full">Sponsor a Student</Button>
+            </Link>
           </div>
           <div className="bg-white rounded-xl shadow p-6 flex flex-col items-center">
             <GraduationCap className="h-10 w-10 text-orange-500 mb-2" />
@@ -34,9 +34,9 @@ export default function Home() {
             <p className="text-gray-600 mb-4">
               Give your child access to quality schools and opportunities.
             </p>
-            <Button asChild className="w-full">
-              <Link href="/register?role=parent">Register Your Child</Link>
-            </Button>
+            <Link href="/register?role=parent">
+              <Button className="w-full">Register Your Child</Button>
+            </Link>
           </div>
           <div className="bg-white rounded-xl shadow p-6 flex flex-col items-center">
             <Building2 className="h-10 w-10 text-orange-500 mb-2" />
@@ -44,11 +44,9 @@ export default function Home() {
             <p className="text-gray-600 mb-4">
               Join the Awajimaa network and manage your school online.
             </p>
-            <Button asChild className="w-full">
-              <Link href="/register?role=school_admin">
-                Register Your School
-              </Link>
-            </Button>
+            <Link href="/register?role=school_admin">
+              <Button className="w-full">Register Your School</Button>
+            </Link>
           </div>
           <div className="bg-white rounded-xl shadow p-6 flex flex-col items-center">
             <Briefcase className="h-10 w-10 text-orange-500 mb-2" />
@@ -56,11 +54,9 @@ export default function Home() {
             <p className="text-gray-600 mb-4">
               Find and apply for teaching jobs across registered schools.
             </p>
-            <Button asChild className="w-full">
-              <Link href="/freelancer-teacher/recruitment">
-                View Teaching Gigs
-              </Link>
-            </Button>
+            <Link href="/freelancer-teacher/recruitment">
+              <Button className="w-full">View Teaching Gigs</Button>
+            </Link>
           </div>
         </div>
         <div className="bg-orange-100 rounded-xl p-6 mb-8">
@@ -73,28 +69,24 @@ export default function Home() {
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Button
-              asChild
               variant="outline"
               className="border-orange-400 text-orange-700"
             >
               <Link href="/admissions">Schools Currently Admitting</Link>
             </Button>
             <Button
-              asChild
               variant="outline"
               className="border-orange-400 text-orange-700"
             >
               <Link href="/regulator/schools">View All Schools</Link>
             </Button>
             <Button
-              asChild
               variant="outline"
               className="border-orange-400 text-orange-700"
             >
               <Link href="/register?role=school_admin">List Your School</Link>
             </Button>
             <Button
-              asChild
               variant="outline"
               className="border-orange-400 text-orange-700"
             >

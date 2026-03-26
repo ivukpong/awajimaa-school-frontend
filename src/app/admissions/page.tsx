@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
@@ -72,18 +73,19 @@ export default function AdmissionsPage() {
                   </div>
                 )}
                 <div className="flex gap-2 mt-2">
-                  <Button
-                    asChild
-                    size="sm"
-                    className="bg-orange-500 hover:bg-orange-600"
-                  >
-                    <Link href={`/register?school=${school.id}`}>
+                  <Link href={`/register?school=${school.id}`}>
+                    <Button
+                      size="sm"
+                      className="bg-orange-500 hover:bg-orange-600"
+                    >
                       Apply Now
-                    </Link>
-                  </Button>
-                  <Button asChild size="sm" variant="outline">
-                    <Link href={`/schools/${school.id}`}>View School</Link>
-                  </Button>
+                    </Button>
+                  </Link>
+                  <Link href={`/schools/${school.id}`}>
+                    <Button size="sm" variant="outline">
+                      View School
+                    </Button>
+                  </Link>
                 </div>
               </Card>
             ))}
