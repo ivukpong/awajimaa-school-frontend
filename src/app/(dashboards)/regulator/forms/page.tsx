@@ -413,7 +413,7 @@ function CreateFormModal({ onClose }: { onClose: () => void }) {
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button onClick={handleSubmit} isLoading={createMutation.isPending}>
+          <Button onClick={handleSubmit} loading={createMutation.isPending}>
             Create Form
           </Button>
         </div>
