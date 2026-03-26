@@ -23,7 +23,7 @@ interface TableProps<T> {
   className?: string;
 }
 
-export function Table<T extends Record<string, unknown>>({
+export function Table<T extends object>({
   columns,
   data,
   keyField,
@@ -48,8 +48,8 @@ export function Table<T extends Record<string, unknown>>({
   const sorted = React.useMemo(() => {
     if (!sortKey) return data;
     return [...data].sort((a, b) => {
-      const av = a[sortKey] as string;
-      const bv = b[sortKey] as string;
+      const av = (a as Record<string, unknown>)[sortKey] as string;
+      const bv = (b as Record<string, unknown>)[sortKey] as string;
       if (av < bv) return sortDir === "asc" ? -1 : 1;
       if (av > bv) return sortDir === "asc" ? 1 : -1;
       return 0;
