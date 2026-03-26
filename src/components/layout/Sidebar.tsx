@@ -35,6 +35,7 @@ import {
   CalendarOff,
   Wallet,
   Mail,
+  Upload,
 } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
@@ -253,6 +254,11 @@ const navByRole: Record<UserRole, NavItem[]> = {
       label: "Teachers",
       href: "/school-admin/teachers",
       icon: <Users className="h-4 w-4" />,
+    },
+    {
+      label: "Bulk Upload",
+      href: "/school-admin/bulk-upload",
+      icon: <Upload className="h-4 w-4" />,
     },
     {
       label: "Classes",
