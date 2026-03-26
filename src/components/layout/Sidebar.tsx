@@ -36,6 +36,7 @@ import {
   Wallet,
   Mail,
   Upload,
+  Briefcase,
 } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
@@ -130,6 +131,16 @@ const navByRole: Record<UserRole, NavItem[]> = {
       icon: <MessageSquare className="h-4 w-4" />,
     },
     {
+      label: "Teacher Postings",
+      href: "/regulator/teacher-postings",
+      icon: <UserPlus className="h-4 w-4" />,
+    },
+    {
+      label: "Platform Recruitment",
+      href: "/regulator/platform-jobs",
+      icon: <Briefcase className="h-4 w-4" />,
+    },
+    {
       label: "Broadcast",
       href: "/regulator/broadcast",
       icon: <Mail className="h-4 w-4" />,
@@ -165,6 +176,16 @@ const navByRole: Record<UserRole, NavItem[]> = {
       label: "Messages",
       href: "/regulator/messages",
       icon: <MessageSquare className="h-4 w-4" />,
+    },
+    {
+      label: "Teacher Postings",
+      href: "/regulator/teacher-postings",
+      icon: <UserPlus className="h-4 w-4" />,
+    },
+    {
+      label: "Platform Recruitment",
+      href: "/regulator/platform-jobs",
+      icon: <Briefcase className="h-4 w-4" />,
     },
     {
       label: "Broadcast",
@@ -222,6 +243,16 @@ const navByRole: Record<UserRole, NavItem[]> = {
       label: "Messages",
       href: "/regulator/messages",
       icon: <MessageSquare className="h-4 w-4" />,
+    },
+    {
+      label: "Teacher Postings",
+      href: "/regulator/teacher-postings",
+      icon: <UserPlus className="h-4 w-4" />,
+    },
+    {
+      label: "Platform Recruitment",
+      href: "/regulator/platform-jobs",
+      icon: <Briefcase className="h-4 w-4" />,
     },
     {
       label: "Broadcast",
@@ -494,6 +525,11 @@ const navByRole: Record<UserRole, NavItem[]> = {
       icon: <BarChart3 className="h-4 w-4" />,
     },
     {
+      label: "Hire a Teacher",
+      href: "/parent/engagements",
+      icon: <GraduationCap className="h-4 w-4" />,
+    },
+    {
       label: "Messages",
       href: "/parent/messages",
       icon: <MessageSquare className="h-4 w-4" />,
@@ -568,6 +604,33 @@ const navByRole: Record<UserRole, NavItem[]> = {
       label: "Messages",
       href: "/affiliate/messages",
       icon: <MessageSquare className="h-4 w-4" />,
+    },
+  ],
+  freelancer_teacher: [
+    {
+      label: "Dashboard",
+      href: "/freelancer-teacher",
+      icon: <LayoutDashboard className="h-4 w-4" />,
+    },
+    {
+      label: "My Profile",
+      href: "/freelancer-teacher/profile",
+      icon: <Users className="h-4 w-4" />,
+    },
+    {
+      label: "Engagements",
+      href: "/freelancer-teacher/engagements",
+      icon: <HeartHandshake className="h-4 w-4" />,
+    },
+    {
+      label: "Wallet",
+      href: "/freelancer-teacher/wallet",
+      icon: <Wallet className="h-4 w-4" />,
+    },
+    {
+      label: "Browse Jobs",
+      href: "/freelancer-teacher/recruitment",
+      icon: <Briefcase className="h-4 w-4" />,
     },
   ],
 };

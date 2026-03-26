@@ -191,6 +191,7 @@ export const roleDashboardPath: Record<string, string> = {
     school_admin: "/school-admin",
     branch_admin: "/school-admin",
     teacher: "/teacher",
+    freelancer_teacher: "/freelancer-teacher",
     student: "/student",
     parent: "/parent",
     sponsor: "/sponsor",
