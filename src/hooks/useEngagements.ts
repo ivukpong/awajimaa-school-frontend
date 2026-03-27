@@ -21,11 +21,19 @@ export function useCreateEngagement() {
         mutationFn: (data: {
             teacher_id: number;
             subject: string;
+            area_of_concentration?: string;
             description?: string;
+            requirements?: string;
             currency: "usd" | "ngn";
-            rate_per_hour: number;
             duration_hours: number;
             scheduled_at: string;
+            start_date?: string;
+            end_date?: string;
+            milestones?: Array<{
+                title: string;
+                due_date?: string;
+                amount?: number;
+            }>;
         }) => post<TeacherEngagement>("/engagements", data),
         onSuccess: () => qc.invalidateQueries({ queryKey: ["engagements"] }),
     });

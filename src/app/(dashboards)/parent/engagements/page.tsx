@@ -10,6 +10,7 @@ import { formatDate } from "@/lib/utils";
 import type { FreelancerProfile, TeacherEngagement } from "@/types";
 import { useFreelancers } from "@/hooks/useFreelancer";
 import { useEngagements, useCreateEngagement } from "@/hooks/useEngagements";
+import { useSubjects } from "@/hooks/useSubjects";
 
 const STATUS_VARIANT: Record<
   string,
@@ -141,6 +142,7 @@ export default function ParentEngagementsPage() {
     duration_hours: "1",
     scheduled_at: "",
   });
+  const { data: subjectsRes } = useSubjects();
 
   function openModal(teacher: FreelancerProfile) {
     setSelectedTeacher(teacher);
@@ -171,7 +173,6 @@ export default function ParentEngagementsPage() {
         subject: engForm.subject,
         description: engForm.description || undefined,
         currency: engForm.currency as "usd" | "ngn",
-        rate_per_hour: rate ?? 0,
         duration_hours: parseFloat(engForm.duration_hours) || 1,
         scheduled_at: engForm.scheduled_at,
       },
@@ -369,15 +370,25 @@ export default function ParentEngagementsPage() {
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Subject <span className="text-red-500">*</span>
                 </label>
-                <input
+                <select
                   required
                   className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm"
-                  placeholder="e.g. Mathematics"
                   value={engForm.subject}
                   onChange={(e) =>
                     setEngForm((p) => ({ ...p, subject: e.target.value }))
                   }
-                />
+                >
+                  <option value="" disabled>
+                    {subjectsRes?.data?.length
+                      ? "Select subject"
+                      : "Loading..."}
+                  </option>
+                  {subjectsRes?.data?.map((s: { id: number; name: string }) => (
+                    <option key={s.id} value={s.name}>
+                      {s.name}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">

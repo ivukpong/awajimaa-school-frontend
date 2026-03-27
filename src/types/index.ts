@@ -129,7 +129,9 @@ export interface TeacherEngagement {
     teacher?: Pick<User, "id" | "name" | "email" | "avatar">;
     parent?: Pick<User, "id" | "name" | "email">;
     subject: string;
+    area_of_concentration?: string;
     description?: string;
+    requirements?: string;
     currency: "usd" | "ngn";
     rate_per_hour: number;
     duration_hours: number;
@@ -138,8 +140,15 @@ export interface TeacherEngagement {
     referrer_id?: number;
     referrer_fee: number;
     teacher_payout: number;
-    status: "pending" | "accepted" | "declined" | "ongoing" | "completed" | "cancelled";
+    status: "awaiting_payment" | "pending" | "accepted" | "declined" | "ongoing" | "completed" | "cancelled";
     scheduled_at: string;
+    start_date?: string;
+    end_date?: string;
+    milestones?: Array<{
+        title: string;
+        due_date?: string;
+        amount?: number;
+    }>;
     accepted_at?: string;
     completed_at?: string;
     payment_reference?: string;
