@@ -18,6 +18,7 @@ interface Message {
   is_read: boolean;
   created_at: string;
   replies?: Message[];
+  attachment?: string;
 }
 
 export default function ParentMessagesPage() {
@@ -29,6 +30,7 @@ export default function ParentMessagesPage() {
     subject: "",
     body: "",
     recipient_id: "",
+    attachment: undefined as File | undefined,
   });
   const qc = useQueryClient();
 
@@ -97,6 +99,15 @@ export default function ParentMessagesPage() {
                 setNewMsg((n) => ({ ...n, body: e.target.value }))
               }
               className="w-full border rounded-lg px-3 py-2 text-sm dark:bg-gray-800 dark:border-gray-700 resize-none"
+            />
+            <input
+              type="file"
+              accept="image/*,video/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                setNewMsg((n) => ({ ...n, attachment: file }));
+              }}
+              className="w-full border rounded-lg px-3 py-2 text-sm dark:bg-gray-800 dark:border-gray-700"
             />
             <div className="flex gap-2 justify-end">
               <Button
@@ -177,12 +188,68 @@ export default function ParentMessagesPage() {
               </div>
               <div className="flex-1 overflow-y-auto p-4 space-y-4">
                 <p className="text-sm">{active.body}</p>
+                {active.attachment && (
+                  <div className="mt-2">
+                    {active.attachment.match(/\.(mp4|webm|ogg)$/i) ? (
+                      <video
+                        src={active.attachment}
+                        controls
+                        className="max-w-xs max-h-48 rounded-lg"
+                      />
+                    ) : active.attachment.match(
+                        /\.(jpg|jpeg|png|gif|bmp|svg)$/i,
+                      ) ? (
+                      <img
+                        src={active.attachment}
+                        alt="attachment"
+                        className="max-w-xs max-h-48 rounded-lg"
+                      />
+                    ) : (
+                      <a
+                        href={active.attachment}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 underline"
+                      >
+                        Download Attachment
+                      </a>
+                    )}
+                  </div>
+                )}
                 {(active.replies ?? []).map((r) => (
                   <div
                     key={r.id}
                     className={`p-3 rounded-lg text-sm max-w-[80%] ${r.sender.id === user?.id ? "ml-auto bg-brand text-white" : "bg-gray-100 dark:bg-gray-800"}`}
                   >
                     <p>{r.body}</p>
+                    {r.attachment && (
+                      <div className="mt-2">
+                        {r.attachment.match(/\.(mp4|webm|ogg)$/i) ? (
+                          <video
+                            src={r.attachment}
+                            controls
+                            className="max-w-xs max-h-48 rounded-lg"
+                          />
+                        ) : r.attachment.match(
+                            /\.(jpg|jpeg|png|gif|bmp|svg)$/i,
+                          ) ? (
+                          <img
+                            src={r.attachment}
+                            alt="attachment"
+                            className="max-w-xs max-h-48 rounded-lg"
+                          />
+                        ) : (
+                          <a
+                            href={r.attachment}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 underline"
+                          >
+                            Download Attachment
+                          </a>
+                        )}
+                      </div>
+                    )}
                     <p
                       className={`text-xs mt-1 ${r.sender.id === user?.id ? "text-blue-100" : "text-gray-400"}`}
                     >
@@ -192,35 +259,34 @@ export default function ParentMessagesPage() {
                 ))}
               </div>
               <div className="p-4 border-t dark:border-gray-700 flex gap-2">
-                <input
-                  placeholder="Type a reply..."
-                  value={reply}
-                  onChange={(e) => setReply(e.target.value)}
-                  className="flex-1 border rounded-lg px-3 py-2 text-sm dark:bg-gray-800 dark:border-gray-700"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && reply.trim())
+                <form
+                  className="flex gap-2 w-full"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (reply.trim()) {
                       sendReply.mutate({
                         body: reply,
                         parent_id: active.id,
                         recipient_id: active.sender.id,
                       });
+                    }
                   }}
-                />
-                <Button
-                  size="sm"
-                  leftIcon={<Send size={14} />}
-                  loading={sendReply.isPending}
-                  onClick={() =>
-                    reply.trim() &&
-                    sendReply.mutate({
-                      body: reply,
-                      parent_id: active.id,
-                      recipient_id: active.sender.id,
-                    })
-                  }
                 >
-                  Reply
-                </Button>
+                  <input
+                    placeholder="Type a reply..."
+                    value={reply}
+                    onChange={(e) => setReply(e.target.value)}
+                    className="flex-1 border rounded-lg px-3 py-2 text-sm dark:bg-gray-800 dark:border-gray-700"
+                  />
+                  <Button
+                    size="sm"
+                    leftIcon={<Send size={14} />}
+                    loading={sendReply.isPending}
+                    type="submit"
+                  >
+                    Reply
+                  </Button>
+                </form>
               </div>
             </>
           )}
