@@ -84,17 +84,21 @@ export default function LoginPage() {
 
   // After any successful auth, persist session and redirect
   const finalizeLogin = useCallback(
-    (token: string, user: User) => {
+    (token: string, user: User | undefined | null) => {
       Cookies.set("auth_token", token, {
         expires: 7,
         sameSite: "strict",
         secure: process.env.NODE_ENV === "production",
       });
-      setAuth(token, user);
-      localStorage.setItem("awajimaa_last_email", user.email);
-      const path = roleDashboardPath[user.role ?? "student"] ?? "/";
-      router.push(path);
-      toast.success("Welcome back!");
+      setAuth(token, user ?? null);
+      if (user && user.email) {
+        localStorage.setItem("awajimaa_last_email", user.email);
+        const path = roleDashboardPath[user.role ?? "student"] ?? "/";
+        router.push(path);
+        toast.success("Welcome back!");
+      } else {
+        toast.error("Login failed: user information missing.");
+      }
     },
     [router, setAuth],
   );
