@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 
 // Dummy data for demonstration

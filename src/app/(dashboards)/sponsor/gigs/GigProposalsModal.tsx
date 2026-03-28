@@ -47,7 +47,7 @@ const GigProposalsModal: React.FC<Props> = ({
                   <Button
                     size="sm"
                     onClick={() => onAccept(proposal.id)}
-                    variant="success"
+                    variant="primary"
                   >
                     Accept
                   </Button>
