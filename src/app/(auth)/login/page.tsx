@@ -109,6 +109,7 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       const result = await apiLogin(data);
+      console.log(result.token);
       finalizeLogin(result.token, result.user);
     } catch (err) {
       if (err instanceof OtpRequiredError) {
