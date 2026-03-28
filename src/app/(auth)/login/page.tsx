@@ -90,8 +90,8 @@ export default function LoginPage() {
         sameSite: "strict",
         secure: process.env.NODE_ENV === "production",
       });
-      setAuth(token, user ?? null);
       if (user && user.email) {
+        setAuth(token, user);
         localStorage.setItem("awajimaa_last_email", user.email);
         const path = roleDashboardPath[user.role ?? "student"] ?? "/";
         router.push(path);
