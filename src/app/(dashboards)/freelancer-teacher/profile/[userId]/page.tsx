@@ -2,7 +2,7 @@
 import React from "react";
 import { useParams } from "next/navigation";
 import { usePublicFreelancerProfile } from "@/hooks/useFreelancer";
-import PublicProfile from "./PublicProfile";
+import PublicProfile from "../PublicProfile";
 
 export default function PublicFreelancerProfilePage() {
   const params = useParams();

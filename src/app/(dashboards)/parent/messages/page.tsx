@@ -45,7 +45,12 @@ export default function ParentMessagesPage() {
       toast.success("Sent");
       qc.invalidateQueries({ queryKey: ["messages"] });
       setCompose(false);
-      setNewMsg({ subject: "", body: "", recipient_id: "" });
+      setNewMsg({
+        subject: "",
+        body: "",
+        recipient_id: "",
+        attachment: undefined,
+      });
     },
   });
 
