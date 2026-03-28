@@ -39,7 +39,9 @@ const sponsoredStudents = [
   },
 ];
 
-export default function SponsorDashboard() {
+import { withRoleGuard } from "@/lib/withRoleGuard";
+
+function SponsorDashboard() {
   return (
     <div className="space-y-6">
       <div>
@@ -212,3 +214,5 @@ export default function SponsorDashboard() {
     </div>
   );
 }
+
+export default withRoleGuard(SponsorDashboard, ["sponsor"]);

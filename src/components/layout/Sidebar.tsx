@@ -638,9 +638,13 @@ const navByRole: Record<UserRole, NavItem[]> = {
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
-  const { user, logout } = useAuthStore();
-  const role = (user?.role ?? "student") as UserRole;
-  const navItems = navByRole[role] ?? [];
+  const { user, logout, hasHydrated } = useAuthStore();
+  const role = user?.role as UserRole | undefined;
+  const navItems = role ? navByRole[role] ?? [] : [];
+
+  if (!hasHydrated || !user || !role) {
+    return null;
+  }
 
   return (
     <aside

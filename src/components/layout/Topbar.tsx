@@ -12,7 +12,7 @@ interface TopbarProps {
 
 export function Topbar({ title }: TopbarProps) {
   const { resolvedTheme, setTheme } = useTheme();
-  const { user } = useAuthStore();
+  const { user, hasHydrated } = useAuthStore();
 
   return (
     <header className="flex h-16 items-center justify-between border-b border-gray-200 bg-white px-6 dark:border-gray-800 dark:bg-gray-900 shadow-sm">
@@ -63,14 +63,14 @@ export function Topbar({ title }: TopbarProps) {
         {/* Avatar */}
         <div className="flex items-center gap-2.5 cursor-pointer rounded-lg px-2 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1B4F72] text-xs font-semibold text-white shrink-0">
-            {user ? getInitials(user.name) : "?"}
+            {hasHydrated && user ? getInitials(user.name) : "?"}
           </div>
           <div className="hidden md:block">
             <p className="text-sm font-medium text-gray-900 dark:text-white leading-none">
-              {user?.name ?? "Guest"}
+              {hasHydrated ? user?.name ?? "Guest" : "Loading..."}
             </p>
             <p className="text-xs text-gray-500 capitalize mt-0.5">
-              {user?.role?.replace(/_/g, " ")}
+              {hasHydrated ? user?.role?.replace(/_/g, " ") : ""}
             </p>
           </div>
         </div>

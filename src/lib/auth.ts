@@ -2,6 +2,7 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import { post } from "./api";
 import type { User, AuthState } from "@/types";
+import { roleDashboardPath } from "./routeAccess";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
 
@@ -182,20 +183,4 @@ export function getAuthState(): AuthState {
     };
 }
 
-/** Map role to dashboard base path */
-export const roleDashboardPath: Record<string, string> = {
-    super_admin: "/super-admin",
-    regulator: "/regulator",
-    state_regulator: "/regulator",
-    lga_regulator: "/regulator",
-    school_admin: "/school-admin",
-    branch_admin: "/school-admin",
-    teacher: "/teacher",
-    freelancer_teacher: "/freelancer-teacher",
-    student: "/student",
-    parent: "/parent",
-    sponsor: "/sponsor",
-    revenue_collector: "/revenue",
-    affiliate: "/affiliate",
-};
-
+export { roleDashboardPath };

@@ -24,7 +24,7 @@ export default function Home() {
             <p className="text-gray-600 mb-4">
               Support a child's education and make a difference today.
             </p>
-            <Link href="/sponsor">
+            <Link href="/register?role=sponsor">
               <Button className="w-full">Sponsor a Student</Button>
             </Link>
           </div>

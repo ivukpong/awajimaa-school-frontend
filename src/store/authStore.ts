@@ -9,12 +9,14 @@ interface AuthStore {
     token: string | null;
     isAuthenticated: boolean;
     isLoading: boolean;
+    hasHydrated: boolean;
 
     login: (payload: LoginPayload) => Promise<User>;
     logout: () => Promise<void>;
     setUser: (user: User) => void;
     setAuth: (token: string, user: User) => void;
     clearAuth: () => void;
+    setHasHydrated: (hasHydrated: boolean) => void;
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -24,6 +26,7 @@ export const useAuthStore = create<AuthStore>()(
             token: null,
             isAuthenticated: false,
             isLoading: false,
+            hasHydrated: false,
 
             login: async (payload) => {
                 set({ isLoading: true });
@@ -49,6 +52,8 @@ export const useAuthStore = create<AuthStore>()(
 
             clearAuth: () =>
                 set({ user: null, token: null, isAuthenticated: false }),
+
+            setHasHydrated: (hasHydrated) => set({ hasHydrated }),
         }),
         {
             name: "awajimaa-auth",
@@ -58,6 +63,9 @@ export const useAuthStore = create<AuthStore>()(
                 token: state.token,
                 isAuthenticated: state.isAuthenticated,
             }),
+            onRehydrateStorage: () => (state) => {
+                state?.setHasHydrated(true);
+            },
         }
     )
 );

@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { get } from "@/lib/api";
+import { withRoleGuard } from "@/lib/withRoleGuard";
 import { School, Users, DollarSign, TrendingUp, Shield } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { StatCard } from "@/components/ui/StatCard";
@@ -24,7 +25,7 @@ import {
 
 const PIE_COLORS = ["#1B4F72", "#2980B9", "#5DADE2", "#AED6F1", "#D6EAF8"];
 
-export default function SuperAdminDashboard() {
+function SuperAdminDashboard() {
   const { data } = useQuery({
     queryKey: ["dashboard"],
     queryFn: () => get<any>("/dashboard"),
@@ -187,3 +188,5 @@ export default function SuperAdminDashboard() {
     </div>
   );
 }
+
+export default withRoleGuard(SuperAdminDashboard, ["super_admin"]);
