@@ -1,5 +1,10 @@
 "use client";
-import React, { useRef, KeyboardEvent, ClipboardEvent } from "react";
+import React, {
+  useRef,
+  KeyboardEvent,
+  ChangeEvent,
+  ClipboardEvent,
+} from "react";
 import { cn } from "@/lib/utils";
 
 interface PinInputProps {
@@ -59,6 +64,19 @@ export function PinInput({
     }
   }
 
+  // Handles mobile keyboard input — readOnly prevents the keyboard from
+  // appearing on mobile, so we use onChange instead.
+  function handleChange(idx: number, e: ChangeEvent<HTMLInputElement>) {
+    const raw = e.target.value.replace(/\D/g, "");
+    if (!raw) return;
+    // The field already shows `digits[idx]`; the new char is whatever was
+    // appended. Take the last digit from the raw string.
+    const incoming = raw.replace(digits[idx], "").slice(-1) || raw.slice(-1);
+    const next = value.slice(0, idx) + incoming + value.slice(idx + 1);
+    onChange(next.slice(0, length));
+    if (idx < length - 1) refs.current[idx + 1]?.focus();
+  }
+
   function handlePaste(e: ClipboardEvent<HTMLInputElement>) {
     e.preventDefault();
     const pasted = e.clipboardData
@@ -84,9 +102,9 @@ export function PinInput({
           inputMode="numeric"
           maxLength={1}
           value={digit}
-          readOnly
           autoFocus={autoFocus && idx === 0}
           disabled={disabled}
+          onChange={(e) => handleChange(idx, e)}
           onKeyDown={(e) => handleKeyDown(idx, e)}
           onPaste={handlePaste}
           onClick={() => refs.current[idx]?.focus()}
