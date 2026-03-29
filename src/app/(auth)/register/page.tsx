@@ -598,6 +598,7 @@ export default function RegisterPage() {
   const setAuth = useAuthStore((s) => s.setAuth);
   const [show, setShow] = useState(false);
   const [form, setForm] = useState<FormState>(INITIAL_FORM);
+  const [agreed, setAgreed] = useState(false);
   const [stepIdx, setStepIdx] = useState(0);
 
   // NIN
@@ -894,6 +895,13 @@ export default function RegisterPage() {
   const handleNext = () => {
     if (!canGoNext()) {
       toast.error("Please complete all required fields before continuing");
+      return;
+    }
+    // On last step, require agreement to privacy/terms
+    if (isLastStep && !agreed) {
+      toast.error(
+        "You must agree to the Privacy Policy and Terms & Conditions",
+      );
       return;
     }
     if (stepIdx < steps.length - 1) setStepIdx((i) => i + 1);
@@ -1387,6 +1395,42 @@ export default function RegisterPage() {
               </div>
             )}
           </div>
+        </div>
+      )}
+
+      {/* Privacy Policy & Terms Agreement (only on last step) */}
+      {isLastStep && (
+        <div className="mt-6 flex items-start gap-2">
+          <input
+            id="privacy-terms-agree"
+            type="checkbox"
+            checked={agreed}
+            onChange={(e) => setAgreed(e.target.checked)}
+            className="mt-1 accent-brand h-4 w-4 border-gray-300 rounded"
+            required
+          />
+          <label
+            htmlFor="privacy-terms-agree"
+            className="text-sm text-gray-600 dark:text-gray-300 select-none"
+          >
+            By signing up, you agree to our{" "}
+            <Link
+              href="/privacy-policy"
+              target="_blank"
+              className="text-brand underline"
+            >
+              Privacy Policy
+            </Link>{" "}
+            and{" "}
+            <Link
+              href="/terms-and-conditions"
+              target="_blank"
+              className="text-brand underline"
+            >
+              Terms &amp; Conditions
+            </Link>
+            .
+          </label>
         </div>
       )}
 

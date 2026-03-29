@@ -217,7 +217,7 @@ export default function UsersPage() {
           keyField="id"
           columns={columns}
           data={filtered as any}
-                    loading={isLoading}
+          loading={isLoading}
           emptyMessage="No users found."
         />
       </Card>
@@ -240,6 +240,16 @@ export default function UsersPage() {
                 onSubmit={(e) => {
                   e.preventDefault();
                   const fd = new FormData(e.currentTarget);
+                  // Ensure all required fields are present
+                  if (
+                    !fd.get("name") ||
+                    !fd.get("email") ||
+                    !fd.get("role") ||
+                    (modal === "create" && !fd.get("password"))
+                  ) {
+                    toast.error("Please fill all required fields.");
+                    return;
+                  }
                   saveMutation.mutate(Object.fromEntries(fd));
                 }}
                 className="space-y-4"

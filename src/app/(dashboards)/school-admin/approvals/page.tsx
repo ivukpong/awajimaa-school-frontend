@@ -44,7 +44,10 @@ export default function SchoolApprovalsPage() {
   const [saving, setSaving] = useState(false);
 
   const handleSubmit = async () => {
-    if (!form.title) return toast.error("Subject required");
+    if (!form.request_type || !form.title) {
+      toast.error("Please fill all required fields (Type, Subject)");
+      return;
+    }
     setSaving(true);
     try {
       const { documents: docsStr, ...rest } = form;

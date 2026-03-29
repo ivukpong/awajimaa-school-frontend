@@ -48,6 +48,10 @@ export default function GigCreateModal({ open, onClose }: GigCreateModalProps) {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
+    if (!form.title || !form.subject || !form.proposed_budget) {
+      toast.error("Please fill all required fields (Title, Subject, Budget)");
+      return;
+    }
     setLoading(true);
     mutation.mutate(form, {
       onSettled: () => setLoading(false),

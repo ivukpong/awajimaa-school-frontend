@@ -55,7 +55,10 @@ export default function RecruitmentPage() {
   const [saving, setSaving] = useState(false);
 
   const handleCreate = async () => {
-    if (!form.title) return toast.error("Title required");
+    if (!form.title || !form.employment_type || !form.slots) {
+      toast.error("Please fill all required fields (Title, Type, Slots)");
+      return;
+    }
     setSaving(true);
     try {
       const { requirements: reqStr, ...rest } = form;
