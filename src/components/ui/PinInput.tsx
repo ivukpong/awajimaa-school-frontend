@@ -80,7 +80,7 @@ export function PinInput({
           ref={(el) => {
             refs.current[idx] = el;
           }}
-          type={masked ? "password" : "text"}
+          type={masked ? "password" : "tel"}
           inputMode="numeric"
           maxLength={1}
           value={digit}
