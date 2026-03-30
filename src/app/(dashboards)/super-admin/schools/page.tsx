@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { fetchStates, fetchLgas, State, Lga } from "@/lib/geo";
+import { fetchStates, fetchLgas } from "@/lib/geo";
+import type { State, LGA } from "@/types";
 const SCHOOL_TYPES = [
   { value: "primary", label: "Primary" },
   { value: "secondary", label: "Secondary" },
@@ -20,7 +21,7 @@ const OWNERSHIPS = [
   { value: "mission", label: "Mission" },
 ];
 const [states, setStates] = useState<State[]>([]);
-const [lgas, setLgas] = useState<Lga[]>([]);
+const [lgas, setLgas] = useState<LGA[]>([]);
 const [stateId, setStateId] = useState("");
 const [lgaId, setLgaId] = useState("");
 const [schoolTypes, setSchoolTypes] = useState<string[]>([]);
