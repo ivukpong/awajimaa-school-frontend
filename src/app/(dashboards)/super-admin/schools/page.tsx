@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/Input";
 import { Badge } from "@/components/ui/Badge";
 import { Table, Column } from "@/components/ui/Table";
 import toast from "react-hot-toast";
+import { COUNTRIES } from "@/lib/countries";
 
 const SCHOOL_TYPES = [
   { value: "primary", label: "Primary" },
@@ -238,7 +239,7 @@ export default function SchoolsPage() {
             className="absolute inset-0 bg-black/40"
             onClick={() => setModal(null)}
           />
-          <Card className="relative w-full max-w-lg mx-4 z-10">
+          <Card className="relative w-full max-w-xl mx-4 z-10">
             <CardHeader>
               <CardTitle>
                 {modal === "edit" ? "Edit School" : "Add School"}
@@ -255,7 +256,6 @@ export default function SchoolsPage() {
                   payload.types = schoolTypes;
                   payload.mode = mode;
                   payload.country = country;
-                  payload.state_province = stateProvince;
                   payload.slogan = slogan;
                   payload.ownership = ownership;
                   payload.registration_number = regNumber;
@@ -269,7 +269,8 @@ export default function SchoolsPage() {
                   }
                   saveMutation.mutate(payload);
                 }}
-                className="space-y-4"
+                className="space-y-4 max-h-[80vh] overflow-y-auto pr-2"
+                style={{ minWidth: 400 }}
               >
                 <Input
                   label="School Name"
@@ -304,6 +305,28 @@ export default function SchoolsPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block mb-1 text-sm font-medium">
+                      Country
+                    </label>
+                    <select
+                      className="w-full rounded border px-3 py-2"
+                      value={country}
+                      onChange={(e) => {
+                        setCountry(e.target.value);
+                        setStateId("");
+                        setLgaId("");
+                      }}
+                      required
+                    >
+                      <option value="">Select country</option>
+                      {COUNTRIES.map((c) => (
+                        <option key={c.code} value={c.name}>
+                          {c.flag} {c.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block mb-1 text-sm font-medium">
                       State
                     </label>
                     <select
@@ -311,6 +334,7 @@ export default function SchoolsPage() {
                       value={stateId}
                       onChange={(e) => setStateId(e.target.value)}
                       required
+                      disabled={!country}
                     >
                       <option value="">Select state</option>
                       {states.map((s) => (
@@ -320,6 +344,8 @@ export default function SchoolsPage() {
                       ))}
                     </select>
                   </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block mb-1 text-sm font-medium">
                       LGA
@@ -383,29 +409,7 @@ export default function SchoolsPage() {
                     </select>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block mb-1 text-sm font-medium">
-                      Country
-                    </label>
-                    <input
-                      className="w-full rounded border px-3 py-2"
-                      value={country}
-                      onChange={(e) => setCountry(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block mb-1 text-sm font-medium">
-                      State/Province
-                    </label>
-                    <input
-                      className="w-full rounded border px-3 py-2"
-                      value={stateProvince}
-                      onChange={(e) => setStateProvince(e.target.value)}
-                    />
-                  </div>
-                </div>
+
                 <Input
                   label="Slogan"
                   name="slogan"
