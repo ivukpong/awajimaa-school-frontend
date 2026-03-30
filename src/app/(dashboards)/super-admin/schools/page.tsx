@@ -51,8 +51,8 @@ export default function SchoolsPage() {
   const [regNumber, setRegNumber] = useState("");
 
   useEffect(() => {
-    fetchStates().then(setStates);
-  }, []);
+    fetchStates(country).then(setStates);
+  }, [country]);
   useEffect(() => {
     if (stateId) fetchLgas(Number(stateId)).then(setLgas);
     else setLgas([]);
