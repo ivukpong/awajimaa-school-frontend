@@ -3,6 +3,16 @@
 import React, { useState, useEffect } from "react";
 import { fetchStates, fetchLgas } from "@/lib/geo";
 import type { State, LGA } from "@/types";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { get, post, put, del } from "@/lib/api";
+import { Plus, Search, Pencil, Trash2, Eye } from "lucide-react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Badge } from "@/components/ui/Badge";
+import { Table, Column } from "@/components/ui/Table";
+import toast from "react-hot-toast";
+
 const SCHOOL_TYPES = [
   { value: "primary", label: "Primary" },
   { value: "secondary", label: "Secondary" },
@@ -20,66 +30,59 @@ const OWNERSHIPS = [
   { value: "public", label: "Public" },
   { value: "mission", label: "Mission" },
 ];
-const [states, setStates] = useState<State[]>([]);
-const [lgas, setLgas] = useState<LGA[]>([]);
-const [stateId, setStateId] = useState("");
-const [lgaId, setLgaId] = useState("");
-const [schoolTypes, setSchoolTypes] = useState<string[]>([]);
-const [mode, setMode] = useState("");
-const [country, setCountry] = useState("Nigeria");
-const [stateProvince, setStateProvince] = useState("");
-const [slogan, setSlogan] = useState("");
-const [logo, setLogo] = useState<File | null>(null);
-const [cacReg, setCacReg] = useState("");
-const [nin, setNin] = useState("");
-const [ninVerified, setNinVerified] = useState(false);
-const [ninDetails, setNinDetails] = useState<any>(null);
-const [ownership, setOwnership] = useState("");
-const [regNumber, setRegNumber] = useState("");
-useEffect(() => {
-  fetchStates().then(setStates);
-}, []);
-useEffect(() => {
-  if (stateId) fetchLgas(Number(stateId)).then(setLgas);
-  else setLgas([]);
-}, [stateId]);
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { get, post, put, del } from "@/lib/api";
-import { Plus, Search, Pencil, Trash2, Eye } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Badge } from "@/components/ui/Badge";
-import { Table, Column } from "@/components/ui/Table";
-import toast from "react-hot-toast";
-
-interface School extends Record<string, unknown> {
-  id: number;
-  name: string;
-  code: string;
-  email: string;
-  phone: string;
-  address: string;
-  state: string;
-  is_active: boolean;
-  created_at: string;
-  branches_count?: number;
-  students_count?: number;
-}
-
-const EMPTY: School = {
-  id: 0,
-  name: "",
-  code: "",
-  email: "",
-  phone: "",
-  address: "",
-  state: "",
-  is_active: true,
-  created_at: "",
-};
 
 export default function SchoolsPage() {
+  const [states, setStates] = useState<State[]>([]);
+  const [lgas, setLgas] = useState<LGA[]>([]);
+  const [stateId, setStateId] = useState("");
+  const [lgaId, setLgaId] = useState("");
+  const [schoolTypes, setSchoolTypes] = useState<string[]>([]);
+  const [mode, setMode] = useState("");
+  const [country, setCountry] = useState("Nigeria");
+  const [stateProvince, setStateProvince] = useState("");
+  const [slogan, setSlogan] = useState("");
+  const [logo, setLogo] = useState<File | null>(null);
+  const [cacReg, setCacReg] = useState("");
+  const [nin, setNin] = useState("");
+  const [ninVerified, setNinVerified] = useState(false);
+  const [ninDetails, setNinDetails] = useState<any>(null);
+  const [ownership, setOwnership] = useState("");
+  const [regNumber, setRegNumber] = useState("");
+
+  useEffect(() => {
+    fetchStates().then(setStates);
+  }, []);
+  useEffect(() => {
+    if (stateId) fetchLgas(Number(stateId)).then(setLgas);
+    else setLgas([]);
+  }, [stateId]);
+
+  interface School extends Record<string, unknown> {
+    id: number;
+    name: string;
+    code: string;
+    email: string;
+    phone: string;
+    address: string;
+    state: string;
+    is_active: boolean;
+    created_at: string;
+    branches_count?: number;
+    students_count?: number;
+  }
+
+  const EMPTY: School = {
+    id: 0,
+    name: "",
+    code: "",
+    email: "",
+    phone: "",
+    address: "",
+    state: "",
+    is_active: true,
+    created_at: "",
+  };
+
   const qc = useQueryClient();
   const [search, setSearch] = useState("");
   const [modal, setModal] = useState<null | "create" | "edit">(null);
