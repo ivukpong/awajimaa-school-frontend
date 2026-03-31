@@ -7,8 +7,8 @@ export interface School {
     email: string;
     phone: string;
     address: string;
-    state_id: number;
-    lga_id: number;
+    state: string;
+    lga: string;
     town_id: number;
     custom_domain?: string;
     school_type: "primary" | "secondary" | "tertiary" | "nursery" | "combined";

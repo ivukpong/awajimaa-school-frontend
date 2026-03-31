@@ -257,10 +257,10 @@ export default function SchoolsPage() {
                   e.preventDefault();
                   const fd = new FormData(e.currentTarget);
                   const payload = Object.fromEntries(fd) as any;
-                  payload.state_id =
-                    states.find((s) => s.name === stateId)?.id || stateId;
-                  payload.lga_id =
-                    lgas.find((l) => l.name === lgaId)?.id || lgaId;
+                  payload.state =
+                    states.find((s) => s.name === stateId)?.name || stateId;
+                  payload.lga =
+                    lgas.find((l) => l.name === lgaId)?.name || lgaId;
                   payload.type = schoolTypes;
                   payload.mode = mode;
                   payload.country = country;
