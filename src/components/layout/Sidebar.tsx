@@ -640,7 +640,7 @@ export function Sidebar() {
   const pathname = usePathname();
   const { user, logout, hasHydrated } = useAuthStore();
   const role = user?.role as UserRole | undefined;
-  const navItems = role ? navByRole[role] ?? [] : [];
+  const navItems = role ? (navByRole[role] ?? []) : [];
 
   if (!hasHydrated || !user || !role) {
     return null;
