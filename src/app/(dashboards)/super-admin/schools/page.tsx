@@ -344,7 +344,7 @@ export default function SchoolsPage() {
                     >
                       <option value="">Select state</option>
                       {states.map((s) => (
-                        <option key={s.id} value={s.id}>
+                        <option key={s.name} value={s.name}>
                           {s.name}
                         </option>
                       ))}
