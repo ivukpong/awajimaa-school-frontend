@@ -11,7 +11,9 @@ export async function fetchStates(country?: string): Promise<State[]> {
     return Array.isArray(res.data) ? res.data : [];
 }
 
-export async function fetchLgas(stateId: number): Promise<LGA[]> {
-    const res = await get<LGA[]>(`/lgas?state_id=${stateId}`);
+export async function fetchLgas(country: string, stateName: string): Promise<LGA[]> {
+    if (!country || !stateName) return [];
+    const url = `/lgas?country=${encodeURIComponent(country)}&state_name=${encodeURIComponent(stateName)}`;
+    const res = await get<LGA[]>(url);
     return Array.isArray(res.data) ? res.data : [];
 }

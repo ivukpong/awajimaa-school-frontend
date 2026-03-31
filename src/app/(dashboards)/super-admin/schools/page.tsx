@@ -54,9 +54,15 @@ export default function SchoolsPage() {
     fetchStates(country).then(setStates);
   }, [country]);
   useEffect(() => {
-    if (stateId) fetchLgas(Number(stateId)).then(setLgas);
-    else setLgas([]);
-  }, [stateId]);
+    const selectedState = states.find(
+      (s) => String(s.id) === stateId || s.name === stateId,
+    );
+    if (country && selectedState) {
+      fetchLgas(country, selectedState.name).then(setLgas);
+    } else {
+      setLgas([]);
+    }
+  }, [country, stateId, states]);
 
   interface School extends Record<string, unknown> {
     id: number;
