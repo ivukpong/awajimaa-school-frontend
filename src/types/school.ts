@@ -17,9 +17,6 @@ export interface School {
     registration_number?: string;
     created_at: string;
     updated_at: string;
-    state?: { id: number; name: string };
-    lga?: { id: number; name: string };
-    town?: { id: number; name: string };
 }
 
 export interface SchoolBranch {

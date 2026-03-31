@@ -760,10 +760,10 @@ export default function OnboardingPage() {
                   {")"}
                 </span>
               )}
-              {school?.state?.name && (
+              {school?.state && (
                 <span>
                   {" in "}
-                  <span className="font-medium">{school.state.name}</span>
+                  <span className="font-medium">{school.state}</span>
                 </span>
               )}
               , below are the approvals you need to apply for. We will submit
