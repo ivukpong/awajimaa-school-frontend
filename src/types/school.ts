@@ -9,7 +9,7 @@ export interface School {
     address: string;
     state: string;
     lga: string;
-    town_id: number;
+    // removed town_id
     custom_domain?: string;
     school_type: "primary" | "secondary" | "tertiary" | "nursery" | "combined";
     ownership: "public" | "private" | "mission";
