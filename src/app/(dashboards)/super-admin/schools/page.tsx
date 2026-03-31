@@ -375,26 +375,32 @@ export default function SchoolsPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block mb-1 text-sm font-medium">
-                      Type (multi-select)
+                      Type
                     </label>
-                    <select
-                      className="w-full rounded border px-3 py-2"
-                      value={schoolTypes}
-                      onChange={(e) => {
-                        const opts = Array.from(e.target.selectedOptions).map(
-                          (o) => o.value,
-                        );
-                        setSchoolTypes(opts);
-                      }}
-                      multiple
-                      required
-                    >
+                    <div className="flex flex-col gap-1">
                       {SCHOOL_TYPES.map((t) => (
-                        <option key={t.value} value={t.value}>
+                        <label
+                          key={t.value}
+                          className="inline-flex items-center gap-2"
+                        >
+                          <input
+                            type="checkbox"
+                            value={t.value}
+                            checked={schoolTypes.includes(t.value)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSchoolTypes([...schoolTypes, t.value]);
+                              } else {
+                                setSchoolTypes(
+                                  schoolTypes.filter((v) => v !== t.value),
+                                );
+                              }
+                            }}
+                          />
                           {t.label}
-                        </option>
+                        </label>
                       ))}
-                    </select>
+                    </div>
                   </div>
                   <div>
                     <label className="block mb-1 text-sm font-medium">
