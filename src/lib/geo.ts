@@ -6,6 +6,7 @@ export async function fetchStates(country?: string): Promise<State[]> {
     if (country) url += `?country=${encodeURIComponent(country)}`;
 
     const res = await get<any>(url);
+    console.log("raw states res:", res);
     const data = res.data;
 
     // handles both flat array and Laravel-wrapped { data: [...] }
