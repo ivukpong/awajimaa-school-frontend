@@ -19,7 +19,7 @@ const SCHOOL_TYPES = [
   { value: "secondary", label: "Secondary" },
   { value: "tertiary", label: "Tertiary" },
   { value: "nursery", label: "Pre-primary" },
-  { value: "learning_center", label: "Learning Center" },
+  { value: "mixed", label: "Mixed" },
 ];
 const SCHOOL_MODES = [
   { value: "hybrid", label: "Hybrid" },
@@ -257,8 +257,10 @@ export default function SchoolsPage() {
                   e.preventDefault();
                   const fd = new FormData(e.currentTarget);
                   const payload = Object.fromEntries(fd) as any;
-                  payload.state_id = stateId;
-                  payload.lga_id = lgaId;
+                  payload.state_id =
+                    states.find((s) => s.name === stateId)?.id || stateId;
+                  payload.lga_id =
+                    lgas.find((l) => l.name === lgaId)?.id || lgaId;
                   payload.type = schoolTypes;
                   payload.mode = mode;
                   payload.country = country;
