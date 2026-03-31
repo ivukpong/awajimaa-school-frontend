@@ -85,12 +85,12 @@ export default function BranchesPage() {
       header: "",
       render: (row) => (
         <div className="flex items-center gap-2 justify-end">
-          <Button size="xs" variant="outline" onClick={() => openEdit(row)}>
+          <Button size="sm" variant="outline" onClick={() => openEdit(row)}>
             Edit
           </Button>
           <Button
-            size="xs"
-            variant="destructive"
+            size="sm"
+            variant="danger"
             onClick={() => deleteMutation.mutate(row.id)}
           >
             Delete
