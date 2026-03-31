@@ -37,8 +37,8 @@ export default function SchoolsPage() {
   const [lgas, setLgas] = useState<LGA[]>([]);
   const [stateId, setStateId] = useState("");
   const [lgaId, setLgaId] = useState("");
-  const [schoolTypes, setSchoolTypes] = useState<string[]>([]);
   const [mode, setMode] = useState("");
+  const [schoolTypes, setSchoolTypes] = useState<string[]>([]);
   const [country, setCountry] = useState("Nigeria");
   const [stateProvince, setStateProvince] = useState("");
   const [slogan, setSlogan] = useState("");
@@ -259,7 +259,7 @@ export default function SchoolsPage() {
                   const payload = Object.fromEntries(fd) as any;
                   payload.state_id = stateId;
                   payload.lga_id = lgaId;
-                  payload.types = schoolTypes;
+                  payload.type = schoolTypes;
                   payload.mode = mode;
                   payload.country = country;
                   payload.slogan = slogan;
@@ -398,6 +398,29 @@ export default function SchoolsPage() {
                             }}
                           />
                           {t.label}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block mb-1 text-sm font-medium">
+                      Ownership
+                    </label>
+                    <div className="flex flex-col gap-1">
+                      {OWNERSHIPS.map((o) => (
+                        <label
+                          key={o.value}
+                          className="inline-flex items-center gap-2"
+                        >
+                          <input
+                            type="radio"
+                            name="ownership"
+                            value={o.value}
+                            checked={ownership === o.value}
+                            onChange={() => setOwnership(o.value)}
+                            required
+                          />
+                          {o.label}
                         </label>
                       ))}
                     </div>
