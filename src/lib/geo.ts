@@ -7,7 +7,7 @@ export async function fetchStates(country?: string): Promise<State[]> {
 
     const res = await get<any>(url);
     console.log("raw states res:", res);
-    const data = res.data;
+    const data = res;
 
     // handles both flat array and Laravel-wrapped { data: [...] }
     return Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : [];
@@ -18,7 +18,7 @@ export async function fetchLgas(country: string, stateName: string): Promise<LGA
     const url = `/lgas?country=${encodeURIComponent(country)}&state_name=${encodeURIComponent(stateName)}`;
 
     const res = await get<any>(url);
-    const data = res.data;
+    const data = res;
 
     return Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : [];
 }
