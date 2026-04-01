@@ -69,21 +69,6 @@ const navByRole: Record<UserRole, NavItem[]> = {
       icon: <Users className="h-4 w-4" />,
     },
     {
-      label: "Regulators",
-      href: "/super-admin/regulators",
-      icon: <Shield className="h-4 w-4" />,
-    },
-    {
-      label: "Sponsors",
-      href: "/super-admin/sponsors",
-      icon: <HeartHandshake className="h-4 w-4" />,
-    },
-    {
-      label: "Scholarships",
-      href: "/super-admin/scholarships",
-      icon: <GraduationCap className="h-4 w-4" />,
-    },
-    {
       label: "Settings",
       href: "/super-admin/settings",
       icon: <Settings className="h-4 w-4" />,
