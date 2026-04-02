@@ -1,12 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { get } from "@/lib/api";
-import { Users, BookOpen, PlusCircle } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { get, post } from "@/lib/api";
+import { Users, BookOpen, PlusCircle, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import toast from "react-hot-toast";
+import { useAuthStore } from "@/store/authStore";
 
 interface ClassRoom {
   id: number;
@@ -18,10 +21,49 @@ interface ClassRoom {
   subjects?: { id: number; name: string }[];
 }
 
+interface Teacher {
+  id: number;
+  name: string;
+}
+
+const emptyForm = { name: "", level: "", capacity: "", class_teacher_id: "" };
+
 export default function ClassesPage() {
+  const qc = useQueryClient();
+  const { user } = useAuthStore();
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState(emptyForm);
+
   const { data, isLoading } = useQuery({
     queryKey: ["classes"],
     queryFn: () => get<ClassRoom[]>("/classes"),
+  });
+
+  const { data: teachersData } = useQuery({
+    queryKey: ["teachers"],
+    queryFn: () =>
+      get<{ data: Teacher[] }>("/users", { params: { role: "teacher" } }),
+  });
+  const teachers: Teacher[] = teachersData?.data?.data ?? [];
+
+  const addClass = useMutation({
+    mutationFn: (f: typeof emptyForm) =>
+      post("/classes", {
+        school_id: user?.school_id,
+        name: f.name,
+        level: f.level || undefined,
+        capacity: f.capacity ? Number(f.capacity) : undefined,
+        class_teacher_id: f.class_teacher_id
+          ? Number(f.class_teacher_id)
+          : undefined,
+      }),
+    onSuccess: () => {
+      toast.success("Class created");
+      qc.invalidateQueries({ queryKey: ["classes"] });
+      setShowForm(false);
+      setForm(emptyForm);
+    },
+    onError: () => toast.error("Failed to create class"),
   });
 
   const classes = data?.data ?? [];
@@ -45,8 +87,94 @@ export default function ClassesPage() {
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
           Classes
         </h1>
-        <Button leftIcon={<PlusCircle size={16} />}>Add Class</Button>
+        <Button
+          leftIcon={<PlusCircle size={16} />}
+          onClick={() => setShowForm(true)}
+        >
+          Add Class
+        </Button>
       </div>
+
+      {showForm && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Add New Class</CardTitle>
+            <button
+              onClick={() => setShowForm(false)}
+              className="ml-auto p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+            >
+              <X size={16} />
+            </button>
+          </CardHeader>
+          <CardContent>
+            <form
+              className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+              onSubmit={(e) => {
+                e.preventDefault();
+                addClass.mutate(form);
+              }}
+            >
+              <Input
+                label="Class Name"
+                required
+                value={form.name}
+                onChange={(e) =>
+                  setForm((p) => ({ ...p, name: e.target.value }))
+                }
+                placeholder="e.g. JSS 1A"
+              />
+              <Input
+                label="Level (optional)"
+                value={form.level}
+                onChange={(e) =>
+                  setForm((p) => ({ ...p, level: e.target.value }))
+                }
+                placeholder="e.g. Junior"
+              />
+              <Input
+                label="Capacity (optional)"
+                type="number"
+                min="1"
+                value={form.capacity}
+                onChange={(e) =>
+                  setForm((p) => ({ ...p, capacity: e.target.value }))
+                }
+              />
+              <div className="flex flex-col gap-1">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Class Teacher (optional)
+                </label>
+                <select
+                  value={form.class_teacher_id}
+                  onChange={(e) =>
+                    setForm((p) => ({ ...p, class_teacher_id: e.target.value }))
+                  }
+                  className="h-10 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 text-sm"
+                >
+                  <option value="">— Select teacher —</option>
+                  {teachers.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="sm:col-span-2 flex justify-end gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowForm(false)}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" loading={addClass.isPending}>
+                  Create Class
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {classes.map((cls) => (

@@ -3,13 +3,21 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { get, post, del } from "@/lib/api";
-import { PlusCircle, Search, UserCheck, BookOpen, Clock } from "lucide-react";
+import {
+  PlusCircle,
+  Search,
+  UserCheck,
+  BookOpen,
+  Clock,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Table, Column } from "@/components/ui/Table";
 import toast from "react-hot-toast";
+import { useAuthStore } from "@/store/authStore";
 
 interface Teacher extends Record<string, unknown> {
   id: number;
@@ -22,9 +30,14 @@ interface Teacher extends Record<string, unknown> {
   created_at: string;
 }
 
+const emptyForm = { name: "", email: "", password: "", phone: "" };
+
 export default function TeachersPage() {
   const qc = useQueryClient();
+  const { user } = useAuthStore();
   const [search, setSearch] = useState("");
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState(emptyForm);
 
   const { data, isLoading } = useQuery({
     queryKey: ["teachers", search],
@@ -32,6 +45,18 @@ export default function TeachersPage() {
       get<{ data: Teacher[] }>("/users", {
         params: { role: "teacher", search },
       }),
+  });
+
+  const addTeacher = useMutation({
+    mutationFn: (f: typeof emptyForm) =>
+      post("/users", { ...f, role: "teacher", school_id: user?.school_id }),
+    onSuccess: () => {
+      toast.success("Teacher added successfully");
+      qc.invalidateQueries({ queryKey: ["teachers"] });
+      setShowForm(false);
+      setForm(emptyForm);
+    },
+    onError: () => toast.error("Failed to add teacher"),
   });
 
   const toggleActive = useMutation({
@@ -93,8 +118,82 @@ export default function TeachersPage() {
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
           Teachers
         </h1>
-        <Button leftIcon={<PlusCircle size={16} />}>Add Teacher</Button>
+        <Button
+          leftIcon={<PlusCircle size={16} />}
+          onClick={() => setShowForm(true)}
+        >
+          Add Teacher
+        </Button>
       </div>
+
+      {showForm && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Add New Teacher</CardTitle>
+            <button
+              onClick={() => setShowForm(false)}
+              className="ml-auto p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+            >
+              <X size={16} />
+            </button>
+          </CardHeader>
+          <CardContent>
+            <form
+              className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+              onSubmit={(e) => {
+                e.preventDefault();
+                addTeacher.mutate(form);
+              }}
+            >
+              <Input
+                label="Full Name"
+                required
+                value={form.name}
+                onChange={(e) =>
+                  setForm((p) => ({ ...p, name: e.target.value }))
+                }
+              />
+              <Input
+                label="Email"
+                type="email"
+                required
+                value={form.email}
+                onChange={(e) =>
+                  setForm((p) => ({ ...p, email: e.target.value }))
+                }
+              />
+              <Input
+                label="Phone (optional)"
+                value={form.phone}
+                onChange={(e) =>
+                  setForm((p) => ({ ...p, phone: e.target.value }))
+                }
+              />
+              <Input
+                label="Temporary Password"
+                type="password"
+                required
+                value={form.password}
+                onChange={(e) =>
+                  setForm((p) => ({ ...p, password: e.target.value }))
+                }
+              />
+              <div className="sm:col-span-2 flex justify-end gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowForm(false)}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" loading={addTeacher.isPending}>
+                  Add Teacher
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4">
@@ -147,7 +246,7 @@ export default function TeachersPage() {
             keyField="id"
             columns={columns}
             data={teachers}
-                        loading={isLoading}
+            loading={isLoading}
           />
         </CardContent>
       </Card>
