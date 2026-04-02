@@ -13,7 +13,8 @@ export type UserRole =
     | "sponsor"
     | "revenue_collector"
     | "affiliate"
-    | "security";
+    | "security"
+    | "insurance_operator";
 
 // ─── Auth ─────────────────────────────────────────────────────────────────────
 export interface User {
@@ -192,5 +193,74 @@ export interface WalletPayout {
     account_name: string;
     status: "pending" | "approved" | "paid" | "rejected";
     paid_at?: string;
+    created_at: string;
+}
+
+// ─── Insurance ────────────────────────────────────────────────────────────────
+export interface InsurancePackage {
+    id: number;
+    operator_id?: number;
+    operator?: Pick<User, "id" | "name" | "email">;
+    name: string;
+    provider?: string;
+    description?: string;
+    media_url?: string;
+    premium: number;
+    subscription_type: "one_time" | "recurring";
+    duration_months?: number;
+    coverage_type: "school" | "student" | "both";
+    coverage_details?: Record<string, unknown>;
+    benefits?: string[];
+    is_active: boolean;
+    created_at: string;
+}
+
+export interface InsurancePolicy {
+    id: number;
+    school_id: number;
+    insurance_scheme_id: number;
+    scheme?: InsurancePackage;
+    start_date: string;
+    end_date?: string;
+    premium_paid: number;
+    status: "active" | "expired" | "cancelled";
+    created_at: string;
+}
+
+export interface InsuranceClaim {
+    id: number;
+    school_id: number;
+    school?: { id: number; name: string };
+    insurance_scheme_id: number;
+    scheme?: Pick<InsurancePackage, "id" | "name">;
+    school_insurance_id?: number;
+    claim_type: string;
+    description: string;
+    evidence_urls?: string[];
+    amount_claimed: number;
+    status: "pending" | "under_review" | "approved" | "rejected" | "paid";
+    reviewed_by?: number;
+    reviewer?: Pick<User, "id" | "name">;
+    review_notes?: string;
+    amount_approved?: number;
+    reviewed_at?: string;
+    created_at: string;
+}
+
+export interface InsuranceOperatorStats {
+    total_packages: number;
+    active_subscriptions: number;
+    pending_claims: number;
+    total_claims: number;
+    total_premium_collected: number;
+}
+
+export interface InsuranceOperator {
+    id: number;
+    name: string;
+    email: string;
+    phone?: string;
+    avatar?: string;
+    packages_count: number;
     created_at: string;
 }

@@ -15,6 +15,7 @@ export const roleDashboardPath: Record<UserRole, string> = {
   revenue_collector: "/revenue",
   affiliate: "/affiliate",
   security: "/security",
+  insurance_operator: "/insurance-operator",
 };
 
 const roleAllowedPrefixes: Record<UserRole, string[]> = {
@@ -38,6 +39,7 @@ const roleAllowedPrefixes: Record<UserRole, string[]> = {
     "/school-admin/regulators",
     "/school-admin/sponsors",
     "/school-admin/scholarships",
+    "/school-admin/insurance",
   ],
   branch_admin: [
     "/school-admin",
@@ -71,6 +73,9 @@ const roleAllowedPrefixes: Record<UserRole, string[]> = {
   ],
   security: [
     "/security",
+  ],
+  insurance_operator: [
+    "/insurance-operator",
   ],
 };
 

@@ -37,6 +37,7 @@ import {
   Mail,
   Upload,
   Briefcase,
+  ShieldCheck,
 } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
@@ -382,6 +383,11 @@ const navByRole: Record<UserRole, NavItem[]> = {
       icon: <GraduationCap className="h-4 w-4" />,
     },
     {
+      label: "Insurance",
+      href: "/school-admin/insurance",
+      icon: <ShieldCheck className="h-4 w-4" />,
+    },
+    {
       label: "Settings",
       href: "/school-admin/settings",
       icon: <Settings className="h-4 w-4" />,
@@ -633,6 +639,23 @@ const navByRole: Record<UserRole, NavItem[]> = {
       label: "Help Messages",
       href: "/security",
       icon: <MessageSquare className="h-4 w-4" />,
+    },
+  ],
+  insurance_operator: [
+    {
+      label: "Dashboard",
+      href: "/insurance-operator",
+      icon: <LayoutDashboard className="h-4 w-4" />,
+    },
+    {
+      label: "Packages",
+      href: "/insurance-operator/packages",
+      icon: <ShieldCheck className="h-4 w-4" />,
+    },
+    {
+      label: "Claims",
+      href: "/insurance-operator/claims",
+      icon: <FileText className="h-4 w-4" />,
     },
   ],
 };
