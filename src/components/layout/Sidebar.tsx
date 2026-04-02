@@ -332,6 +332,11 @@ const navByRole: Record<UserRole, NavItem[]> = {
       icon: <CalendarOff className="h-4 w-4" />,
     },
     {
+      label: "Store",
+      href: "/school-admin/store",
+      icon: <ShoppingCart className="h-4 w-4" />,
+    },
+    {
       label: "Inventory",
       href: "/school-admin/inventory",
       icon: <Package className="h-4 w-4" />,
@@ -616,6 +621,18 @@ const navByRole: Record<UserRole, NavItem[]> = {
       label: "Browse Jobs",
       href: "/freelancer-teacher/recruitment",
       icon: <Briefcase className="h-4 w-4" />,
+    },
+  ],
+  security: [
+    {
+      label: "Dashboard",
+      href: "/security",
+      icon: <LayoutDashboard className="h-4 w-4" />,
+    },
+    {
+      label: "Help Messages",
+      href: "/security",
+      icon: <MessageSquare className="h-4 w-4" />,
     },
   ],
 };

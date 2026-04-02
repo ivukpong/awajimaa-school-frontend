@@ -87,3 +87,11 @@ export function buildStudentPublicUrl(token: string): string {
 export function sleep(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
+/** Convert snake_case role to Title Case display string, e.g. "school_admin" → "School Admin" */
+export function formatRole(role: string): string {
+    return role
+        .split("_")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+}

@@ -1,95 +1,42 @@
 "use client";
 import React, { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Input";
 import { Table, type Column } from "@/components/ui/Table";
-import { Plus, Search, Download, Eye, Edit, QrCode, Copy } from "lucide-react";
+import { Plus, Search, Download, Eye, Edit, Copy, Flag } from "lucide-react";
 import { buildStudentPublicUrl } from "@/lib/utils";
+import { useStudents, type Student } from "@/hooks/useStudents";
+import { post } from "@/lib/api";
 import toast from "react-hot-toast";
-
-interface StudentRow extends Record<string, unknown> {
-  id: number;
-  reg_number: string;
-  full_name: string;
-  class_name: string;
-  gender: string;
-  dob: string;
-  status: string;
-  unique_link_token: string;
-  guardian: string;
-}
-
-const mockStudents: StudentRow[] = [
-  {
-    id: 1,
-    reg_number: "GS/2023/001",
-    full_name: "Amara Nkemdirim",
-    class_name: "SS 2A",
-    gender: "female",
-    dob: "2008-03-14",
-    status: "active",
-    unique_link_token: "amr-nkm-001",
-    guardian: "Mr. Nkemdirim",
-  },
-  {
-    id: 2,
-    reg_number: "GS/2023/002",
-    full_name: "Chukwuemeka Okafor",
-    class_name: "JSS 3B",
-    gender: "male",
-    dob: "2010-07-22",
-    status: "active",
-    unique_link_token: "chk-okf-002",
-    guardian: "Mrs. Okafor",
-  },
-  {
-    id: 3,
-    reg_number: "GS/2022/088",
-    full_name: "Favour Etim",
-    class_name: "SS 1A",
-    gender: "female",
-    dob: "2009-11-05",
-    status: "active",
-    unique_link_token: "fvr-etm-088",
-    guardian: "Mr. Etim",
-  },
-  {
-    id: 4,
-    reg_number: "GS/2021/145",
-    full_name: "Obinna Dike",
-    class_name: "SS 3C",
-    gender: "male",
-    dob: "2007-01-18",
-    status: "active",
-    unique_link_token: "obn-dke-145",
-    guardian: "Mr & Mrs. Dike",
-  },
-  {
-    id: 5,
-    reg_number: "GS/2024/012",
-    full_name: "Ifeoma Adeyemi",
-    class_name: "JSS 1B",
-    gender: "female",
-    dob: "2012-09-09",
-    status: "active",
-    unique_link_token: "ife-ady-012",
-    guardian: "Dr. Adeyemi",
-  },
-];
 
 export default function SchoolAdminStudentsPage() {
   const [search, setSearch] = useState("");
+  const qc = useQueryClient();
 
-  const filtered = mockStudents.filter(
+  const { data, isLoading } = useStudents({});
+  const allStudents: Student[] = data?.data?.data ?? [];
+
+  const filtered = allStudents.filter(
     (s) =>
       s.full_name.toLowerCase().includes(search.toLowerCase()) ||
-      s.reg_number.toLowerCase().includes(search.toLowerCase()),
+      s.admission_number.toLowerCase().includes(search.toLowerCase()),
   );
 
-  const columns: Column<StudentRow>[] = [
-    { key: "reg_number", header: "Reg. No.", sortable: true },
+  const markNeedy = useMutation({
+    mutationFn: (studentId: number) =>
+      post(`/students/${studentId}/mark-needy`, { is_needy: true }),
+    onSuccess: () => {
+      toast.success("Student marked as needy");
+      qc.invalidateQueries({ queryKey: ["students"] });
+    },
+    onError: () => toast.error("Failed to update"),
+  });
+
+  const columns: Column<Student>[] = [
+    { key: "admission_number", header: "Reg. No.", sortable: true },
     {
       key: "full_name",
       header: "Full Name",
@@ -100,7 +47,15 @@ export default function SchoolAdminStudentsPage() {
         </span>
       ),
     },
-    { key: "class_name", header: "Class", sortable: true },
+    {
+      key: "class_room",
+      header: "Class",
+      render: (r) => (
+        <span className="text-sm text-gray-700 dark:text-gray-300">
+          {r.class_room?.name ?? "—"}
+        </span>
+      ),
+    },
     {
       key: "gender",
       header: "Gender",
@@ -110,18 +65,17 @@ export default function SchoolAdminStudentsPage() {
         </Badge>
       ),
     },
-    { key: "guardian", header: "Guardian" },
     {
-      key: "status",
+      key: "is_active",
       header: "Status",
       render: (r) => (
-        <Badge variant={r.status === "active" ? "green" : "gray"}>
-          {r.status}
+        <Badge variant={r.is_active ? "green" : "gray"}>
+          {r.is_active ? "Active" : "Inactive"}
         </Badge>
       ),
     },
     {
-      key: "unique_link_token",
+      key: "public_token",
       header: "Profile Link",
       render: (r) => (
         <button
@@ -129,7 +83,7 @@ export default function SchoolAdminStudentsPage() {
           onClick={(e) => {
             e.stopPropagation();
             navigator.clipboard.writeText(
-              buildStudentPublicUrl(r.unique_link_token),
+              buildStudentPublicUrl(r.public_token),
             );
             toast.success("Link copied!");
           }}
@@ -141,13 +95,23 @@ export default function SchoolAdminStudentsPage() {
     {
       key: "id",
       header: "",
-      render: () => (
+      render: (r) => (
         <div className="flex items-center gap-1">
           <button className="rounded p-1 hover:bg-gray-100 dark:hover:bg-gray-800">
             <Eye className="h-4 w-4 text-gray-500" />
           </button>
           <button className="rounded p-1 hover:bg-gray-100 dark:hover:bg-gray-800">
             <Edit className="h-4 w-4 text-gray-500" />
+          </button>
+          <button
+            className="rounded p-1 hover:bg-yellow-50 dark:hover:bg-yellow-900/20"
+            title="Mark as Needy"
+            onClick={(e) => {
+              e.stopPropagation();
+              markNeedy.mutate(r.id);
+            }}
+          >
+            <Flag className="h-4 w-4 text-yellow-500" />
           </button>
         </div>
       ),
@@ -162,7 +126,7 @@ export default function SchoolAdminStudentsPage() {
             Students
           </h1>
           <p className="text-sm text-gray-500 mt-1">
-            {mockStudents.length.toLocaleString()} enrolled students
+            {allStudents.length.toLocaleString()} enrolled students
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -188,21 +152,6 @@ export default function SchoolAdminStudentsPage() {
             onChange={(e) => setSearch(e.target.value)}
             wrapperClassName="flex-1"
           />
-          <select className="h-10 rounded-lg border border-gray-300 px-3 text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white">
-            <option value="">All Classes</option>
-            <option>JSS 1</option>
-            <option>JSS 2</option>
-            <option>JSS 3</option>
-            <option>SS 1</option>
-            <option>SS 2</option>
-            <option>SS 3</option>
-          </select>
-          <select className="h-10 rounded-lg border border-gray-300 px-3 text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white">
-            <option value="">All Status</option>
-            <option>Active</option>
-            <option>Graduated</option>
-            <option>Withdrawn</option>
-          </select>
         </div>
       </Card>
 
@@ -210,7 +159,8 @@ export default function SchoolAdminStudentsPage() {
         keyField="id"
         columns={columns}
         data={filtered}
-                emptyMessage="No students found."
+        loading={isLoading}
+        emptyMessage="No students found."
       />
     </div>
   );
