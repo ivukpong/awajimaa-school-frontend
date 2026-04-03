@@ -109,3 +109,38 @@ export function usePublicReceipt(reference: string) {
         enabled: !!reference,
     });
 }
+
+// ─── Squad Payment Hooks ───────────────────────────────────────────────────────
+
+export interface SquadInitPayload {
+    invoice_id: number;
+    email: string;
+    callback_url: string;
+    payer_name?: string;
+    payer_phone?: string;
+    narration?: string;
+}
+
+export interface SquadInitResponse {
+    checkout_url: string;
+    transaction_ref: string;
+}
+
+export interface SquadVerifyResponse {
+    success: boolean;
+    data: Record<string, unknown>;
+}
+
+export function useSquadInitialize() {
+    return useMutation({
+        mutationFn: (payload: SquadInitPayload) =>
+            post<SquadInitResponse>('/squad/initialize', payload).then(r => r.data),
+    });
+}
+
+export function useSquadVerify() {
+    return useMutation({
+        mutationFn: (transactionRef: string) =>
+            get<SquadVerifyResponse>(`/squad/verify/${transactionRef}`).then(r => r.data),
+    });
+}

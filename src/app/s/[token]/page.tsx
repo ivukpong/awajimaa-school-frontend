@@ -12,7 +12,11 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { usePublicFees, usePublicPay } from "@/hooks/useFees";
+import {
+  usePublicFees,
+  usePublicPay,
+  useSquadInitialize,
+} from "@/hooks/useFees";
 import type {
   InvoiceWithFee,
   ReceiptData,
@@ -219,12 +223,24 @@ interface PaymentFormProps {
   onSuccess: (receipt: ReceiptData) => void;
 }
 
+type Gateway = "squad" | "offline";
+
 function PaymentForm({ token, invoices, onSuccess }: PaymentFormProps) {
   const unpaid = invoices.filter(
     (i) => i.status !== "paid" && i.status !== "waived",
   );
-  const { mutate, isPending, error } = usePublicPay(token);
+  const {
+    mutate: payOffline,
+    isPending: offlinePending,
+    error: offlineError,
+  } = usePublicPay(token);
+  const {
+    mutate: squadInitialize,
+    isPending: squadPending,
+    error: squadError,
+  } = useSquadInitialize();
 
+  const [gateway, setGateway] = useState<Gateway>("squad");
   const [form, setForm] = useState<PublicPayPayload>({
     invoice_id: unpaid[0]?.id ?? 0,
     amount: 0,
@@ -235,6 +251,8 @@ function PaymentForm({ token, invoices, onSuccess }: PaymentFormProps) {
   });
 
   const selectedInvoice = unpaid.find((i) => i.id === Number(form.invoice_id));
+  const isPending = offlinePending || squadPending;
+  const error = offlineError || squadError;
 
   function handleChange(
     e: React.ChangeEvent<
@@ -251,9 +269,27 @@ function PaymentForm({ token, invoices, onSuccess }: PaymentFormProps) {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    mutate(form, {
-      onSuccess: (res) => onSuccess(res.receipt),
-    });
+    if (gateway === "squad") {
+      squadInitialize(
+        {
+          invoice_id: Number(form.invoice_id),
+          email: form.payer_email,
+          callback_url: `${window.location.origin}/s/${token}/verify`,
+          payer_name: form.payer_name,
+          payer_phone: form.payer_phone,
+          narration: form.narration || undefined,
+        },
+        {
+          onSuccess: (res) => {
+            if (res?.checkout_url) window.location.href = res.checkout_url;
+          },
+        },
+      );
+    } else {
+      payOffline(form, {
+        onSuccess: (res) => onSuccess(res!.receipt),
+      });
+    }
   }
 
   if (unpaid.length === 0) {
@@ -269,6 +305,51 @@ function PaymentForm({ token, invoices, onSuccess }: PaymentFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Gateway selector */}
+      <div>
+        <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Payment Method
+        </p>
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            {
+              value: "squad" as const,
+              label: "Pay Online",
+              sub: "Card / Bank / USSD via Squad",
+            },
+            {
+              value: "offline" as const,
+              label: "Pay Offline",
+              sub: "Bank Transfer / Cash",
+            },
+          ].map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => setGateway(opt.value)}
+              className={`rounded-xl border-2 p-3 text-left transition-all ${
+                gateway === opt.value
+                  ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20"
+                  : "border-gray-200 dark:border-gray-700 hover:border-blue-300"
+              }`}
+            >
+              <p
+                className={`text-sm font-semibold ${
+                  gateway === opt.value
+                    ? "text-blue-700 dark:text-blue-400"
+                    : "text-gray-700 dark:text-gray-300"
+                }`}
+              >
+                {opt.label}
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                {opt.sub}
+              </p>
+            </button>
+          ))}
+        </div>
+      </div>
+
       {error && (
         <p className="text-sm text-red-600 bg-red-50 dark:bg-red-900/20 rounded-lg px-4 py-2">
           {(error as any)?.message ?? "Payment failed. Please try again."}
@@ -295,28 +376,33 @@ function PaymentForm({ token, invoices, onSuccess }: PaymentFormProps) {
         </select>
         {selectedInvoice && (
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            Max payable: {formatCurrency(selectedInvoice.balance)}
+            {gateway === "squad"
+              ? `Squad will charge the full balance: ${formatCurrency(selectedInvoice.balance)}`
+              : `Max payable: ${formatCurrency(selectedInvoice.balance)}`}
           </p>
         )}
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          Amount (₦)
-        </label>
-        <input
-          type="number"
-          name="amount"
-          min={100}
-          max={selectedInvoice?.balance ?? undefined}
-          step={1}
-          value={form.amount || ""}
-          onChange={handleChange}
-          required
-          placeholder="Enter amount"
-          className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
+      {/* Amount — only for offline */}
+      {gateway === "offline" && (
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Amount (₦)
+          </label>
+          <input
+            type="number"
+            name="amount"
+            min={100}
+            max={selectedInvoice?.balance ?? undefined}
+            step={1}
+            value={form.amount || ""}
+            onChange={handleChange}
+            required
+            placeholder="Enter amount"
+            className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
@@ -385,6 +471,13 @@ function PaymentForm({ token, invoices, onSuccess }: PaymentFormProps) {
       >
         {isPending ? (
           "Processing…"
+        ) : gateway === "squad" ? (
+          <>
+            <CreditCard size={16} />
+            {selectedInvoice
+              ? `Pay ${formatCurrency(selectedInvoice.balance)} with Squad`
+              : "Pay with Squad"}
+          </>
         ) : (
           <>
             <CreditCard size={16} /> Pay{" "}
