@@ -14,7 +14,9 @@ export type UserRole =
     | "revenue_collector"
     | "affiliate"
     | "security"
-    | "insurance_operator";
+    | "insurance_operator"
+    | "platform_accountant"
+    | "school_accountant";
 
 // ─── Auth ─────────────────────────────────────────────────────────────────────
 export interface User {
@@ -264,3 +266,97 @@ export interface InsuranceOperator {
     packages_count: number;
     created_at: string;
 }
+
+// ─── Subscriptions ────────────────────────────────────────────────────────────
+export interface SubscriptionPlan {
+    id: number;
+    name: string;
+    description?: string;
+    price_monthly: number;
+    price_yearly: number;
+    max_branches: number;
+    max_students: number;
+    max_teachers: number;
+    features?: string[];
+    is_active: boolean;
+    paystack_plan_code_monthly?: string;
+    paystack_plan_code_yearly?: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface SchoolSubscription {
+    id: number;
+    school_id: number;
+    plan_id: number;
+    billing_cycle: "monthly" | "yearly";
+    status: "active" | "pending" | "expired" | "cancelled" | "trial";
+    start_date?: string;
+    end_date?: string;
+    paystack_subscription_code?: string;
+    paystack_customer_code?: string;
+    auto_renew: boolean;
+    activated_by?: number;
+    plan?: SubscriptionPlan;
+    school?: { id: number; name: string; subdomain?: string };
+    created_at: string;
+    updated_at: string;
+}
+
+export interface SubscriptionInvoice {
+    id: number;
+    school_id: number;
+    subscription_id?: number;
+    plan_id: number;
+    invoice_number: string;
+    amount: number;
+    amount_paid: number;
+    status: "unpaid" | "partial" | "paid" | "cancelled";
+    due_date?: string;
+    billing_cycle: string;
+    notes?: string;
+    plan?: SubscriptionPlan;
+    school?: { id: number; name: string };
+    subscription?: SchoolSubscription;
+    payment_url?: string;
+    offline_requests?: OfflinePaymentRequest[];
+    created_at: string;
+    updated_at: string;
+}
+
+export interface OfflinePaymentRequest {
+    id: number;
+    school_id: number;
+    subscription_invoice_id?: number;
+    amount: number;
+    bank_name: string;
+    account_name: string;
+    transaction_reference: string;
+    transaction_date: string;
+    proof_url?: string;
+    status: "pending" | "approved" | "rejected";
+    reviewed_by?: number;
+    review_notes?: string;
+    reviewed_at?: string;
+    school?: { id: number; name: string };
+    invoice?: { id: number; invoice_number: string; amount: number; status: string };
+    reviewer?: { id: number; name: string };
+    created_at: string;
+    updated_at: string;
+}
+
+export interface PlatformAccountantSummary {
+    total_subscriptions: number;
+    active_subscriptions: number;
+    pending_offline: number;
+    revenue_this_month: number;
+    revenue_total: number;
+    plans_breakdown: Array<{
+        id: number;
+        name: string;
+        price_monthly: number;
+        price_yearly: number;
+        active_count: number;
+    }>;
+}
+

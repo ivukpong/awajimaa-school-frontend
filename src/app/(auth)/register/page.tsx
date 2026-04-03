@@ -25,6 +25,7 @@ import {
   AlertCircle,
   Loader2,
   ShieldCheck,
+  MailCheck,
 } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -600,6 +601,10 @@ export default function RegisterPage() {
   const [form, setForm] = useState<FormState>(INITIAL_FORM);
   const [agreed, setAgreed] = useState(false);
   const [stepIdx, setStepIdx] = useState(0);
+  const [screen, setScreen] = useState<"form" | "verify-email">("form");
+  const [pendingDestination, setPendingDestination] = useState("");
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
 
   // NIN
   const [ninLoading, setNinLoading] = useState(false);
@@ -801,7 +806,8 @@ export default function RegisterPage() {
         role === "school_admin"
           ? "/school-admin/onboarding"
           : `/${role?.replaceAll("_", "-") ?? "dashboard"}`;
-      router.replace(destination);
+      setPendingDestination(destination);
+      setScreen("verify-email");
     },
     onError: (err: any) =>
       toast.error(err?.response?.data?.message ?? "Registration failed"),
@@ -908,7 +914,81 @@ export default function RegisterPage() {
     else handleFinalSubmit();
   };
 
+  // ── Resend verification email ─────────────────────────────────────────────
+
+  const handleResendEmail = async () => {
+    if (resendCooldown > 0 || resendLoading) return;
+    setResendLoading(true);
+    try {
+      await post("/auth/email/resend", {});
+      toast.success("Verification email sent!");
+      setResendCooldown(60);
+      const interval = setInterval(() => {
+        setResendCooldown((c) => {
+          if (c <= 1) {
+            clearInterval(interval);
+            return 0;
+          }
+          return c - 1;
+        });
+      }, 1000);
+    } catch {
+      toast.error("Could not resend email. Please try again.");
+    } finally {
+      setResendLoading(false);
+    }
+  };
+
   // ── Render ────────────────────────────────────────────────────────────────────
+
+  if (screen === "verify-email") {
+    return (
+      <Card>
+        <div className="flex flex-col items-center gap-4 py-6 text-center">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand/10 text-brand">
+            <MailCheck className="h-8 w-8" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Check your inbox
+            </h2>
+            <p className="mt-2 text-sm text-gray-500 max-w-sm">
+              We sent a verification link to <strong>{form.email}</strong>.
+              Click the link to activate your account before continuing.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-3 w-full max-w-xs mt-2">
+            <Button
+              onClick={handleResendEmail}
+              disabled={resendLoading || resendCooldown > 0}
+              variant="outline"
+              className="w-full"
+            >
+              {resendLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : null}
+              {resendCooldown > 0
+                ? `Resend in ${resendCooldown}s`
+                : "Resend verification email"}
+            </Button>
+
+            <Button
+              onClick={() => router.replace(pendingDestination)}
+              className="w-full"
+            >
+              Continue to dashboard
+            </Button>
+          </div>
+
+          <p className="text-xs text-gray-400 mt-2">
+            You can still use the app but some features require a verified
+            email.
+          </p>
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card>

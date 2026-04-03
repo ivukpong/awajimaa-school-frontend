@@ -17,14 +17,24 @@ import { formatCurrency } from "@/lib/utils";
 import type { InsurancePackage } from "@/types";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 
-const EMPTY_FORM = {
+const EMPTY_FORM: {
+  name: string;
+  description: string;
+  media_url: string;
+  premium: string;
+  subscription_type: "one_time" | "recurring";
+  duration_months: string;
+  coverage_type: "school" | "student" | "both";
+  benefits: string;
+  is_active: boolean;
+} = {
   name: "",
   description: "",
   media_url: "",
   premium: "",
-  subscription_type: "one_time" as const,
+  subscription_type: "one_time",
   duration_months: "",
-  coverage_type: "school" as const,
+  coverage_type: "school",
   benefits: "",
   is_active: true,
 };
@@ -139,7 +149,7 @@ export default function InsurancePackagesPage() {
           </Button>
           <Button
             size="sm"
-            variant="destructive"
+            variant="danger"
             onClick={() => remove.mutate(r.id)}
           >
             <Trash2 className="h-3.5 w-3.5" />
@@ -174,7 +184,7 @@ export default function InsurancePackagesPage() {
       </Card>
 
       <Modal
-        isOpen={showModal}
+        open={showModal}
         onClose={() => setShowModal(false)}
         title={editing ? "Edit Package" : "New Insurance Package"}
       >

@@ -70,6 +70,11 @@ const navByRole: Record<UserRole, NavItem[]> = {
       icon: <Users className="h-4 w-4" />,
     },
     {
+      label: "Subscription Plans",
+      href: "/super-admin/subscriptions",
+      icon: <CreditCard className="h-4 w-4" />,
+    },
+    {
       label: "Settings",
       href: "/super-admin/settings",
       icon: <Settings className="h-4 w-4" />,
@@ -388,6 +393,11 @@ const navByRole: Record<UserRole, NavItem[]> = {
       icon: <ShieldCheck className="h-4 w-4" />,
     },
     {
+      label: "Subscription",
+      href: "/school-admin/subscription",
+      icon: <Banknote className="h-4 w-4" />,
+    },
+    {
       label: "Settings",
       href: "/school-admin/settings",
       icon: <Settings className="h-4 w-4" />,
@@ -656,6 +666,45 @@ const navByRole: Record<UserRole, NavItem[]> = {
       label: "Claims",
       href: "/insurance-operator/claims",
       icon: <FileText className="h-4 w-4" />,
+    },
+  ],
+  platform_accountant: [
+    {
+      label: "Dashboard",
+      href: "/platform-accountant",
+      icon: <LayoutDashboard className="h-4 w-4" />,
+    },
+    {
+      label: "Subscriptions",
+      href: "/platform-accountant",
+      icon: <CreditCard className="h-4 w-4" />,
+    },
+    {
+      label: "Offline Payments",
+      href: "/platform-accountant",
+      icon: <Upload className="h-4 w-4" />,
+    },
+  ],
+  school_accountant: [
+    {
+      label: "Dashboard",
+      href: "/school-accountant",
+      icon: <LayoutDashboard className="h-4 w-4" />,
+    },
+    {
+      label: "Fee Invoices",
+      href: "/school-accountant",
+      icon: <Banknote className="h-4 w-4" />,
+    },
+    {
+      label: "Payments",
+      href: "/school-accountant",
+      icon: <CreditCard className="h-4 w-4" />,
+    },
+    {
+      label: "Payroll",
+      href: "/school-accountant",
+      icon: <DollarSign className="h-4 w-4" />,
     },
   ],
 };

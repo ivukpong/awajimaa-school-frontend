@@ -5,7 +5,14 @@ import { fetchStates, fetchLgas } from "@/lib/geo";
 import type { State, LGA } from "@/types";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { get, post, put, del } from "@/lib/api";
-import { Plus, Search, Pencil, Trash2, Eye } from "lucide-react";
+import {
+  Plus,
+  Search,
+  Pencil,
+  Trash2,
+  ToggleLeft,
+  ToggleRight,
+} from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -134,6 +141,18 @@ export default function SchoolsPage() {
     onError: () => toast.error("Failed to delete school"),
   });
 
+  const toggleActiveMutation = useMutation({
+    mutationFn: (school: School) =>
+      put(`/schools/${school.id}`, { is_active: !school.is_active }),
+    onSuccess: (_, school) => {
+      toast.success(
+        school.is_active ? "School deactivated" : "School activated",
+      );
+      qc.invalidateQueries({ queryKey: ["schools"] });
+    },
+    onError: () => toast.error("Failed to update school status"),
+  });
+
   function openEdit(school: School) {
     setSelected(school);
     setModal("edit");
@@ -181,6 +200,17 @@ export default function SchoolsPage() {
       header: "",
       render: (row) => (
         <div className="flex items-center gap-2 justify-end">
+          <button
+            onClick={() => toggleActiveMutation.mutate(row)}
+            title={row.is_active ? "Deactivate school" : "Activate school"}
+            className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            {row.is_active ? (
+              <ToggleRight className="h-4 w-4 text-green-600" />
+            ) : (
+              <ToggleLeft className="h-4 w-4 text-gray-400" />
+            )}
+          </button>
           <button
             onClick={() => openEdit(row)}
             className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500"
