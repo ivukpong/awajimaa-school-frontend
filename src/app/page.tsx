@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Logo } from "@/components/ui/Logo";
+import { MobileNav } from "@/components/ui/MobileNav";
 import {
   GraduationCap,
   Building2,
@@ -29,7 +30,7 @@ export default function Home() {
     <div className="min-h-screen bg-white flex flex-col">
       {/* ───────────── NAV ───────────── */}
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-gray-100 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link href="/">
             <Logo height={36} />
           </Link>
@@ -44,7 +45,7 @@ export default function Home() {
               Contact
             </a>
           </nav>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <Link href="/login">
               <Button
                 variant="outline"
@@ -54,10 +55,12 @@ export default function Home() {
               </Button>
             </Link>
             <Link href="/register">
-              <Button className="bg-brand hover:bg-brand-dark text-white">
+              <Button className="hidden sm:inline-flex bg-brand hover:bg-brand-dark text-white">
                 Get Started
               </Button>
             </Link>
+            {/* Mobile nav toggle */}
+            <MobileNav />
           </div>
         </div>
       </header>

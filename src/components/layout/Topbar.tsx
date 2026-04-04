@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Bell, Sun, Moon, Search } from "lucide-react";
+import { Bell, Sun, Moon, Search, Menu } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useAuthStore } from "@/store/authStore";
 import { getInitials } from "@/lib/utils";
@@ -8,18 +8,27 @@ import { cn } from "@/lib/utils";
 
 interface TopbarProps {
   title?: string;
+  onMenuClick?: () => void;
 }
 
-export function Topbar({ title }: TopbarProps) {
+export function Topbar({ title, onMenuClick }: TopbarProps) {
   const { resolvedTheme, setTheme } = useTheme();
   const { user, hasHydrated } = useAuthStore();
 
   return (
-    <header className="flex h-16 items-center justify-between border-b border-gray-200 bg-white px-6 dark:border-gray-800 dark:bg-gray-900 shadow-sm">
-      {/* Left: Title / Search */}
-      <div className="flex items-center gap-4">
+    <header className="flex h-16 items-center justify-between border-b border-gray-200 bg-white px-4 md:px-6 dark:border-gray-800 dark:bg-gray-900 shadow-sm">
+      {/* Left: hamburger (mobile) + Title / Search */}
+      <div className="flex items-center gap-3">
+        {/* Hamburger — mobile only */}
+        <button
+          onClick={onMenuClick}
+          className="lg:hidden rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-300 transition-colors"
+          aria-label="Open menu"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
         {title && (
-          <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
+          <h1 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white truncate max-w-[160px] sm:max-w-none">
             {title}
           </h1>
         )}
@@ -67,7 +76,7 @@ export function Topbar({ title }: TopbarProps) {
           </div>
           <div className="hidden md:block">
             <p className="text-sm font-medium text-gray-900 dark:text-white leading-none">
-              {hasHydrated ? user?.name ?? "Guest" : "Loading..."}
+              {hasHydrated ? (user?.name ?? "Guest") : "Loading..."}
             </p>
             <p className="text-xs text-gray-500 capitalize mt-0.5">
               {hasHydrated ? user?.role?.replace(/_/g, " ") : ""}

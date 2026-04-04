@@ -898,7 +898,13 @@ const navByRole: Record<UserRole, NavGroup[]> = {
   ],
 };
 
-export function Sidebar() {
+export function Sidebar({
+  mobileOpen,
+  onMobileClose,
+}: {
+  mobileOpen?: boolean;
+  onMobileClose?: () => void;
+}) {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
   const { user, logout, hasHydrated } = useAuthStore();
@@ -928,9 +934,14 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        "flex flex-col transition-all duration-200 shrink-0",
-        "bg-brand text-white",
-        collapsed ? "w-16" : "w-64",
+        "flex flex-col bg-brand text-white",
+        "transition-transform duration-200",
+        // Mobile: fixed overlay, full w-64, slides in/out
+        "fixed inset-y-0 left-0 z-40 w-64",
+        mobileOpen ? "translate-x-0" : "-translate-x-full",
+        // Desktop: relative in flow, slide-in always visible, collapsible width
+        "lg:relative lg:z-auto lg:translate-x-0 lg:shrink-0",
+        collapsed ? "lg:w-16" : "lg:w-64",
       )}
       style={sidebarStyle}
     >
@@ -938,7 +949,7 @@ export function Sidebar() {
       <div
         className={cn(
           "flex h-16 items-center border-b border-white/10 px-4",
-          collapsed ? "justify-center" : "justify-between",
+          collapsed ? "lg:justify-center" : "justify-between",
         )}
       >
         <Link href={role ? dashboardHomeByRole[role] : "/"}>
@@ -963,14 +974,23 @@ export function Sidebar() {
               <LogoIcon size={26} onDark />
             ))}
         </Link>
+        {/* Collapse button (desktop only) */}
         {!collapsed && (
           <button
             onClick={() => setCollapsed(true)}
-            className="rounded-lg p-1.5 text-white/60 hover:bg-white/10 hover:text-white"
+            className="hidden lg:flex rounded-lg p-1.5 text-white/60 hover:bg-white/10 hover:text-white"
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
         )}
+        {/* Close button (mobile only) */}
+        <button
+          onClick={onMobileClose}
+          className="lg:hidden rounded-lg p-1.5 text-white/60 hover:bg-white/10 hover:text-white"
+          aria-label="Close menu"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </button>
       </div>
 
       {/* School branding strip */}
