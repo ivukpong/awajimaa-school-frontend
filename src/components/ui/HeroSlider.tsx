@@ -93,18 +93,18 @@ export function HeroSlider() {
       ))}
 
       {/* Content overlay */}
-      <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center text-white">
-        <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur rounded-full px-4 py-1.5 text-sm font-medium mb-6">
+      <div className="relative z-20 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center text-white">
+        <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur rounded-full px-4 py-1.5 text-sm font-medium mb-8 py-4">
           <Star className="h-3.5 w-3.5 fill-brand-gold text-brand-gold" />
-          Trusted by schools across Nigeria &amp; the Diaspora
+          Trusted by State Ministries of Educattion, &amp; Schools across Africa
         </div>
 
         {/* Headline — crossfades with slide */}
-        <div className="h-[6rem] sm:h-[5rem] md:h-[7.5rem] flex items-center justify-center">
+        <div className="h-[6rem] sm:h-[5rem] md:h-[7.5rem] pt-8 flex items-center justify-center">
           {slides.map((slide, i) => (
             <h1
               key={i}
-              className={`absolute text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight transition-all duration-700 px-4 ${
+              className={`absolute text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-extrabold leading-tight transition-all duration-700 px-4 ${
                 i === current
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-4 pointer-events-none"
@@ -116,7 +116,7 @@ export function HeroSlider() {
         </div>
 
         {/* Sub-headline */}
-        <div className="h-[3.5rem] sm:h-[3rem] flex items-center justify-center mt-2 mb-8">
+        <div className="h-[5.5rem] sm:h-[5rem] flex items-center justify-center mt-6 mb-4">
           {slides.map((slide, i) => (
             <p
               key={i}
@@ -132,7 +132,7 @@ export function HeroSlider() {
         </div>
 
         {/* CTAs */}
-        <div className="flex flex-wrap gap-4 justify-center mt-4">
+        <div className="flex flex-wrap gap-4 justify-center mt-6">
           <Link href="/register?role=school_admin">
             <Button
               size="lg"
