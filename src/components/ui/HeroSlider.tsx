@@ -40,7 +40,7 @@ const slides: Slide[] = [
     src: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=1600&q=80",
     alt: "Children excited about learning",
     headline: "Education Without Limits",
-    sub: "Trusted by schools across Nigeria and the Diaspora to deliver quality education management.",
+    sub: "Trusted by schools, Teachers, Ministries of Education, and Education regulators across the World.",
   },
 ];
 

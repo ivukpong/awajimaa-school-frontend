@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import { FloatingWhatsApp } from "@/components/ui/FloatingWhatsApp";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -28,6 +29,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${montserrat.variable} font-sans`}>
         <Providers>{children}</Providers>
+        <FloatingWhatsApp />
       </body>
     </html>
   );
