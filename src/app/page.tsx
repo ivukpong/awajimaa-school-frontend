@@ -108,16 +108,16 @@ export default function Home() {
       </section> */}
 
       {/* ───────────── FEATURES ───────────── */}
-      <section id="features" className="bg-brand/5 py-20">
+      <section id="features" className="bg-brand/5 py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <span className="text-brand font-semibold text-sm uppercase tracking-wider">
               Platform Capabilities
             </span>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mt-2">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 mt-2">
               Everything a school needs, in one place
             </h2>
-            <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
+            <p className="text-gray-600 mt-4 max-w-2xl mx-auto text-sm sm:text-base">
               From student enrollment to payroll, from exam results to
               government compliance — we handle it all.
             </p>
@@ -175,13 +175,13 @@ export default function Home() {
       {/* ───────────── WHO WE SERVE ───────────── */}
       <section
         id="who"
-        className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        className="py-12 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
       >
         <div className="text-center mb-14">
           <span className="text-brand font-semibold text-sm uppercase tracking-wider">
             For Everyone in Education
           </span>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mt-2">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 mt-2">
             Who is Awajimaa for?
           </h2>
         </div>
@@ -222,10 +222,10 @@ export default function Home() {
           ].map((card) => (
             <div
               key={card.title}
-              className="flex gap-5 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow p-6"
+              className="flex flex-col sm:flex-row gap-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow p-5 sm:p-6"
             >
               <div
-                className={`h-16 w-16 rounded-2xl ${card.bg} flex items-center justify-center shrink-0`}
+                className={`h-14 w-14 sm:h-16 sm:w-16 rounded-2xl ${card.bg} flex items-center justify-center shrink-0 self-start`}
               >
                 {card.icon}
               </div>
@@ -246,12 +246,12 @@ export default function Home() {
       </section>
 
       {/* ───────────── CTA BANNER ───────────── */}
-      <section className="bg-brand-navy text-white py-16">
+      <section className="bg-brand-navy text-white py-12 md:py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="text-3xl md:text-4xl font-extrabold mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-4">
             Ready to transform your school?
           </h2>
-          <p className="text-gray-400 text-lg mb-8">
+          <p className="text-gray-400 text-base sm:text-lg mb-8">
             Join hundreds of schools already managing their operations smarter
             with Awajimaa.
           </p>
@@ -278,13 +278,13 @@ export default function Home() {
       </section>
 
       {/* ───────────── CONTACT ───────────── */}
-      <section id="contact" className="bg-brand/5 py-20">
+      <section id="contact" className="bg-brand/5 py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <span className="text-brand font-semibold text-sm uppercase tracking-wider">
               Get In Touch
             </span>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mt-2">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 mt-2">
               We&apos;re here to help
             </h2>
             <p className="text-gray-600 mt-3 max-w-xl mx-auto">
@@ -421,7 +421,7 @@ export default function Home() {
       {/* ───────────── FOOTER ───────────── */}
       <footer className="bg-brand-navy text-gray-400 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-10">
             <div className="md:col-span-2">
               <div className="mb-4">
                 <Logo height={36} onDark />

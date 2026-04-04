@@ -96,11 +96,12 @@ export function HeroSlider() {
       <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center text-white">
         <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur rounded-full px-4 py-1.5 text-sm font-medium mb-6">
           <Star className="h-3.5 w-3.5 fill-brand-gold text-brand-gold" />
-          Trusted by schools across Nigeria &amp; the Diaspora
+          Trusted by State Ministries of Education, and Schools across Africa
+          and beyond
         </div>
 
         {/* Headline — crossfades with slide */}
-        <div className="h-[6rem] sm:h-[5rem] md:h-[7.5rem] flex items-center justify-center">
+        <div className="h-[8rem] sm:h-[6rem] md:h-[7.5rem] flex items-center justify-center">
           {slides.map((slide, i) => (
             <h1
               key={i}
@@ -116,7 +117,7 @@ export function HeroSlider() {
         </div>
 
         {/* Sub-headline */}
-        <div className="h-[3.5rem] sm:h-[3rem] flex items-center justify-center mt-2 mb-8">
+        <div className="h-[5rem] sm:h-[4rem] md:h-[3.5rem] flex items-center justify-center mt-2 mb-8">
           {slides.map((slide, i) => (
             <p
               key={i}

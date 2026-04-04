@@ -121,6 +121,8 @@ export interface LeaveRequest {
 export interface JobPosting {
     id: number;
     school_id: number;
+    regulator_id?: number;
+    is_platform_wide?: boolean;
     department_id?: number;
     title: string;
     description: string;
@@ -130,12 +132,25 @@ export interface JobPosting {
     status: "draft" | "open" | "closed" | "filled";
     slots: number;
     applications_count?: number;
+    // Screening criteria
+    min_age?: number;
+    max_age?: number;
+    required_gender?: "any" | "male" | "female";
+    required_state_id?: number;
+    required_lga_id?: number;
+    min_years_experience?: number;
     created_at: string;
 }
+
+export type Stage1Status = "pending" | "qualified" | "not_qualified";
+export type Stage2Status = "pending" | "shortlisted" | "not_shortlisted";
+export type InterviewStatus = "pending" | "attended" | "not_attended";
+export type FinalStatus = "pending" | "recruited" | "not_recruited";
 
 export interface JobApplication {
     id: number;
     job_posting_id: number;
+    user_id?: number;
     applicant_name: string;
     applicant_email: string;
     applicant_phone?: string;
@@ -144,5 +159,33 @@ export interface JobApplication {
     qualifications?: string[];
     status: "submitted" | "shortlisted" | "interviewed" | "offered" | "rejected" | "hired";
     review_notes?: string;
+    // Pipeline stages
+    stage1_status: Stage1Status;
+    stage1_reviewed_by?: number;
+    stage1_reviewed_at?: string;
+    stage1_reviewer_designation?: string;
+    stage2_status: Stage2Status;
+    stage2_reviewed_by?: number;
+    stage2_reviewed_at?: string;
+    stage2_reviewer_designation?: string;
+    interview_status: InterviewStatus;
+    interview_date?: string;
+    interview_mode?: string;
+    interview_venue?: string;
+    final_status: FinalStatus;
+    final_reviewed_by?: number;
+    final_reviewed_at?: string;
+    // Posting
+    appointment_date?: string;
+    posting_school_id?: number;
+    posting_date?: string;
+    resumption_date?: string;
+    salary?: number;
+    other_benefits?: string;
+    nhis?: boolean;
+    salary_bank_name?: string;
+    salary_account_number?: string;
+    salary_account_name?: string;
+    user?: { id: number; name: string; email: string };
     created_at: string;
 }

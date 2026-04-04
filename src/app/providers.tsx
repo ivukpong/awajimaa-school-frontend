@@ -3,6 +3,7 @@ import React from "react";
 import { ThemeProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
+import NetworkStatusBar from "@/components/ui/NetworkStatusBar";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,6 +23,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             style: { borderRadius: "10px", fontSize: "14px" },
           }}
         />
+        <NetworkStatusBar />
       </ThemeProvider>
     </QueryClientProvider>
   );
