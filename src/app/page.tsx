@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Logo } from "@/components/ui/Logo";
 import { MobileNav } from "@/components/ui/MobileNav";
+import { HeroSlider } from "@/components/ui/HeroSlider";
 import {
   GraduationCap,
   Building2,
@@ -19,7 +20,6 @@ import {
   Linkedin,
   Youtube,
   ChevronRight,
-  Star,
   BookOpen,
   BarChart3,
   Shield,
@@ -65,46 +65,8 @@ export default function Home() {
         </div>
       </header>
 
-      {/* ───────────── HERO ───────────── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-brand-dark via-brand to-brand-gold text-white">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wOCI+PHBhdGggZD0iTTM2IDM0djZoNnYtNmgtNnptMC0zMHY2aDZ2LTZoLTZ6TTYgNHY2aDZWNEg2em0wIDMwdjZoNnYtNkg2em0yNCAwaC02djZoNnYtNnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-40" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 text-center">
-          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur rounded-full px-4 py-1.5 text-sm font-medium mb-6">
-            <Star className="h-3.5 w-3.5 fill-brand-gold text-brand-gold" />
-            Trusted by schools across Nigeria & the Diaspora
-          </div>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight mb-6">
-            The Smart Platform for
-            <br />
-            <span className="text-brand-gold">Modern School Management</span>
-          </h1>
-          <p className="text-lg md:text-xl text-white/90 max-w-3xl mx-auto mb-10">
-            Awajimaa empowers schools, parents, students, teachers, sponsors,
-            and regulators with a single connected platform — from admissions to
-            payroll, e-learning to scholarships.
-          </p>
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Link href="/register?role=school_admin">
-              <Button
-                size="lg"
-                className="bg-white text-brand hover:bg-brand/10 font-bold shadow-lg px-8"
-              >
-                Register Your School
-                <ChevronRight className="h-4 w-4 ml-1" />
-              </Button>
-            </Link>
-            <Link href="/admissions">
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white text-white hover:bg-white/20 font-bold px-8"
-              >
-                Browse Schools
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
+      {/* ───────────── HERO SLIDER ───────────── */}
+      <HeroSlider />
 
       {/* ───────────── STATS ───────────── */}
       {/* <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-4 pb-16">
@@ -536,6 +498,16 @@ export default function Home() {
                     className="hover:text-brand-gold transition-colors"
                   >
                     lumgwunsolutions.com
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://awajimaahosting.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-brand-gold transition-colors"
+                  >
+                    awajimaahosting.com
                   </a>
                 </li>
               </ul>
