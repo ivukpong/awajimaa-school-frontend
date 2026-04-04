@@ -155,17 +155,17 @@ export function HeroSlider() {
         </div>
       </div>
 
-      {/* Prev / Next arrows */}
+      {/* Prev / Next arrows — hidden on mobile to avoid covering text */}
       <button
         onClick={prev}
-        className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-30 rounded-full bg-black/30 hover:bg-black/55 text-white p-2.5 transition-colors backdrop-blur-sm"
+        className="hidden sm:flex absolute left-6 top-1/2 -translate-y-1/2 z-30 rounded-full bg-black/30 hover:bg-black/55 text-white p-2.5 transition-colors backdrop-blur-sm"
         aria-label="Previous slide"
       >
         <ChevronLeft className="h-5 w-5" />
       </button>
       <button
         onClick={next}
-        className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-30 rounded-full bg-black/30 hover:bg-black/55 text-white p-2.5 transition-colors backdrop-blur-sm"
+        className="hidden sm:flex absolute right-6 top-1/2 -translate-y-1/2 z-30 rounded-full bg-black/30 hover:bg-black/55 text-white p-2.5 transition-colors backdrop-blur-sm"
         aria-label="Next slide"
       >
         <ChevronRight className="h-5 w-5" />
