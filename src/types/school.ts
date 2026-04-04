@@ -4,6 +4,9 @@ export interface School {
     name: string;
     code: string;
     logo?: string;
+    slogan?: string;
+    primary_color?: string;
+    secondary_color?: string;
     email: string;
     phone: string;
     address: string;

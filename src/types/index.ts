@@ -27,6 +27,14 @@ export interface User {
     avatar?: string;
     role: UserRole;
     school_id?: number;
+    school?: {
+        id?: number;
+        name?: string;
+        logo?: string;
+        slogan?: string;
+        primary_color?: string;
+        secondary_color?: string;
+    };
     created_at: string;
     updated_at: string;
 }
