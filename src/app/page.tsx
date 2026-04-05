@@ -342,7 +342,7 @@ export default function Home() {
               </div>
               <h3 className="font-bold text-gray-900 mb-3">Our Offices</h3>
               <div className="space-y-3 text-sm text-gray-600">
-                <p>🇺🇸 3570 Chiswick Court, Rockville, Maryland, USA</p>
+                <p>🇺🇸 16501 Shady Grove Road, Suite 8885 Gaithersburg, MD 20898 USA</p>
                 <p>
                   🇳🇬 Techcreek, ICT Center, Opposite Pleasure Park, Port
                   Harcourt, Nigeria
