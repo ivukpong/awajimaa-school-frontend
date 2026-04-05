@@ -81,13 +81,14 @@ export async function login(payload: LoginPayload): Promise<LoginResponse> {
         }
     );
 
-    if (response.status === 202) {
-        // Backend signals OTP is required
-        throw new OtpRequiredError(
-            payload.identifier,
-            (response.data as { message: string }).message ?? "Verification required"
-        );
-    }
+    // DEVICE VERIFICATION TEMPORARILY DISABLED
+    // if (response.status === 202) {
+    //     // Backend signals OTP is required
+    //     throw new OtpRequiredError(
+    //         payload.identifier,
+    //         (response.data as { message: string }).message ?? "Verification required"
+    //     );
+    // }
 
     if (response.status >= 400) {
         const msg =

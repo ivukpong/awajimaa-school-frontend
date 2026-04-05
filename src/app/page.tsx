@@ -288,8 +288,8 @@ export default function Home() {
               We&apos;re here to help
             </h2>
             <p className="text-gray-600 mt-3 max-w-xl mx-auto">
-              Reach us via email, phone, or social media. We have offices in
-              Nigeria and the United States.
+              Reach us via email, phone, or social media. We support schools
+              around the world.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
@@ -301,10 +301,10 @@ export default function Home() {
               <h3 className="font-bold text-gray-900 mb-3">Email Us</h3>
               <div className="space-y-2 text-sm text-gray-600">
                 <a
-                  href="mailto:support@awajimaaschools.com"
+                  href="mailto:admin@awajimaaschools.com"
                   className="flex items-center gap-2 hover:text-brand transition-colors"
                 >
-                  support@awajimaaschools.com
+                  admin@awajimaaschools.com
                 </a>
                 <a
                   href="mailto:Lumgwunsolutions@gmail.com"
@@ -342,7 +342,10 @@ export default function Home() {
               </div>
               <h3 className="font-bold text-gray-900 mb-3">Our Offices</h3>
               <div className="space-y-3 text-sm text-gray-600">
-                <p>🇺🇸 3570 Chiswick Court, Rockville, Maryland, USA</p>
+                <p>
+                  🇺🇸 16501 Shady Grove Road, Suite 8885, Gaithersburg, MD 20898,
+                  USA
+                </p>
                 <p>
                   🇳🇬 Techcreek, ICT Center, Opposite Pleasure Park, Port
                   Harcourt, Nigeria
@@ -384,13 +387,13 @@ export default function Home() {
                   color: "bg-blue-700",
                 },
                 {
-                  href: "https://wa.me/19178218640",
+                  href: "https://whatsapp.com/channel/0029Va9imXKFMqrb3qX1SR2T",
                   label: "WhatsApp",
                   icon: <Phone className="h-4 w-4" />,
                   color: "bg-green-500",
                 },
                 {
-                  href: "https://t.me/+iGtRjRiD4X5mODg0",
+                  href: "https://t.me/AwaApp",
                   label: "Telegram",
                   icon: <Globe className="h-4 w-4" />,
                   color: "bg-sky-500",

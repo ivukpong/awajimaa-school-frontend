@@ -61,6 +61,7 @@ export default function LoginPage() {
   });
 
   // On mount: load device ID and check if this is a trusted device
+  // DEVICE VERIFICATION TEMPORARILY DISABLED
   useEffect(() => {
     const id = getDeviceId();
     setDeviceId(id);
@@ -70,16 +71,16 @@ export default function LoginPage() {
     setValue("identifier", storedEmail);
     setPendingEmail(storedEmail);
 
-    checkDevice(storedEmail, id)
-      .then((result) => {
-        if (result.trusted && result.pin_set && result.user) {
-          setTrustedUser(result.user);
-          setScreen("pin");
-        }
-      })
-      .catch(() => {
-        /* silently ignore — show password form */
-      });
+    // checkDevice(storedEmail, id)
+    //   .then((result) => {
+    //     if (result.trusted && result.pin_set && result.user) {
+    //       setTrustedUser(result.user);
+    //       setScreen("pin");
+    //     }
+    //   })
+    //   .catch(() => {
+    //     /* silently ignore — show password form */
+    //   });
   }, [setValue]);
 
   // After any successful auth, persist session and redirect
@@ -112,16 +113,17 @@ export default function LoginPage() {
       console.log(result.token);
       finalizeLogin(result.token, result.user);
     } catch (err) {
-      if (err instanceof OtpRequiredError) {
-        setPendingEmail(data.identifier);
-        setScreen("otp");
-        setOtp("");
-        toast.success("Verification code sent to your email.");
-      } else {
-        toast.error(
-          (err as Error).message || "Invalid credentials. Please try again.",
-        );
-      }
+      // DEVICE VERIFICATION TEMPORARILY DISABLED
+      // if (err instanceof OtpRequiredError) {
+      //   setPendingEmail(data.identifier);
+      //   setScreen("otp");
+      //   setOtp("");
+      //   toast.success("Verification code sent to your email.");
+      // } else {
+      toast.error(
+        (err as Error).message || "Invalid credentials. Please try again.",
+      );
+      // }
     } finally {
       setIsLoading(false);
     }
@@ -159,116 +161,26 @@ export default function LoginPage() {
   }
 
   // Auto-submit when all digits entered
-  useEffect(() => {
-    if (screen === "pin" && pin.length === 6) onPinSubmit();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pin]);
+  // DEVICE VERIFICATION TEMPORARILY DISABLED
+  // useEffect(() => {
+  //   if (screen === "pin" && pin.length === 6) onPinSubmit();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [pin]);
 
-  useEffect(() => {
-    if (screen === "otp" && otp.length === 6) onOtpSubmit();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [otp]);
+  // useEffect(() => {
+  //   if (screen === "otp" && otp.length === 6) onOtpSubmit();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [otp]);
 
   // ── PIN screen ────────────────────────────────────────────────────────────
 
-  if (screen === "pin") {
-    return (
-      <Card>
-        <div className="mb-6 text-center">
-          {trustedUser?.avatar && (
-            <img
-              src={trustedUser.avatar}
-              alt={trustedUser.name}
-              className="w-16 h-16 rounded-full mx-auto mb-3 object-cover"
-            />
-          )}
-          {!trustedUser?.avatar && (
-            <div className="w-16 h-16 rounded-full bg-brand/10 text-brand flex items-center justify-center text-2xl font-bold mx-auto mb-3">
-              {trustedUser?.name?.charAt(0).toUpperCase()}
-            </div>
-          )}
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-            Welcome back, {trustedUser?.name?.split(" ")[0]}
-          </h2>
-          <p className="mt-1 text-sm text-gray-500">
-            Enter your 6-digit PIN to continue
-          </p>
-        </div>
-
-        <PinInput
-          value={pin}
-          onChange={setPin}
-          length={6}
-          masked
-          disabled={isLoading}
-          autoFocus
-        />
-
-        {isLoading && (
-          <p className="text-center text-sm text-gray-500 mt-4">Verifying…</p>
-        )}
-
-        <div className="mt-6 text-center">
-          <button
-            type="button"
-            onClick={() => {
-              setScreen("password");
-              setPin("");
-            }}
-            className="text-sm text-brand hover:underline flex items-center gap-1 mx-auto"
-          >
-            <ArrowLeft className="h-3 w-3" /> Use password instead
-          </button>
-        </div>
-      </Card>
-    );
-  }
+  // DEVICE VERIFICATION TEMPORARILY DISABLED
+  // if (screen === "pin") { ... }
 
   // ── OTP screen ────────────────────────────────────────────────────────────
 
-  if (screen === "otp") {
-    return (
-      <Card>
-        <div className="mb-6 text-center">
-          <div className="w-14 h-14 rounded-full bg-brand/10 text-brand flex items-center justify-center mx-auto mb-3">
-            <Mail className="h-7 w-7" />
-          </div>
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-            Verify your device
-          </h2>
-          <p className="mt-1 text-sm text-gray-500">
-            Enter the 6-digit code sent to{" "}
-            <span className="font-medium text-gray-700 dark:text-gray-300">
-              {pendingEmail}
-            </span>
-          </p>
-        </div>
-
-        <PinInput
-          value={otp}
-          onChange={setOtp}
-          length={6}
-          disabled={isLoading}
-          autoFocus
-        />
-
-        {isLoading && (
-          <p className="text-center text-sm text-gray-500 mt-4">Verifying…</p>
-        )}
-
-        <div className="mt-6 flex flex-col items-center gap-2 text-sm">
-          <button
-            type="button"
-            onClick={() => setScreen("password")}
-            className="text-brand hover:underline flex items-center gap-1"
-          >
-            <ArrowLeft className="h-3 w-3" /> Back to login
-          </button>
-          <p className="text-gray-400">Code expires in 10 minutes</p>
-        </div>
-      </Card>
-    );
-  }
+  // DEVICE VERIFICATION TEMPORARILY DISABLED
+  // if (screen === "otp") { ... }
 
   // ── Password screen (default) ─────────────────────────────────────────────
 

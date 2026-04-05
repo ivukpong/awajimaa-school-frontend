@@ -27,7 +27,7 @@ const slides: Slide[] = [
   {
     src: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1600&q=80",
     alt: "Happy teacher guiding students",
-    headline: "Connecting Teachers & Students Across Nigeria",
+    headline: "Connecting Teachers & Students Around the World",
     sub: "From e-learning to payroll, from admissions to scholarships — all in one place.",
   },
   {
