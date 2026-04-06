@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Logo } from "@/components/ui/Logo";
+import { DonationCard } from "@/components/ui/DonationCard";
 import { MobileNav } from "@/components/ui/MobileNav";
 import { HeroSlider } from "@/components/ui/HeroSlider";
 import {
@@ -242,6 +243,13 @@ export default function Home() {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* ───────────── DONATION WALLET ───────────── */}
+      <section className="py-12 md:py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <DonationCard />
         </div>
       </section>
 
