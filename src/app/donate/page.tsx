@@ -124,8 +124,8 @@ function StatusBanners() {
               Thank you for your donation!
             </p>
             <p className="text-sm text-green-700 mt-0.5">
-              Your payment was successful. Our team will allocate the funds to
-              a student in need. You&apos;ll receive a confirmation by email.
+              Your payment was successful. Our team will allocate the funds to a
+              student in need. You&apos;ll receive a confirmation by email.
             </p>
           </div>
         </div>
@@ -184,7 +184,7 @@ export default function DonatePage() {
         window.location.href = payload.checkout_url;
       } else {
         toast.success(
-          payload?.message || "Donation recorded! We will follow up shortly."
+          payload?.message || "Donation recorded! We will follow up shortly.",
         );
       }
     } catch (err: any) {
@@ -253,13 +253,17 @@ export default function DonatePage() {
           />
           <BigStat
             label="Students Helped"
-            value={statsLoading ? "..." : String(stats?.data?.students_paid ?? "—")}
+            value={
+              statsLoading ? "..." : String(stats?.data?.students_paid ?? "—")
+            }
             icon={<Users className="h-6 w-6 text-white" />}
             accent="bg-blue-500"
           />
           <BigStat
             label="Total Donations"
-            value={statsLoading ? "..." : String(stats?.data?.sponsors_count ?? "—")}
+            value={
+              statsLoading ? "..." : String(stats?.data?.sponsors_count ?? "—")
+            }
             icon={<HandHeart className="h-6 w-6 text-white" />}
             accent="bg-purple-500"
           />
