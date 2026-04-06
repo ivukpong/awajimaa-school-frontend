@@ -50,7 +50,7 @@ export function useDonationStats() {
 export function useDonations() {
     return useQuery({
         queryKey: ['donations'],
-        queryFn: () => get<{ data: { data: Donation[]; total: number; current_page: number; last_page: number } }>('/donations'),
+        queryFn: () => get<{ data: Donation[]; total: number; current_page: number; last_page: number }>('/donations'),
     });
 }
 
@@ -80,7 +80,7 @@ export function useAdminDonations(status?: string) {
     const q = status ? `?status=${status}` : '';
     return useQuery({
         queryKey: ['admin-donations', status],
-        queryFn: () => get<{ data: { data: AdminDonation[] } }>(`/donations/all${q}`),
+        queryFn: () => get<{ data: AdminDonation[]; total: number }>(`/donations/all${q}`),
     });
 }
 

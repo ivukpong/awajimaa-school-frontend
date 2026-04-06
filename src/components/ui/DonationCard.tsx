@@ -53,28 +53,28 @@ export function DonationCard() {
   const tiles = [
     {
       label: "Total Donated",
-      value: isLoading ? "..." : fmt(stats?.total_donated),
+      value: isLoading ? "..." : fmt(stats?.data?.total_donated),
       sub: "received in full",
       icon: <TrendingUp className="h-5 w-5 text-white" />,
       accent: "bg-green-500",
     },
     {
       label: "Available Balance",
-      value: isLoading ? "..." : fmt(stats?.balance_remaining),
+      value: isLoading ? "..." : fmt(stats?.data?.balance_remaining),
       sub: "ready to be used",
       icon: <Heart className="h-5 w-5 text-white" />,
       accent: "bg-brand",
     },
     {
       label: "Students Supported",
-      value: isLoading ? "..." : String(stats?.students_paid ?? "—"),
+      value: isLoading ? "..." : String(stats?.data?.students_paid ?? "—"),
       sub: "fees paid so far",
       icon: <Users className="h-5 w-5 text-white" />,
       accent: "bg-blue-500",
     },
     {
       label: "Total Donations",
-      value: isLoading ? "..." : String(stats?.sponsors_count ?? "—"),
+      value: isLoading ? "..." : String(stats?.data?.sponsors_count ?? "—"),
       sub: "individual contributions",
       icon: <HandHeart className="h-5 w-5 text-white" />,
       accent: "bg-purple-500",

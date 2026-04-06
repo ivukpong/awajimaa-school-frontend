@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
@@ -105,13 +105,46 @@ function DonorRow({
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// ─── Status banner (uses useSearchParams → must be in Suspense) ──────────────
 
-export default function DonatePage() {
+function StatusBanners() {
   const searchParams = useSearchParams();
   const justSucceeded = searchParams.get("success") === "1";
   const wasCancelled = searchParams.get("cancelled") === "1";
 
+  if (!justSucceeded && !wasCancelled) return null;
+
+  return (
+    <>
+      {justSucceeded && (
+        <div className="flex items-start gap-3 bg-green-50 border border-green-200 rounded-2xl p-4">
+          <CheckCircle className="h-6 w-6 text-green-600 shrink-0 mt-0.5" />
+          <div>
+            <p className="font-semibold text-green-800">
+              Thank you for your donation!
+            </p>
+            <p className="text-sm text-green-700 mt-0.5">
+              Your payment was successful. Our team will allocate the funds to
+              a student in need. You&apos;ll receive a confirmation by email.
+            </p>
+          </div>
+        </div>
+      )}
+      {wasCancelled && (
+        <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-2xl p-4">
+          <p className="text-sm text-amber-700">
+            Your donation was not completed. Feel free to try again whenever
+            you&apos;re ready.
+          </p>
+        </div>
+      )}
+    </>
+  );
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
+export default function DonatePage() {
   const { data: stats, isLoading: statsLoading } = useDonationStats();
   const { data: donationsRes } = useDonations();
   const { mutateAsync: createDonation, isPending } = useCreateDonation();
@@ -146,11 +179,12 @@ export default function DonatePage() {
 
     try {
       const res = await createDonation(form);
-      if (res?.data?.checkout_url) {
-        window.location.href = res.data.checkout_url;
+      const payload = (res as any)?.data ?? res;
+      if (payload?.checkout_url) {
+        window.location.href = payload.checkout_url;
       } else {
         toast.success(
-          res?.data?.message || "Donation recorded! We will follow up shortly.",
+          payload?.message || "Donation recorded! We will follow up shortly."
         );
       }
     } catch (err: any) {
@@ -180,30 +214,10 @@ export default function DonatePage() {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-10">
-        {/* ─── Success banner ─── */}
-        {justSucceeded && (
-          <div className="flex items-start gap-3 bg-green-50 border border-green-200 rounded-2xl p-4">
-            <CheckCircle className="h-6 w-6 text-green-600 shrink-0 mt-0.5" />
-            <div>
-              <p className="font-semibold text-green-800">
-                Thank you for your donation!
-              </p>
-              <p className="text-sm text-green-700 mt-0.5">
-                Your payment was successful. Our team will allocate the funds to
-                a student in need. You&apos;ll receive a confirmation by email.
-              </p>
-            </div>
-          </div>
-        )}
-
-        {wasCancelled && (
-          <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-2xl p-4">
-            <p className="text-sm text-amber-700">
-              Your donation was not completed. Feel free to try again whenever
-              you&apos;re ready.
-            </p>
-          </div>
-        )}
+        {/* ─── Status banners ─── */}
+        <Suspense fallback={null}>
+          <StatusBanners />
+        </Suspense>
 
         {/* ─── Hero headline ─── */}
         <div className="text-center">
@@ -227,25 +241,25 @@ export default function DonatePage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <BigStat
             label="Total Donated"
-            value={statsLoading ? "..." : fmt(stats?.total_donated)}
+            value={statsLoading ? "..." : fmt(stats?.data?.total_donated)}
             icon={<TrendingUp className="h-6 w-6 text-white" />}
             accent="bg-green-500"
           />
           <BigStat
             label="Available Balance"
-            value={statsLoading ? "..." : fmt(stats?.balance_remaining)}
+            value={statsLoading ? "..." : fmt(stats?.data?.balance_remaining)}
             icon={<Heart className="h-6 w-6 text-white" />}
             accent="bg-brand"
           />
           <BigStat
             label="Students Helped"
-            value={statsLoading ? "..." : String(stats?.students_paid ?? "—")}
+            value={statsLoading ? "..." : String(stats?.data?.students_paid ?? "—")}
             icon={<Users className="h-6 w-6 text-white" />}
             accent="bg-blue-500"
           />
           <BigStat
             label="Total Donations"
-            value={statsLoading ? "..." : String(stats?.sponsors_count ?? "—")}
+            value={statsLoading ? "..." : String(stats?.data?.sponsors_count ?? "—")}
             icon={<HandHeart className="h-6 w-6 text-white" />}
             accent="bg-purple-500"
           />
