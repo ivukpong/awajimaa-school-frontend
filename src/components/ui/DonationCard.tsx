@@ -5,6 +5,7 @@ import { Heart, TrendingUp, Users, HandHeart } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useDonationStats } from "@/hooks/useDonation";
 
+ 
 function StatTile({
   label,
   value,
@@ -19,25 +20,37 @@ function StatTile({
   accent: string;
 }) {
   return (
-    <div className="flex items-start gap-3 p-4 rounded-xl bg-white/60 backdrop-blur-sm border border-white/80 shadow-sm">
+    <div
+      className="group flex items-start gap-3 p-4 rounded-xl bg-white/60 backdrop-blur-sm border border-white/80 shadow-sm
+                 transition-all duration-300 ease-out hover:shadow-lg hover:-translate-y-1 hover:bg-white"
+    >
+      {/* Icon */}
       <div
-        className={`h-10 w-10 rounded-xl ${accent} flex items-center justify-center shrink-0`}
+        className={`h-10 w-10 rounded-xl ${accent} flex items-center justify-center shrink-0 transition-all duration-300 
+                    group-hover:scale-110`}
       >
         {icon}
       </div>
+
+      {/* Content */}
       <div className="min-w-0">
-        <p className="text-xs text-gray-500 font-medium leading-tight">
+        <p className="text-xs text-gray-500 font-medium leading-tight group-hover:text-gray-700">
           {label}
         </p>
+
         <p className="text-xl font-extrabold text-gray-900 leading-tight mt-0.5">
           {value}
         </p>
-        {sub && <p className="text-xs text-gray-400 mt-0.5">{sub}</p>}
+
+        {sub && (
+          <p className="text-xs text-gray-400 mt-0.5 group-hover:text-gray-500">
+            {sub}
+          </p>
+        )}
       </div>
     </div>
   );
 }
-
 export function DonationCard() {
   const { data: stats, isLoading } = useDonationStats();
 
@@ -56,7 +69,7 @@ export function DonationCard() {
       value: isLoading ? "..." : fmt(stats?.data?.total_donated),
       sub: "received in full",
       icon: <TrendingUp className="h-5 w-5 text-white" />,
-      accent: "bg-green-500",
+      accent: "bg-yellow-500",
     },
     {
       label: "Available Balance",
@@ -70,21 +83,21 @@ export function DonationCard() {
       value: isLoading ? "..." : String(stats?.data?.students_paid ?? "—"),
       sub: "fees paid so far",
       icon: <Users className="h-5 w-5 text-white" />,
-      accent: "bg-blue-500",
+      accent: "bg-yellow-600",
     },
     {
       label: "Total Donations",
       value: isLoading ? "..." : String(stats?.data?.sponsors_count ?? "—"),
       sub: "individual contributions",
       icon: <HandHeart className="h-5 w-5 text-white" />,
-      accent: "bg-purple-500",
+      accent: "bg-red-500",
     },
   ];
 
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-green-50 via-white to-blue-50 border border-green-100 shadow-md p-6 sm:p-8">
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-yellow-50 via-white to-blue-50 border border-yellow-100 shadow-md p-6 sm:p-8">
       {/* Decorative blobs */}
-      <div className="pointer-events-none absolute -top-12 -right-12 h-48 w-48 rounded-full bg-green-200/30 blur-3xl" />
+      <div className="pointer-events-none absolute -top-12 -right-12 h-48 w-48 rounded-full bg-yellow-200/30 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-blue-200/30 blur-3xl" />
 
       <div className="relative">
@@ -92,8 +105,8 @@ export function DonationCard() {
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <Heart className="h-5 w-5 text-green-500 fill-green-500" />
-              <span className="text-green-600 font-semibold text-sm uppercase tracking-wider">
+              <Heart className="h-5 w-5 text-yellow-500 fill-yellow-500" />
+              <span className="text-yellow-600 font-semibold text-sm uppercase tracking-wider">
                 Donation Wallet
               </span>
             </div>
@@ -108,14 +121,14 @@ export function DonationCard() {
           </div>
           <div className="flex gap-3 shrink-0">
             <Link href="/donate">
-              <Button className="bg-green-600 hover:bg-green-700 text-white shadow-sm">
+              <Button className="bg-yellow-600 hover:bg-yellow-700 text-white shadow-sm">
                 Donate Now →
               </Button>
             </Link>
             <Link href="/donate#donors">
               <Button
                 variant="outline"
-                className="border-green-300 text-green-700 hover:bg-green-50"
+                className="border-yellow-300 text-yellow-700 hover:bg-yellow-50"
               >
                 View All
               </Button>

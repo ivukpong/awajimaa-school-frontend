@@ -108,9 +108,10 @@ export default function Home() {
         </div>
       </section> */}
 
-      {/* ───────────── FEATURES ───────────── */}
+      {/* ───────────── FEATURES ───────────── */} 
       <section id="features" className="bg-brand/5 py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+           
           <div className="text-center mb-14">
             <span className="text-brand font-semibold text-sm uppercase tracking-wider">
               Platform Capabilities
@@ -123,50 +124,59 @@ export default function Home() {
               government compliance — we handle it all.
             </p>
           </div>
+ 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
-                icon: <GraduationCap className="h-7 w-7 text-brand" />,
+                icon: <GraduationCap className="h-7 w-7" />,
                 title: "Student Management",
                 desc: "Admissions, profiles, attendance, results, fees — all in one dashboard.",
               },
               {
-                icon: <Users className="h-7 w-7 text-brand" />,
+                icon: <Users className="h-7 w-7" />,
                 title: "HR & Payroll",
                 desc: "Hire teachers, manage leave, run payroll, and track staff performance.",
               },
               {
-                icon: <BookOpen className="h-7 w-7 text-brand" />,
+                icon: <BookOpen className="h-7 w-7" />,
                 title: "E-Learning",
                 desc: "Upload lessons, assign coursework, and track student progress digitally.",
               },
               {
-                icon: <BarChart3 className="h-7 w-7 text-brand" />,
+                icon: <BarChart3 className="h-7 w-7" />,
                 title: "Reports & Analytics",
                 desc: "Real-time reports for school admins, parents, regulators, and sponsors.",
               },
               {
-                icon: <HeartHandshake className="h-7 w-7 text-brand" />,
+                icon: <HeartHandshake className="h-7 w-7" />,
                 title: "Scholarships & Sponsorships",
                 desc: "Connect students with sponsors and manage scholarship programs seamlessly.",
               },
               {
-                icon: <Shield className="h-7 w-7 text-brand" />,
+                icon: <Shield className="h-7 w-7" />,
                 title: "Government Compliance",
                 desc: "Built-in tools for state/LGA regulators — approvals, charges, and reporting.",
               },
             ].map((f) => (
               <div
                 key={f.title}
-                className="bg-white rounded-2xl p-6 shadow-sm border border-brand/20 hover:shadow-md transition-shadow"
-              >
-                <div className="h-12 w-12 rounded-xl bg-brand/10 flex items-center justify-center mb-4">
-                  {f.icon}
+                className="group bg-white rounded-2xl p-6 shadow-sm border border-brand/20 text-center transition-all duration-300 
+                          hover:bg-red-400 hover:text-white hover:shadow-lg"
+              > 
+                <div className="h-12 w-12 mx-auto rounded-xl bg-brand/10  flex items-center justify-center mb-4 
+                                transition-all duration-300 group-hover:bg-white/20">
+                  <div className="text-brand group-hover:text-white">
+                    {f.icon}
+                  </div>
                 </div>
-                <h3 className="font-bold text-gray-900 text-lg mb-2">
+ 
+                <h3 className="font-bold text-lg mb-2">
                   {f.title}
                 </h3>
-                <p className="text-gray-600 text-sm">{f.desc}</p>
+ 
+                <p className="text-sm text-gray-600 group-hover:text-white/90">
+                  {f.desc}
+                </p>
               </div>
             ))}
           </div>
@@ -355,8 +365,7 @@ export default function Home() {
                   USA
                 </p>
                 <p>
-                  🇳🇬 Techcreek, ICT Center, Opposite Pleasure Park, Port
-                  Harcourt, Nigeria
+                  🇳🇬 Pyale Workhub, 21 Bekwere Wosu Street, D-Line, Diobu, Port Harcourt, Rivers State.
                 </p>
               </div>
             </div>
