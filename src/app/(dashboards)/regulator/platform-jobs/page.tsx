@@ -1,13 +1,22 @@
 "use client";
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { get, post } from "@/lib/api";
+import { get, post, patch } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { formatDate } from "@/lib/utils";
 import toast from "react-hot-toast";
-import { Briefcase, Plus, Users, Calendar, X } from "lucide-react";
+import Link from "next/link";
+import {
+  Briefcase,
+  Plus,
+  Users,
+  Calendar,
+  X,
+  ChevronRight,
+  SlidersHorizontal,
+} from "lucide-react";
 import type { JobPosting } from "@/types/hr";
 
 const EMPLOYMENT_LABELS: Record<string, string> = {
@@ -16,44 +25,89 @@ const EMPLOYMENT_LABELS: Record<string, string> = {
   contract: "Contract",
 };
 
+const BLANK_FORM = {
+  title: "",
+  description: "",
+  employment_type: "full_time",
+  application_deadline: "",
+  slots: "1",
+  min_age: "",
+  max_age: "",
+  required_gender: "any",
+  required_state_id: "",
+  required_lga_id: "",
+  min_years_experience: "",
+};
+
 export default function PlatformJobsPage() {
   const qc = useQueryClient();
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({
-    title: "",
-    description: "",
-    employment_type: "full_time",
-    application_deadline: "",
-    slots: "1",
-  });
+  const [editId, setEditId] = useState<number | null>(null);
+  const [form, setForm] = useState({ ...BLANK_FORM });
 
   const { data, isLoading } = useQuery({
-    queryKey: ["platform-jobs"],
+    queryKey: ["platform-jobs-regulator"],
     queryFn: () => get<{ data: JobPosting[] }>("/platform-jobs"),
   });
 
+  const buildPayload = (payload: typeof BLANK_FORM) => ({
+    ...payload,
+    slots: Number(payload.slots) || 1,
+    min_age: payload.min_age ? Number(payload.min_age) : undefined,
+    max_age: payload.max_age ? Number(payload.max_age) : undefined,
+    required_state_id: payload.required_state_id || undefined,
+    required_lga_id: payload.required_lga_id || undefined,
+    min_years_experience: payload.min_years_experience
+      ? Number(payload.min_years_experience)
+      : undefined,
+    required_gender:
+      payload.required_gender === "any" ? undefined : payload.required_gender,
+  });
+
   const create = useMutation({
-    mutationFn: (payload: typeof form) =>
-      post("/platform-jobs", {
-        ...payload,
-        slots: Number(payload.slots),
-      }),
+    mutationFn: (payload: typeof BLANK_FORM) =>
+      post("/platform-jobs", buildPayload(payload)),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["platform-jobs"] });
+      qc.invalidateQueries({ queryKey: ["platform-jobs-regulator"] });
       toast.success("Platform job posting created!");
-      setForm({
-        title: "",
-        description: "",
-        employment_type: "full_time",
-        application_deadline: "",
-        slots: "1",
-      });
+      setForm({ ...BLANK_FORM });
       setShowForm(false);
     },
     onError: () => toast.error("Failed to create posting."),
   });
 
-  const postings: JobPosting[] = data?.data.data ?? [];
+  const update = useMutation({
+    mutationFn: ({ id, payload }: { id: number; payload: typeof BLANK_FORM }) =>
+      patch(`/platform-jobs/${id}`, buildPayload(payload)),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["platform-jobs-regulator"] });
+      toast.success("Posting updated!");
+      setForm({ ...BLANK_FORM });
+      setShowForm(false);
+      setEditId(null);
+    },
+    onError: () => toast.error("Failed to update posting."),
+  });
+
+  const postings: JobPosting[] = (data?.data as unknown as JobPosting[]) ?? [];
+
+  function openEdit(p: JobPosting) {
+    setForm({
+      title: p.title,
+      description: p.description,
+      employment_type: p.employment_type,
+      application_deadline: p.application_deadline ?? "",
+      slots: String(p.slots),
+      min_age: String(p.min_age ?? ""),
+      max_age: String(p.max_age ?? ""),
+      required_gender: p.required_gender ?? "any",
+      required_state_id: String(p.required_state_id ?? ""),
+      required_lga_id: String(p.required_lga_id ?? ""),
+      min_years_experience: String(p.min_years_experience ?? ""),
+    });
+    setEditId(p.id);
+    setShowForm(true);
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -61,7 +115,11 @@ export default function PlatformJobsPage() {
       toast.error("Title and description are required.");
       return;
     }
-    create.mutate(form);
+    if (editId) {
+      update.mutate({ id: editId, payload: form });
+    } else {
+      create.mutate(form);
+    }
   }
 
   return (
@@ -77,7 +135,13 @@ export default function PlatformJobsPage() {
             teachers.
           </p>
         </div>
-        <Button onClick={() => setShowForm(true)}>
+        <Button
+          onClick={() => {
+            setForm({ ...BLANK_FORM });
+            setEditId(null);
+            setShowForm(true);
+          }}
+        >
           <Plus className="h-4 w-4 mr-2" />
           New Posting
         </Button>
@@ -225,9 +289,35 @@ export default function PlatformJobsPage() {
                 </Badge>
               </CardHeader>
               <CardContent className="flex-1 space-y-3">
-                <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
+                <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
                   {posting.description}
                 </p>
+
+                {/* Screening criteria pills */}
+                <div className="flex flex-wrap gap-1.5">
+                  {posting.min_age && (
+                    <span className="text-xs bg-gray-100 dark:bg-gray-700 rounded-full px-2 py-0.5">
+                      Age &ge; {posting.min_age}
+                    </span>
+                  )}
+                  {posting.max_age && (
+                    <span className="text-xs bg-gray-100 dark:bg-gray-700 rounded-full px-2 py-0.5">
+                      Age &le; {posting.max_age}
+                    </span>
+                  )}
+                  {posting.required_gender &&
+                    posting.required_gender !== "any" && (
+                      <span className="text-xs bg-blue-100 text-blue-700 rounded-full px-2 py-0.5 capitalize">
+                        {posting.required_gender}
+                      </span>
+                    )}
+                  {posting.min_years_experience != null && (
+                    <span className="text-xs bg-gray-100 dark:bg-gray-700 rounded-full px-2 py-0.5">
+                      &ge; {posting.min_years_experience} yr exp
+                    </span>
+                  )}
+                </div>
+
                 <div className="flex items-center gap-4 text-xs text-gray-500">
                   <span className="flex items-center gap-1">
                     <Users className="h-3.5 w-3.5" />
@@ -249,6 +339,26 @@ export default function PlatformJobsPage() {
                 <p className="text-xs text-gray-400">
                   Posted {formatDate(posting.created_at)}
                 </p>
+
+                <div className="flex gap-2 pt-1">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => openEdit(posting)}
+                    className="flex-1 text-xs"
+                  >
+                    Edit
+                  </Button>
+                  <Link
+                    href={`/regulator/platform-jobs/${posting.id}/applications`}
+                    className="flex-1"
+                  >
+                    <Button size="sm" className="w-full text-xs">
+                      Applicants
+                      <ChevronRight className="h-3 w-3 ml-1" />
+                    </Button>
+                  </Link>
+                </div>
               </CardContent>
             </Card>
           ))}

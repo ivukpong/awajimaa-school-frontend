@@ -27,7 +27,7 @@ const slides: Slide[] = [
   {
     src: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1600&q=80",
     alt: "Happy teacher guiding students",
-    headline: "Connecting Teachers & Students Across Nigeria",
+    headline: "Connecting Teachers & Students Around the World",
     sub: "From e-learning to payroll, from admissions to scholarships — all in one place.",
   },
   {
@@ -40,7 +40,7 @@ const slides: Slide[] = [
     src: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=1600&q=80",
     alt: "Children excited about learning",
     headline: "Education Without Limits",
-    sub: "Trusted by schools across Nigeria and the Diaspora to deliver quality education management.",
+    sub: "Trusted by schools, Teachers, Ministries of Education, and Education regulators across the World.",
   },
 ];
 
@@ -96,11 +96,12 @@ export function HeroSlider() {
       <div className="relative z-20 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center text-white">
         <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur rounded-full px-4 py-1.5 text-sm font-medium mb-8 py-4">
           <Star className="h-3.5 w-3.5 fill-brand-gold text-brand-gold" />
-          Trusted by State Ministries of Educattion, &amp; Schools across Africa
+          Trusted by State Ministries of Education, and Schools across Africa
+          and beyond
         </div>
 
         {/* Headline — crossfades with slide */}
-        <div className="h-[6rem] sm:h-[5rem] md:h-[7.5rem] pt-8 flex items-center justify-center">
+        <div className="h-[8rem] sm:h-[6rem] md:h-[7.5rem] flex items-center justify-center">
           {slides.map((slide, i) => (
             <h1
               key={i}
@@ -116,7 +117,7 @@ export function HeroSlider() {
         </div>
 
         {/* Sub-headline */}
-        <div className="h-[5.5rem] sm:h-[5rem] flex items-center justify-center mt-6 mb-4">
+        <div className="h-[5rem] sm:h-[4rem] md:h-[3.5rem] flex items-center justify-center mt-2 mb-8">
           {slides.map((slide, i) => (
             <p
               key={i}
@@ -154,17 +155,17 @@ export function HeroSlider() {
         </div>
       </div>
 
-      {/* Prev / Next arrows */}
+      {/* Prev / Next arrows — hidden on mobile to avoid covering text */}
       <button
         onClick={prev}
-        className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-30 rounded-full bg-black/30 hover:bg-black/55 text-white p-2.5 transition-colors backdrop-blur-sm"
+        className="hidden sm:flex absolute left-6 top-1/2 -translate-y-1/2 z-30 rounded-full bg-black/30 hover:bg-black/55 text-white p-2.5 transition-colors backdrop-blur-sm"
         aria-label="Previous slide"
       >
         <ChevronLeft className="h-5 w-5" />
       </button>
       <button
         onClick={next}
-        className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-30 rounded-full bg-black/30 hover:bg-black/55 text-white p-2.5 transition-colors backdrop-blur-sm"
+        className="hidden sm:flex absolute right-6 top-1/2 -translate-y-1/2 z-30 rounded-full bg-black/30 hover:bg-black/55 text-white p-2.5 transition-colors backdrop-blur-sm"
         aria-label="Next slide"
       >
         <ChevronRight className="h-5 w-5" />

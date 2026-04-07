@@ -8,7 +8,7 @@ const faqs = [
   {
     question: "What is Awajimaa Schools?",
     answer:
-      "Awajimaa Schools is a comprehensive school management platform built for schools and institutions. It handles student admissions, fee collection, attendance tracking, HR management, report cards, and more — all in one place.",
+      "Awajimaa Schools is a comprehensive school management platform built for schools and institutions worldwide. It handles student admissions, fee collection, attendance tracking, HR management, report cards, and more — all in one place.",
   },
   {
     question: "How do I register my school on the platform?",
@@ -18,7 +18,7 @@ const faqs = [
   {
     question: "Is there a free trial available?",
     answer:
-      "Yes, we offer a trial period for new schools. Contact our support team at admin@awajimaaschools.com to learn more about trial options tailored to your school's size.",
+      "Yes, we offer a trial period for new schools. Contact our support team at admin@awajimaaschools.com to learn more about trial options tailored to your school\'s size.",
   },
   {
     question: "How do I add students to the platform?",
@@ -43,7 +43,7 @@ const faqs = [
   {
     question: "What happens if I forget my password?",
     answer:
-      "Click 'Forgot Password' on the login page and enter your registered email address. A password reset link will be sent to your inbox. If you don't receive it, check your spam folder or contact admin@awajimaaschools.com.",
+      "Click \'Forgot Password\' on the login page and enter your registered email address. A password reset link will be sent to your inbox. If you don\'t receive it, check your spam folder or contact admin@awajimaaschools.com.",
   },
   {
     question: "How do I generate report cards?",
@@ -63,12 +63,12 @@ const faqs = [
   {
     question: "What are your support hours?",
     answer:
-      "Our support team is available Monday to Saturday, 10:00 AM – 4:00 PM (WAT). You can reach us by email at admin@awajimaaschools.com, by phone at +234 703 884 3102 (Nigeria) or +1 (917) 821-8640 (US), or via WhatsApp.",
+      "Our support team is available Monday to Saturday, 10:00 AM \u2013 4:00 PM (WAT). You can reach us by email at admin@awajimaaschools.com, by phone at +234 703 884 3102 (Nigeria) or +1 (917) 821-8640 (US), or via WhatsApp at +234 703 884 3102.",
   },
   {
     question: "How do I contact Awajimaa Schools?",
     answer:
-      "Email: admin@awajimaaschools.com\nNigeria: +234 703 884 3102\nUS: +1 (917) 821-8640\nUS Office: 16501 Shady Grove Road, Suite 8885 Gaithersburg, MD 20898 USA \nNigeria Office: Techcreek, ICT Center, Opposite Pleasure Park, Port Harcourt, Nigeria",
+      "Email: admin@awajimaaschools.com\nSupport: Lumgwunsolutions@gmail.com\nWhatsApp: +234 703 884 3102\nUS: +1 (917) 821-8640\nTelegram: https://t.me/AwaApp\nWhatsApp Channel: https://whatsapp.com/channel/0029Va9imXKFMqrb3qX1SR2T\nUS Office: 16501 Shady Grove Road, Suite 8885, Gaithersburg, MD 20898, USA\nNigeria Office: Techcreek, ICT Center, Opposite Pleasure Park, Port Harcourt, Nigeria",
   },
 ];
 
@@ -120,8 +120,7 @@ export default function FAQPage() {
               Email Support
             </a>
             <a
-              href="https://whatsapp.com/channel/0029Va9imXKFMqrb3qX1SR2T"
-              // href="https://wa.me/19178218640"
+              href="https://wa.me/2347038843102"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 px-5 py-2.5 text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"

@@ -1,3 +1,19 @@
+// ─── School Registration (for Regulator dashboard) ────────────────────────────
+export interface SchoolRegistration {
+    id: number;
+    name: string;
+    lga?: { id: number; name: string };
+    town?: { id: number; name: string };
+    /** Raw lga string (if FK relations not yet migrated) */
+    lga_name?: string;
+    type: string | string[];
+    ownership: "public" | "private" | "mission";
+    is_active: boolean;
+    approved_at?: string | null;
+    created_at: string;
+    signup_fee_paid?: boolean;
+}
+
 // ─── School ───────────────────────────────────────────────────────────────────
 export interface School {
     id: number;

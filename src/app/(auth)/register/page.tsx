@@ -35,7 +35,6 @@ import { Button } from "@/components/ui/Button";
 import { COUNTRIES, NIGERIA } from "@/lib/countries";
 import { cn } from "@/lib/utils";
 import Cookies from "js-cookie";
-import { getDeviceId, getDeviceInfo } from "@/lib/auth";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -814,7 +813,6 @@ export default function RegisterPage() {
   });
 
   const handleFinalSubmit = () => {
-    const { name: deviceName, type: deviceType } = getDeviceInfo();
     const payload: Record<string, string | boolean> = {
       name: form.name,
       email: form.email,
@@ -825,9 +823,6 @@ export default function RegisterPage() {
       role: form.role,
       password: form.password,
       password_confirmation: form.password_confirmation,
-      device_id: getDeviceId(),
-      device_name: deviceName,
-      device_type: deviceType,
     };
 
     if (isNigeria) {

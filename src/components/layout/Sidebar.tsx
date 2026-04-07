@@ -38,6 +38,9 @@ import {
   Upload,
   Briefcase,
   ShieldCheck,
+  ScrollText,
+  FolderKanban,
+  AtSign,
 } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
@@ -370,6 +373,16 @@ const navByRole: Record<UserRole, NavGroup[]> = {
           icon: <CalendarOff className="h-4 w-4" />,
         },
         {
+          label: "Projects",
+          href: "/school-admin/projects",
+          icon: <FolderKanban className="h-4 w-4" />,
+        },
+        {
+          label: "Email Accounts",
+          href: "/school-admin/email-accounts",
+          icon: <AtSign className="h-4 w-4" />,
+        },
+        {
           label: "Settings",
           href: "/school-admin/settings",
           icon: <Settings className="h-4 w-4" />,
@@ -418,6 +431,11 @@ const navByRole: Record<UserRole, NavGroup[]> = {
           label: "Admissions",
           href: "/school-admin/admissions",
           icon: <ClipboardList className="h-4 w-4" />,
+        },
+        {
+          label: "Transcripts",
+          href: "/school-admin/reports/transcript",
+          icon: <ScrollText className="h-4 w-4" />,
         },
       ],
     },
