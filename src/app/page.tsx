@@ -29,7 +29,7 @@ import {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col overflow-hidden">
       {/* ───────────── NAV ───────────── */}
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-gray-100 shadow-sm">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -109,7 +109,7 @@ export default function Home() {
         </div>
       </section> */}
 
-      {/* ───────────── FEATURES ───────────── */}
+      {/* ───────────── FEATURES ───────────── */} 
       <section id="features" className="bg-brand/5 py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection className="text-center mb-14">
@@ -127,32 +127,32 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
-                icon: <GraduationCap className="h-7 w-7 text-brand" />,
+                icon: <GraduationCap className="h-7 w-7" />,
                 title: "Student Management",
                 desc: "Admissions, profiles, attendance, results, fees — all in one dashboard.",
               },
               {
-                icon: <Users className="h-7 w-7 text-brand" />,
+                icon: <Users className="h-7 w-7" />,
                 title: "HR & Payroll",
                 desc: "Hire teachers, manage leave, run payroll, and track staff performance.",
               },
               {
-                icon: <BookOpen className="h-7 w-7 text-brand" />,
+                icon: <BookOpen className="h-7 w-7" />,
                 title: "E-Learning",
                 desc: "Upload lessons, assign coursework, and track student progress digitally.",
               },
               {
-                icon: <BarChart3 className="h-7 w-7 text-brand" />,
+                icon: <BarChart3 className="h-7 w-7" />,
                 title: "Reports & Analytics",
                 desc: "Real-time reports for school admins, parents, regulators, and sponsors.",
               },
               {
-                icon: <HeartHandshake className="h-7 w-7 text-brand" />,
+                icon: <HeartHandshake className="h-7 w-7" />,
                 title: "Scholarships & Sponsorships",
                 desc: "Connect students with sponsors and manage scholarship programs seamlessly.",
               },
               {
-                icon: <Shield className="h-7 w-7 text-brand" />,
+                icon: <Shield className="h-7 w-7" />,
                 title: "Government Compliance",
                 desc: "Built-in tools for state/LGA regulators — approvals, charges, and reporting.",
               },
@@ -360,8 +360,7 @@ export default function Home() {
                   USA
                 </p>
                 <p>
-                  🇳🇬 Pyale Workhub, 21 Bekwere Wosu Street, D-Line, Diobu, Port
-                  Harcourt, Rivers State
+                  🇳🇬 Pyale Workhub, 21 Bekwere Wosu Street, D-Line, Diobu, Port Harcourt, Rivers State
                 </p>
               </div>
             </div>

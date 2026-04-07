@@ -73,10 +73,10 @@ export default function PrivacyPolicyPage() {
               You have the right to access, correct, or delete your personal
               data. To exercise these rights, please contact us at{" "}
               <a
-                href="mailto:privacy@awajimaa.com"
+                href="mailto:admin@awajimaaschools.com"
                 className="text-brand hover:underline"
               >
-                privacy@awajimaa.com
+                admin@awajimaaschools.com
               </a>
               .
             </p>
@@ -90,10 +90,10 @@ export default function PrivacyPolicyPage() {
               If you have any questions about this Privacy Policy, please
               contact us at{" "}
               <a
-                href="mailto:support@awajimaa.com"
+                href="admin@awajimaaschools.com"
                 className="text-brand hover:underline"
               >
-                support@awajimaa.com
+                admin@awajimaaschools.com
               </a>
               .
             </p>
