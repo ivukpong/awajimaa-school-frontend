@@ -24,10 +24,19 @@ export interface Donation {
 export interface DonationPayload {
     donor_name?: string;
     donor_email?: string;
+    donor_phone?: string;
     amount: number;
     currency?: 'USD' | 'NGN';
     message?: string;
     is_anonymous?: boolean;
+}
+
+export interface LeaderboardEntry {
+    donor_name: string;
+    total_donated: number;
+    donations_count: number;
+    students_supported: number;
+    currency: string;
 }
 
 export interface CreateDonationResponse {
@@ -63,6 +72,14 @@ export function useCreateDonation() {
             qc.invalidateQueries({ queryKey: ['donation-stats'] });
             qc.invalidateQueries({ queryKey: ['donations'] });
         },
+    });
+}
+
+export function useLeaderboard() {
+    return useQuery({
+        queryKey: ['donation-leaderboard'],
+        queryFn: () => get<LeaderboardEntry[]>('/donations/leaderboard'),
+        staleTime: 120_000,
     });
 }
 
