@@ -4,6 +4,7 @@ import { Logo } from "@/components/ui/Logo";
 import { DonationCard } from "@/components/ui/DonationCard";
 import { MobileNav } from "@/components/ui/MobileNav";
 import { HeroSlider } from "@/components/ui/HeroSlider";
+import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import {
   GraduationCap,
   Building2,
@@ -111,7 +112,7 @@ export default function Home() {
       {/* ───────────── FEATURES ───────────── */}
       <section id="features" className="bg-brand/5 py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
+          <AnimatedSection className="text-center mb-14">
             <span className="text-brand font-semibold text-sm uppercase tracking-wider">
               Platform Capabilities
             </span>
@@ -122,7 +123,7 @@ export default function Home() {
               From student enrollment to payroll, from exam results to
               government compliance — we handle it all.
             </p>
-          </div>
+          </AnimatedSection>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
@@ -155,19 +156,22 @@ export default function Home() {
                 title: "Government Compliance",
                 desc: "Built-in tools for state/LGA regulators — approvals, charges, and reporting.",
               },
-            ].map((f) => (
-              <div
+            ].map((f, idx) => (
+              <AnimatedSection
                 key={f.title}
-                className="bg-white rounded-2xl p-6 shadow-sm border border-brand/20 hover:shadow-md transition-shadow"
+                delay={idx * 100}
+                className="h-full"
               >
-                <div className="h-12 w-12 rounded-xl bg-brand/10 flex items-center justify-center mb-4">
-                  {f.icon}
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-brand/20 hover:shadow-md transition-shadow h-full flex flex-col items-center text-center">
+                  <div className="h-12 w-12 rounded-xl bg-brand/10 flex items-center justify-center mb-4">
+                    {f.icon}
+                  </div>
+                  <h3 className="font-bold text-gray-900 text-lg mb-2">
+                    {f.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm">{f.desc}</p>
                 </div>
-                <h3 className="font-bold text-gray-900 text-lg mb-2">
-                  {f.title}
-                </h3>
-                <p className="text-gray-600 text-sm">{f.desc}</p>
-              </div>
+              </AnimatedSection>
             ))}
           </div>
         </div>
@@ -178,14 +182,14 @@ export default function Home() {
         id="who"
         className="py-12 md:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
       >
-        <div className="text-center mb-14">
+        <AnimatedSection className="text-center mb-14">
           <span className="text-brand font-semibold text-sm uppercase tracking-wider">
             For Everyone in Education
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 mt-2">
             Who is Awajimaa for?
           </h2>
-        </div>
+        </AnimatedSection>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {[
             {
@@ -220,28 +224,27 @@ export default function Home() {
               cta: "Browse Teaching Gigs",
               bg: "bg-blue-500",
             },
-          ].map((card) => (
-            <div
-              key={card.title}
-              className="flex flex-col sm:flex-row gap-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow p-5 sm:p-6"
-            >
-              <div
-                className={`h-14 w-14 sm:h-16 sm:w-16 rounded-2xl ${card.bg} flex items-center justify-center shrink-0 self-start`}
-              >
-                {card.icon}
+          ].map((card, idx) => (
+            <AnimatedSection key={card.title} delay={idx * 150}>
+              <div className="flex flex-col sm:flex-row gap-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow p-5 sm:p-6">
+                <div
+                  className={`h-14 w-14 sm:h-16 sm:w-16 rounded-2xl ${card.bg} flex items-center justify-center shrink-0 self-start`}
+                >
+                  {card.icon}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-gray-900 text-lg mb-1">
+                    {card.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-4">{card.desc}</p>
+                  <Link href={card.href}>
+                    <Button className="bg-brand hover:bg-brand-dark text-white text-sm px-4 py-2 h-auto">
+                      {card.cta} <ChevronRight className="h-3.5 w-3.5 ml-1" />
+                    </Button>
+                  </Link>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-gray-900 text-lg mb-1">
-                  {card.title}
-                </h3>
-                <p className="text-gray-600 text-sm mb-4">{card.desc}</p>
-                <Link href={card.href}>
-                  <Button className="bg-brand hover:bg-brand-dark text-white text-sm px-4 py-2 h-auto">
-                    {card.cta} <ChevronRight className="h-3.5 w-3.5 ml-1" />
-                  </Button>
-                </Link>
-              </div>
-            </div>
+            </AnimatedSection>
           ))}
         </div>
       </section>
@@ -249,7 +252,9 @@ export default function Home() {
       {/* ───────────── DONATION WALLET ───────────── */}
       <section className="py-12 md:py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <DonationCard />
+          <AnimatedSection fadeOnly>
+            <DonationCard />
+          </AnimatedSection>
         </div>
       </section>
 
@@ -288,7 +293,7 @@ export default function Home() {
       {/* ───────────── CONTACT ───────────── */}
       <section id="contact" className="bg-brand/5 py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
+          <AnimatedSection className="text-center mb-14">
             <span className="text-brand font-semibold text-sm uppercase tracking-wider">
               Get In Touch
             </span>
@@ -299,7 +304,7 @@ export default function Home() {
               Reach us via email, phone, or social media. We support schools
               around the world.
             </p>
-          </div>
+          </AnimatedSection>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
             {/* Emails */}
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-brand/20">
@@ -355,8 +360,8 @@ export default function Home() {
                   USA
                 </p>
                 <p>
-                  🇳🇬 Techcreek, ICT Center, Opposite Pleasure Park, Port
-                  Harcourt, Nigeria
+                  🇳🇬 Pyale Workhub, 21 Bekwere Wosu Street, D-Line, Diobu, Port
+                  Harcourt, Rivers State
                 </p>
               </div>
             </div>
