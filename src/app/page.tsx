@@ -258,6 +258,39 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ───────────── SPONSOR A STUDENT ───────────── */}
+      <section className="py-14 md:py-20 bg-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimatedSection className="text-center mb-10">
+            <span className="inline-flex items-center gap-2 rounded-full bg-brand/10 px-4 py-1.5 text-brand font-semibold text-sm uppercase tracking-wider">
+              <HeartHandshake className="h-4 w-4" /> Sponsor a Student
+            </span>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 mt-4">
+              Change a Child&apos;s Life Today
+            </h2>
+            <p className="text-gray-500 mt-3 max-w-xl mx-auto text-base">
+              Browse real students in need of financial support. Select as many
+              as you like and pay securely — 100% goes to their school fees.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-4 justify-center">
+              <Link href="/sponsor-students">
+                <Button
+                  size="lg"
+                  leftIcon={<HeartHandshake className="h-5 w-5" />}
+                >
+                  Sponsor a Student
+                </Button>
+              </Link>
+              <Link href="/sponsor-students">
+                <Button size="lg" variant="outline">
+                  View All Students
+                </Button>
+              </Link>
+            </div>
+          </AnimatedSection>
+        </div>
+      </section>
+
       {/* ───────────── CTA BANNER ───────────── */}
       <section className="bg-brand-navy text-white py-12 md:py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
