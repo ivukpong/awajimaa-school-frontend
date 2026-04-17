@@ -290,7 +290,7 @@ export default function ELearningPage() {
   const [showCreate, setShowCreate] = useState(false);
   const [editing, setEditing] = useState<ElearningProgram | null>(null);
 
-  const programs: ElearningProgram[] = data?.data?.data ?? data?.data ?? [];
+  const programs: ElearningProgram[] = (Array.isArray(data?.data) ? data.data : (data?.data as { data?: ElearningProgram[] })?.data) ?? [];
 
   const handleDelete = async (id: number) => {
     if (!confirm("Delete this program? This cannot be undone.")) return;

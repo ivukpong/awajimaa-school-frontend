@@ -115,19 +115,19 @@ export default function MinistryRecruitmentPage() {
           <StatCard
             title="Total Campaigns"
             value={stats.total}
-            icon={Briefcase}
+            icon={<Briefcase className="h-5 w-5" />}
             color="blue"
           />
           <StatCard
             title="Open Campaigns"
             value={stats.open}
-            icon={Briefcase}
+            icon={<Briefcase className="h-5 w-5" />}
             color="green"
           />
           <StatCard
             title="Total Applications"
             value={stats.total_applications}
-            icon={Briefcase}
+            icon={<Briefcase className="h-5 w-5" />}
             color="purple"
           />
         </div>

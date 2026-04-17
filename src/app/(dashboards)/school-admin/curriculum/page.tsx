@@ -55,7 +55,7 @@ export default function SchoolCurriculumPage() {
       key: "term",
       header: "Term",
       render: (r) => (
-        <Badge variant="info">
+        <Badge variant="blue">
           {TERM_LABELS[r.term ?? ""] ?? r.term ?? "—"}
         </Badge>
       ),
@@ -126,7 +126,7 @@ export default function SchoolCurriculumPage() {
 
       <Card>
         <CardContent className="p-0">
-          <Table columns={columns} data={rows} loading={isLoading} />
+          <Table columns={columns} data={rows} loading={isLoading} keyField="id" />
         </CardContent>
       </Card>
 

@@ -242,16 +242,16 @@ export default function AcademicCalendarPage() {
     {
       key: "term",
       header: "Term",
-      render: (r) => <Badge variant="info">{TERM_LABELS[r.term]}</Badge>,
+      render: (r) => <Badge variant="blue">{TERM_LABELS[r.term]}</Badge>,
     },
     {
       key: "is_published",
       header: "Status",
       render: (r) =>
         r.is_published ? (
-          <Badge variant="success">Published</Badge>
+          <Badge variant="green">Published</Badge>
         ) : (
-          <Badge variant="warning">Draft</Badge>
+          <Badge variant="yellow">Draft</Badge>
         ),
     },
     {
@@ -355,7 +355,7 @@ export default function AcademicCalendarPage() {
 
       <Card>
         <CardContent className="p-0">
-          <Table columns={columns} data={rows} loading={isLoading} />
+          <Table columns={columns} data={rows} loading={isLoading} keyField="id" />
         </CardContent>
       </Card>
 

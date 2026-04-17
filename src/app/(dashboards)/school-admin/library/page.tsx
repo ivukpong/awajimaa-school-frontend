@@ -32,11 +32,11 @@ function BookCard({ book }: { book: ApprovedBook }) {
         )}
 
         <div className="mt-2 flex flex-wrap gap-1">
-          <Badge variant="info" className="text-xs">
+          <Badge variant="blue" className="text-xs">
             {book.subject_name}
           </Badge>
           {book.academic_session && (
-            <Badge variant="default" className="text-xs">
+            <Badge variant="gray" className="text-xs">
               {book.academic_session}
             </Badge>
           )}
@@ -67,7 +67,7 @@ export default function ELibraryPage() {
   if (subjectFilter) params.subject_name = subjectFilter;
 
   const { data, isLoading } = useELibrary(params);
-  const books = data?.data ?? [];
+  const books: ApprovedBook[] = (data?.data as { data?: ApprovedBook[] })?.data ?? (Array.isArray(data?.data) ? data.data as ApprovedBook[] : []);
 
   return (
     <div className="space-y-6">

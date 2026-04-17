@@ -58,7 +58,7 @@ export default function SchoolAcademicCalendarPage() {
       key: "term",
       header: "Term",
       render: (r) => (
-        <Badge variant="info">
+        <Badge variant="blue">
           {TERM_LABELS[r.term ?? ""] ?? r.term ?? "—"}
         </Badge>
       ),
@@ -141,7 +141,7 @@ export default function SchoolAcademicCalendarPage() {
 
       <Card>
         <CardContent className="p-0">
-          <Table columns={columns} data={rows} loading={isLoading} />
+          <Table columns={columns} data={rows} loading={isLoading} keyField="id" />
         </CardContent>
       </Card>
 

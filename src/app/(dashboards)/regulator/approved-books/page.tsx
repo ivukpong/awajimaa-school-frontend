@@ -252,7 +252,7 @@ export default function ApprovedBooksPage() {
     {
       key: "subject_name",
       header: "Subject",
-      render: (r) => <Badge variant="info">{r.subject_name}</Badge>,
+      render: (r) => <Badge variant="blue">{r.subject_name}</Badge>,
     },
     {
       key: "academic_session",
@@ -266,7 +266,7 @@ export default function ApprovedBooksPage() {
       header: "E-Book",
       render: (r) =>
         r.is_ebook ? (
-          <Badge variant="success">Yes</Badge>
+          <Badge variant="green">Yes</Badge>
         ) : (
           <span className="text-gray-400 text-sm">—</span>
         ),
@@ -276,9 +276,9 @@ export default function ApprovedBooksPage() {
       header: "Status",
       render: (r) =>
         r.is_published ? (
-          <Badge variant="success">Published</Badge>
+          <Badge variant="green">Published</Badge>
         ) : (
-          <Badge variant="warning">Draft</Badge>
+          <Badge variant="yellow">Draft</Badge>
         ),
     },
     {
@@ -367,7 +367,7 @@ export default function ApprovedBooksPage() {
 
       <Card>
         <CardContent className="p-0">
-          <Table columns={columns} data={rows} loading={isLoading} />
+          <Table columns={columns} data={rows} loading={isLoading} keyField="id" />
         </CardContent>
       </Card>
 
