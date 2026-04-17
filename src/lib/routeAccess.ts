@@ -18,6 +18,7 @@ export const roleDashboardPath: Record<UserRole, string> = {
   insurance_operator: "/insurance-operator",
   platform_accountant: "/platform-accountant",
   school_accountant: "/school-accountant",
+  state_ministry: "/ministry",
 };
 
 const roleAllowedPrefixes: Record<UserRole, string[]> = {
@@ -84,6 +85,9 @@ const roleAllowedPrefixes: Record<UserRole, string[]> = {
   ],
   school_accountant: [
     "/school-accountant",
+  ],
+  state_ministry: [
+    "/ministry",
   ],
 };
 

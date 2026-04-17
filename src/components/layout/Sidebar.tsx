@@ -65,6 +65,7 @@ const dashboardHomeByRole: Record<UserRole, string> = {
   insurance_operator: "/insurance-operator",
   platform_accountant: "/platform-accountant",
   school_accountant: "/school-accountant",
+  state_ministry: "/ministry",
 };
 
 interface NavItem {
@@ -910,6 +911,78 @@ const navByRole: Record<UserRole, NavGroup[]> = {
           label: "Payroll",
           href: "/school-accountant",
           icon: <DollarSign className="h-4 w-4" />,
+        },
+      ],
+    },
+  ],
+  state_ministry: [
+    {
+      group: "Overview",
+      items: [
+        {
+          label: "Dashboard",
+          href: "/ministry",
+          icon: <LayoutDashboard className="h-4 w-4" />,
+        },
+      ],
+    },
+    {
+      group: "Schools",
+      items: [
+        {
+          label: "All Schools",
+          href: "/ministry/schools",
+          icon: <School className="h-4 w-4" />,
+        },
+        {
+          label: "Approval Requests",
+          href: "/ministry/schools?tab=approvals",
+          icon: <FileCheck className="h-4 w-4" />,
+        },
+      ],
+    },
+    {
+      group: "Recruitment",
+      items: [
+        {
+          label: "Campaigns",
+          href: "/ministry/recruitment",
+          icon: <Briefcase className="h-4 w-4" />,
+        },
+        {
+          label: "Interviews",
+          href: "/ministry/interviews",
+          icon: <Video className="h-4 w-4" />,
+        },
+        {
+          label: "Postings",
+          href: "/ministry/postings",
+          icon: <MapPin className="h-4 w-4" />,
+        },
+      ],
+    },
+    {
+      group: "Academic",
+      items: [
+        {
+          label: "Academic Year",
+          href: "/ministry/academic",
+          icon: <Calendar className="h-4 w-4" />,
+        },
+        {
+          label: "E-Library",
+          href: "/ministry/academic?tab=library",
+          icon: <BookOpen className="h-4 w-4" />,
+        },
+      ],
+    },
+    {
+      group: "Administration",
+      items: [
+        {
+          label: "Staff & Roles",
+          href: "/ministry/users",
+          icon: <Users className="h-4 w-4" />,
         },
       ],
     },

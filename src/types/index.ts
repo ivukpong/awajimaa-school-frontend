@@ -16,7 +16,8 @@ export type UserRole =
     | "security"
     | "insurance_operator"
     | "platform_accountant"
-    | "school_accountant";
+    | "school_accountant"
+    | "state_ministry";
 
 // ─── Auth ─────────────────────────────────────────────────────────────────────
 export interface User {
