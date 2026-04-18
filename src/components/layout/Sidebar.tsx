@@ -41,6 +41,7 @@ import {
   ScrollText,
   FolderKanban,
   AtSign,
+  BookMarked,
 } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
@@ -950,6 +951,11 @@ const navByRole: Record<UserRole, NavGroup[]> = {
           icon: <Briefcase className="h-4 w-4" />,
         },
         {
+          label: "Applications",
+          href: "/ministry/recruitment",
+          icon: <ClipboardList className="h-4 w-4" />,
+        },
+        {
           label: "Interviews",
           href: "/ministry/interviews",
           icon: <Video className="h-4 w-4" />,
@@ -983,6 +989,51 @@ const navByRole: Record<UserRole, NavGroup[]> = {
           label: "Staff & Roles",
           href: "/ministry/users",
           icon: <Users className="h-4 w-4" />,
+        },
+      ],
+    },
+    {
+      group: "Organizations",
+      items: [
+        {
+          label: "Regulators",
+          href: "/ministry/regulators",
+          icon: <Building2 className="h-4 w-4" />,
+        },
+      ],
+    },
+    {
+      group: "Communications",
+      items: [
+        {
+          label: "Announcements",
+          href: "/ministry/holidays",
+          icon: <Bell className="h-4 w-4" />,
+        },
+        {
+          label: "Meetings",
+          href: "/ministry/meetings",
+          icon: <Video className="h-4 w-4" />,
+        },
+        {
+          label: "Email Accounts",
+          href: "/ministry/email-accounts",
+          icon: <AtSign className="h-4 w-4" />,
+        },
+      ],
+    },
+    {
+      group: "Student Support",
+      items: [
+        {
+          label: "Scholarships & Bursaries",
+          href: "/ministry/scholarships",
+          icon: <GraduationCap className="h-4 w-4" />,
+        },
+        {
+          label: "Curriculum & Books",
+          href: "/ministry/curriculum",
+          icon: <BookMarked className="h-4 w-4" />,
         },
       ],
     },

@@ -95,7 +95,9 @@ export default function MinistryAcademicPage() {
   }>({
     queryKey: ["academic-years"],
     queryFn: () =>
-      get<{ data: AcademicYear[] }>("/academic-calendars").then((r) => r.data),
+      get<{ data: AcademicYear[] }>("/ministry/academic-years").then(
+        (r) => r.data,
+      ),
   });
 
   const { data: booksData, isLoading: loadingBooks } = useQuery<{
@@ -117,7 +119,7 @@ export default function MinistryAcademicPage() {
 
   /* ── Mutations ─────────────────────────────────────────────── */
   const yearMutation = useMutation({
-    mutationFn: (p: typeof EMPTY_YEAR) => post("/academic-calendars", p),
+    mutationFn: (p: typeof EMPTY_YEAR) => post("/ministry/academic-years", p),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["academic-years"] });
       toast.success("Academic year created.");
