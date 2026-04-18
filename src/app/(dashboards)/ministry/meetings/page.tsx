@@ -1,8 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Video, Plus } from "lucide-react";
+import { Video, Plus, ExternalLink } from "lucide-react";
 import toast from "react-hot-toast";
+import Cookies from "js-cookie";
 import { get, post } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -15,6 +16,7 @@ interface Meeting {
   agenda?: string;
   platform?: string;
   meeting_url?: string;
+  livekit_room_name?: string;
   starts_at: string;
   ends_at?: string;
   type?: string;
@@ -26,6 +28,7 @@ const PLATFORM_OPTIONS = [
   { value: "google_meet", label: "Google Meet" },
   { value: "teams", label: "Microsoft Teams" },
   { value: "custom", label: "Custom" },
+  { value: "awajimaa", label: "Awajimaa (Built-in)" },
 ];
 
 const TYPE_OPTIONS = [
@@ -33,11 +36,15 @@ const TYPE_OPTIONS = [
   { value: "physical", label: "Physical" },
 ];
 
-const PLATFORM_VARIANT: Record<string, "blue" | "green" | "purple" | "gray"> = {
+const PLATFORM_VARIANT: Record<
+  string,
+  "blue" | "green" | "purple" | "gray" | "yellow"
+> = {
   zoom: "blue",
   google_meet: "green",
   teams: "purple",
   custom: "gray",
+  awajimaa: "yellow",
 };
 
 const EMPTY_FORM = {
@@ -56,6 +63,35 @@ export default function MinistryMeetingsPage() {
   const qc = useQueryClient();
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
+  const [joiningId, setJoiningId] = useState<number | null>(null);
+
+  async function handleJoinAwajimaa(meeting: Meeting) {
+    setJoiningId(meeting.id);
+    try {
+      const userData = Cookies.get("user");
+      const userName = userData
+        ? (JSON.parse(userData)?.name ?? "Participant")
+        : "Participant";
+      const res = await post<{
+        success: boolean;
+        token: string;
+        ws_url: string;
+      }>("/meetings/livekit/token", {
+        meeting_id: meeting.id,
+        participant_name: userName,
+      });
+      if (res.success && meeting.livekit_room_name) {
+        const url = `/meeting/${meeting.livekit_room_name}?meeting=${meeting.id}&name=${encodeURIComponent(userName)}`;
+        window.open(url, "_blank", "noopener,noreferrer");
+      } else {
+        toast.error("Could not get meeting token.");
+      }
+    } catch {
+      toast.error("Failed to join meeting.");
+    } finally {
+      setJoiningId(null);
+    }
+  }
 
   const { data, isLoading } = useQuery<{ data: Meeting[] }>({
     queryKey: ["ministry-meetings"],
@@ -81,8 +117,12 @@ export default function MinistryMeetingsPage() {
     e.preventDefault();
     if (!form.title) return toast.error("Title is required.");
     if (!form.starts_at) return toast.error("Start time is required.");
-    if (form.type === "virtual" && !form.meeting_url)
-      return toast.error("Meeting URL is required for virtual meetings.");
+    if (
+      form.type === "virtual" &&
+      form.platform !== "awajimaa" &&
+      !form.meeting_url
+    )
+      return toast.error("Meeting URL is required for this platform.");
     createMutation.mutate(form);
   }
 
@@ -187,7 +227,16 @@ export default function MinistryMeetingsPage() {
                         {m.ends_at ? new Date(m.ends_at).toLocaleString() : "—"}
                       </td>
                       <td className="py-3">
-                        {m.meeting_url ? (
+                        {m.platform === "awajimaa" ? (
+                          <button
+                            onClick={() => handleJoinAwajimaa(m)}
+                            disabled={joiningId === m.id}
+                            className="inline-flex items-center gap-1 text-xs bg-yellow-500 hover:bg-yellow-600 disabled:opacity-60 text-white font-medium px-2.5 py-1 rounded"
+                          >
+                            <ExternalLink className="h-3 w-3" />
+                            {joiningId === m.id ? "…" : "Join"}
+                          </button>
+                        ) : m.meeting_url ? (
                           <a
                             href={m.meeting_url}
                             target="_blank"
@@ -262,47 +311,59 @@ export default function MinistryMeetingsPage() {
                 </select>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Meeting URL *
-                </label>
-                <input
-                  type="url"
-                  className="w-full border rounded-lg px-3 py-2 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                  value={form.meeting_url}
-                  onChange={(e) =>
-                    setForm({ ...form, meeting_url: e.target.value })
-                  }
-                  placeholder="https://zoom.us/j/..."
-                />
-              </div>
+              {form.platform !== "awajimaa" && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Meeting URL *
+                    </label>
+                    <input
+                      type="url"
+                      className="w-full border rounded-lg px-3 py-2 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                      value={form.meeting_url}
+                      onChange={(e) =>
+                        setForm({ ...form, meeting_url: e.target.value })
+                      }
+                      placeholder="https://zoom.us/j/..."
+                    />
+                  </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Meeting ID
-                  </label>
-                  <input
-                    className="w-full border rounded-lg px-3 py-2 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                    value={form.meeting_id}
-                    onChange={(e) =>
-                      setForm({ ...form, meeting_id: e.target.value })
-                    }
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Passcode
-                  </label>
-                  <input
-                    className="w-full border rounded-lg px-3 py-2 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                    value={form.passcode}
-                    onChange={(e) =>
-                      setForm({ ...form, passcode: e.target.value })
-                    }
-                  />
-                </div>
-              </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Meeting ID
+                      </label>
+                      <input
+                        className="w-full border rounded-lg px-3 py-2 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                        value={form.meeting_id}
+                        onChange={(e) =>
+                          setForm({ ...form, meeting_id: e.target.value })
+                        }
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Passcode
+                      </label>
+                      <input
+                        className="w-full border rounded-lg px-3 py-2 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                        value={form.passcode}
+                        onChange={(e) =>
+                          setForm({ ...form, passcode: e.target.value })
+                        }
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {form.platform === "awajimaa" && (
+                <p className="text-xs text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg px-3 py-2">
+                  The built-in Awajimaa video room will be created
+                  automatically. Participants can join directly from the
+                  meetings list.
+                </p>
+              )}
             </>
           )}
 

@@ -5,6 +5,7 @@ import { DonationCard } from "@/components/ui/DonationCard";
 import { MobileNav } from "@/components/ui/MobileNav";
 import { HeroSlider } from "@/components/ui/HeroSlider";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
+import { RecruitmentSection } from "@/components/ui/RecruitmentSection";
 import {
   GraduationCap,
   Building2,
@@ -248,6 +249,9 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {/* ───────────── OPEN RECRUITMENT ───────────── */}
+      <RecruitmentSection />
 
       {/* ───────────── DONATION WALLET ───────────── */}
       <section className="py-12 md:py-16 bg-gray-50">

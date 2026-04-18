@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, Upload, BookOpen, Library, CalendarDays } from "lucide-react";
 import toast from "react-hot-toast";
@@ -74,7 +75,10 @@ const EMPTY_LIB = {
 
 export default function MinistryAcademicPage() {
   const qc = useQueryClient();
-  const [tab, setTab] = useState<Tab>("academic");
+  const searchParams = useSearchParams();
+  const [tab, setTab] = useState<Tab>(
+    (searchParams.get("tab") as Tab) ?? "academic",
+  );
 
   // Academic Year state
   const [showYearModal, setShowYearModal] = useState(false);

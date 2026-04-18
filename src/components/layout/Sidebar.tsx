@@ -42,6 +42,7 @@ import {
   FolderKanban,
   AtSign,
   BookMarked,
+  Trophy,
 } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
@@ -972,7 +973,7 @@ const navByRole: Record<UserRole, NavGroup[]> = {
         },
         {
           label: "E-Library",
-          href: "/ministry/academic?tab=library",
+          href: "/ministry/academic?tab=elibrary",
           icon: <BookOpen className="h-4 w-4" />,
         },
       ],
@@ -1029,6 +1030,16 @@ const navByRole: Record<UserRole, NavGroup[]> = {
           label: "Curriculum & Books",
           href: "/ministry/curriculum",
           icon: <BookMarked className="h-4 w-4" />,
+        },
+      ],
+    },
+    {
+      group: "Programs",
+      items: [
+        {
+          label: "Competitions",
+          href: "/ministry/competitions",
+          icon: <Trophy className="h-4 w-4" />,
         },
       ],
     },

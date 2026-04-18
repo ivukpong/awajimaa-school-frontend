@@ -22,6 +22,8 @@ interface Campaign {
   type?: "primary" | "post_primary" | "secondary" | "tertiary";
   status: "draft" | "open" | "closed" | "completed";
   description?: string;
+  banner_url?: string;
+  video_url?: string;
   applications_count?: number;
   created_at: string;
 }
@@ -55,6 +57,8 @@ const EMPTY_FORM = {
   application_deadline: "",
   type: "primary",
   description: "",
+  banner_url: "",
+  video_url: "",
 };
 
 export default function MinistryRecruitmentPage() {
@@ -384,6 +388,34 @@ export default function MinistryRecruitmentPage() {
                 setForm((f) => ({ ...f, description: e.target.value }))
               }
               placeholder="Brief description of this campaign..."
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Banner Image URL
+            </label>
+            <input
+              type="url"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm"
+              value={form.banner_url}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, banner_url: e.target.value }))
+              }
+              placeholder="https://..."
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Video URL
+            </label>
+            <input
+              type="url"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm"
+              value={form.video_url}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, video_url: e.target.value }))
+              }
+              placeholder="YouTube or Vimeo URL"
             />
           </div>
           <div className="flex justify-end gap-2 pt-2">
