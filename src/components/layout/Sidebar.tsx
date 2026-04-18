@@ -1,4 +1,4 @@
- "use client";
+"use client";
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -928,21 +928,6 @@ const navByRole: Record<UserRole, NavGroup[]> = {
       ],
     },
     {
-      group: "Schools",
-      items: [
-        {
-          label: "All Schools",
-          href: "/ministry/schools",
-          icon: <School className="h-4 w-4" />,
-        },
-        {
-          label: "Approval Requests",
-          href: "/ministry/schools?tab=approvals",
-          icon: <FileCheck className="h-4 w-4" />,
-        },
-      ],
-    },
-    {
       group: "Recruitment",
       items: [
         {
@@ -959,6 +944,21 @@ const navByRole: Record<UserRole, NavGroup[]> = {
           label: "Postings",
           href: "/ministry/postings",
           icon: <MapPin className="h-4 w-4" />,
+        },
+      ],
+    },
+    {
+      group: "Schools",
+      items: [
+        {
+          label: "All Schools",
+          href: "/ministry/schools",
+          icon: <School className="h-4 w-4" />,
+        },
+        {
+          label: "Approval Requests",
+          href: "/ministry/schools?tab=approvals",
+          icon: <FileCheck className="h-4 w-4" />,
         },
       ],
     },

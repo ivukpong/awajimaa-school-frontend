@@ -18,6 +18,8 @@ interface Campaign {
   subject_areas?: string;
   target_slots: number;
   application_deadline?: string;
+  application_start_date?: string;
+  type?: "primary" | "post_primary" | "secondary" | "tertiary";
   status: "draft" | "open" | "closed" | "completed";
   description?: string;
   applications_count?: number;
@@ -37,12 +39,21 @@ const STATUS_VARIANT: Record<string, "yellow" | "green" | "gray" | "blue"> = {
   completed: "blue",
 };
 
+const TYPE_LABELS: Record<string, string> = {
+  primary: "Primary",
+  post_primary: "Post Primary",
+  secondary: "Secondary",
+  tertiary: "Tertiary",
+};
+
 const EMPTY_FORM = {
   title: "",
   academic_year: new Date().getFullYear().toString(),
   subject_areas: "",
   target_slots: "",
+  application_start_date: "",
   application_deadline: "",
+  type: "primary",
   description: "",
 };
 
@@ -160,13 +171,16 @@ export default function MinistryRecruitmentPage() {
                       Title
                     </th>
                     <th className="py-2 pr-4 font-medium text-gray-600 dark:text-gray-400">
+                      Type
+                    </th>
+                    <th className="py-2 pr-4 font-medium text-gray-600 dark:text-gray-400">
                       Year
                     </th>
                     <th className="py-2 pr-4 font-medium text-gray-600 dark:text-gray-400">
                       Target
                     </th>
                     <th className="py-2 pr-4 font-medium text-gray-600 dark:text-gray-400">
-                      Deadline
+                      Application Period
                     </th>
                     <th className="py-2 pr-4 font-medium text-gray-600 dark:text-gray-400">
                       Applications
@@ -189,6 +203,15 @@ export default function MinistryRecruitmentPage() {
                       <td className="py-3 pr-4 font-medium text-gray-900 dark:text-white">
                         {c.title}
                       </td>
+                      <td className="py-3 pr-4">
+                        {c.type ? (
+                          <Badge variant="blue">
+                            {TYPE_LABELS[c.type] ?? c.type}
+                          </Badge>
+                        ) : (
+                          <span className="text-gray-400">—</span>
+                        )}
+                      </td>
                       <td className="py-3 pr-4 text-gray-600 dark:text-gray-400">
                         {c.academic_year}
                       </td>
@@ -196,6 +219,12 @@ export default function MinistryRecruitmentPage() {
                         {c.target_slots}
                       </td>
                       <td className="py-3 pr-4 text-gray-600 dark:text-gray-400">
+                        {c.application_start_date
+                          ? new Date(
+                              c.application_start_date,
+                            ).toLocaleDateString()
+                          : "—"}
+                        {" → "}
                         {c.application_deadline
                           ? new Date(
                               c.application_deadline,
@@ -277,6 +306,21 @@ export default function MinistryRecruitmentPage() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Campaign Type
+            </label>
+            <select
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm"
+              value={form.type}
+              onChange={(e) => setForm((f) => ({ ...f, type: e.target.value }))}
+            >
+              <option value="primary">Primary School</option>
+              <option value="post_primary">Post Primary</option>
+              <option value="secondary">Secondary School</option>
+              <option value="tertiary">Tertiary Education</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Subject Areas
             </label>
             <textarea
@@ -291,16 +335,42 @@ export default function MinistryRecruitmentPage() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Application Deadline
+              Application Period
             </label>
-            <input
-              type="date"
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm"
-              value={form.application_deadline}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, application_deadline: e.target.value }))
-              }
-            />
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                  Start Date
+                </label>
+                <input
+                  type="date"
+                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm"
+                  value={form.application_start_date}
+                  onChange={(e) =>
+                    setForm((f) => ({
+                      ...f,
+                      application_start_date: e.target.value,
+                    }))
+                  }
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                  Deadline
+                </label>
+                <input
+                  type="date"
+                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm"
+                  value={form.application_deadline}
+                  onChange={(e) =>
+                    setForm((f) => ({
+                      ...f,
+                      application_deadline: e.target.value,
+                    }))
+                  }
+                />
+              </div>
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
