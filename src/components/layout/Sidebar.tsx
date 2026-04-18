@@ -114,6 +114,16 @@ const navByRole: Record<UserRole, NavGroup[]> = {
         },
       ],
     },
+    {
+      group: "Freelancer Platform",
+      items: [
+        {
+          label: "Teacher Verifications",
+          href: "/super-admin/teachers",
+          icon: <ShieldCheck className="h-4 w-4" />,
+        },
+      ],
+    },
   ],
   state_regulator: [
     {
@@ -825,6 +835,16 @@ const navByRole: Record<UserRole, NavGroup[]> = {
           label: "Browse Jobs",
           href: "/freelancer-teacher/recruitment",
           icon: <Briefcase className="h-4 w-4" />,
+        },
+        {
+          label: "Teaching Gigs",
+          href: "/freelancer-teacher/gigs",
+          icon: <BookOpen className="h-4 w-4" />,
+        },
+        {
+          label: "KYC & Verification",
+          href: "/freelancer-teacher/kyc",
+          icon: <ShieldCheck className="h-4 w-4" />,
         },
       ],
     },

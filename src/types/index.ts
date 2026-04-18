@@ -89,6 +89,18 @@ export interface ApiError {
 }
 
 // ─── Freelancer Teacher ───────────────────────────────────────────────────────
+export type TeacherVerificationStatus =
+    | "pending"
+    | "under_review"
+    | "approved"
+    | "declined"
+    | "more_info_requested";
+
+export interface TeacherCertificate {
+    label: string;
+    url: string;
+}
+
 export interface FreelancerProfile {
     id: number;
     user_id: number;
@@ -113,6 +125,60 @@ export interface FreelancerProfile {
     researchgate_url?: string;
     orcid_url?: string;
     scopus_url?: string;
+    // KYC & verification
+    cv_url?: string;
+    trcn_url?: string;
+    nin_document_url?: string;
+    certificates?: TeacherCertificate[];
+    verification_status?: TeacherVerificationStatus;
+    admin_notes?: string;
+    verified_by?: number;
+    verified_at?: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface TeacherVerificationMessage {
+    id: number;
+    freelancer_profile_id: number;
+    sent_by: number;
+    sender?: Pick<User, "id" | "name" | "avatar">;
+    message: string;
+    is_from_admin: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface TeachingGig {
+    id: number;
+    created_by: number;
+    creator?: Pick<User, "id" | "name" | "email" | "avatar">;
+    teacher_id?: number;
+    teacher?: Pick<User, "id" | "name" | "email" | "avatar">;
+    title: string;
+    description?: string;
+    subject: string;
+    level?: string;
+    duration_hours: number;
+    budget_usd: number;
+    budget_ngn: number;
+    status: "open" | "funded" | "assigned" | "in_progress" | "completed" | "cancelled" | "disputed";
+    funded_at?: string;
+    started_at?: string;
+    completed_at?: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface TeachingGigProposal {
+    id: number;
+    teaching_gig_id: number;
+    teacher_id: number;
+    teacher?: Pick<User, "id" | "name" | "email" | "avatar">;
+    proposed_price_usd: number;
+    proposed_price_ngn: number;
+    message?: string;
+    status: "pending" | "accepted" | "rejected";
     created_at: string;
     updated_at: string;
 }
