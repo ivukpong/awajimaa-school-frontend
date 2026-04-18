@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -949,11 +949,6 @@ const navByRole: Record<UserRole, NavGroup[]> = {
           label: "Campaigns",
           href: "/ministry/recruitment",
           icon: <Briefcase className="h-4 w-4" />,
-        },
-        {
-          label: "Applications",
-          href: "/ministry/recruitment",
-          icon: <ClipboardList className="h-4 w-4" />,
         },
         {
           label: "Interviews",
