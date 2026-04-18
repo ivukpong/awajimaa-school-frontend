@@ -504,7 +504,7 @@ export default function TeacherVerificationsPage() {
               No teacher applications found.
             </div>
           ) : (
-            <Table columns={columns} data={profiles} />
+            <Table columns={columns} data={profiles} keyField="id" />
           )}
         </CardContent>
       </Card>

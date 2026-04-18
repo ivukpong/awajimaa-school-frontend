@@ -432,7 +432,7 @@ export default function MinistryCompetitionsPage() {
             Cancel
           </Button>
           <Button
-            variant="destructive"
+            variant="danger"
             disabled={deleteMutation.isPending}
             onClick={() => deletingId && deleteMutation.mutate(deletingId)}
           >

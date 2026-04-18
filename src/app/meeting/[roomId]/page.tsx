@@ -29,7 +29,6 @@ export default function MeetingRoomPage() {
     setLoading(true);
     try {
       const res = await post<{
-        success: boolean;
         token: string;
         ws_url: string;
       }>("/meetings/livekit/token", {
@@ -37,8 +36,10 @@ export default function MeetingRoomPage() {
         participant_name: name,
       });
       if (res.success) {
-        setToken(res.token);
-        setWsUrl(res.ws_url || process.env.NEXT_PUBLIC_LIVEKIT_WS_URL || "");
+        setToken(res.data.token);
+        setWsUrl(
+          res.data.ws_url || process.env.NEXT_PUBLIC_LIVEKIT_WS_URL || "",
+        );
       } else {
         toast.error("Failed to get meeting token.");
       }
