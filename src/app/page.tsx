@@ -504,10 +504,12 @@ export default function Home() {
       </section>
 
       {/* ───────────── FOOTER ───────────── */}
-      <footer className="bg-brand-navy text-gray-400 py-12">
+      <footer className="bg-brand-navy text-gray-400 py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-10">
-            <div className="md:col-span-2">
+          {/* ── Main link columns ── */}
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-8 mb-10">
+            {/* About */}
+            <div className="col-span-2 md:col-span-3 xl:col-span-2">
               <div className="mb-4">
                 <Logo height={36} onDark />
               </div>
@@ -517,6 +519,8 @@ export default function Home() {
                 — empowering education across Africa and the diaspora.
               </p>
             </div>
+
+            {/* Platform */}
             <div>
               <h4 className="text-white font-semibold mb-4">Platform</h4>
               <ul className="space-y-2 text-sm">
@@ -549,7 +553,7 @@ export default function Home() {
                     href="/freelancer-teacher/recruitment"
                     className="hover:text-brand-gold transition-colors"
                   >
-                    Teaching Gigs
+                    Teachers Recruitment
                   </Link>
                 </li>
                 <li>
@@ -570,9 +574,101 @@ export default function Home() {
                 </li>
               </ul>
             </div>
+
+            {/* For Education */}
             <div>
-              <h4 className="text-white font-semibold mb-4">Our Websites</h4>
+              <h4 className="text-white font-semibold mb-4">For Education</h4>
               <ul className="space-y-2 text-sm">
+                <li>
+                  <Link
+                    href="/ministries-of-education"
+                    className="hover:text-brand-gold transition-colors"
+                  >
+                    Ministries of Education
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/teachers"
+                    className="hover:text-brand-gold transition-colors"
+                  >
+                    Teachers
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/curriculums"
+                    className="hover:text-brand-gold transition-colors"
+                  >
+                    Curriculums
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/schools"
+                    className="hover:text-brand-gold transition-colors"
+                  >
+                    Schools
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/announcements"
+                    className="hover:text-brand-gold transition-colors"
+                  >
+                    Announcements
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* For Students */}
+            <div>
+              <h4 className="text-white font-semibold mb-4">For Students</h4>
+              <ul className="space-y-2 text-sm">
+                <li>
+                  <Link
+                    href="/sponsor-students"
+                    className="hover:text-brand-gold transition-colors"
+                  >
+                    Students in Need
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/e-learning"
+                    className="hover:text-brand-gold transition-colors"
+                  >
+                    E-Learning
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/e-library"
+                    className="hover:text-brand-gold transition-colors"
+                  >
+                    E-Library
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/schools-insurance"
+                    className="hover:text-brand-gold transition-colors"
+                  >
+                    Schools Insurance
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* ── Secondary row: Our Websites + Legal ── */}
+          <div className="border-t border-white/10 pt-8 pb-6 grid grid-cols-2 sm:grid-cols-4 gap-8">
+            <div className="col-span-2 sm:col-span-2">
+              <h4 className="text-white font-semibold mb-3 text-sm">
+                Our Websites
+              </h4>
+              <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
                 <li>
                   <a
                     href="https://www.awajimaaschools.com"
@@ -604,8 +700,10 @@ export default function Home() {
                   </a>
                 </li>
               </ul>
-              <h4 className="text-white font-semibold mt-6 mb-4">Legal</h4>
-              <ul className="space-y-2 text-sm">
+            </div>
+            <div className="col-span-2 sm:col-span-2 sm:text-right">
+              <h4 className="text-white font-semibold mb-3 text-sm">Legal</h4>
+              <ul className="flex flex-wrap sm:justify-end gap-x-6 gap-y-2 text-sm">
                 <li>
                   <Link
                     href="/privacy-policy"
@@ -625,6 +723,8 @@ export default function Home() {
               </ul>
             </div>
           </div>
+
+          {/* ── Copyright ── */}
           <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
             <p>
               &copy; {new Date().getFullYear()} Awajimaa School Platform. All
