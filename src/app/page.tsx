@@ -581,7 +581,7 @@ export default function Home() {
               <ul className="space-y-2 text-sm">
                 <li>
                   <Link
-                    href="/ministries-of-education"
+                    href="/ministry"
                     className="hover:text-brand-gold transition-colors"
                   >
                     Ministries of Education
