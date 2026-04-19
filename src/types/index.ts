@@ -435,3 +435,22 @@ export interface PlatformAccountantSummary {
     }>;
 }
 
+// ─── Blog / Education News ────────────────────────────────────────────────────
+export type BlogCategory = "education" | "achievement" | "innovation" | "policy" | "event";
+
+export interface BlogPost {
+    id: number;
+    title: string;
+    slug: string;
+    excerpt?: string;
+    body: string;
+    category: BlogCategory;
+    cover_image?: string;
+    source_url?: string;
+    source_credit?: string;
+    author?: { id: number; name: string };
+    is_published: boolean;
+    published_at?: string;
+    created_at: string;
+}
+

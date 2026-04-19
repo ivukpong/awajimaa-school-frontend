@@ -14,11 +14,307 @@ import {
   MessageSquare,
   ChevronLeft,
   ChevronRight,
+  PlusCircle,
+  Download,
+  MapPin,
+  ArrowDownLeft,
+  ArrowUpRight,
+  BookOpen,
+  Shirt,
+  Building2,
+  Wallet,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { withRoleGuard } from "@/lib/withRoleGuard";
 
-// ── Featured Needy Students Slider ───────────────────────────────────────────
+// ── Wallet Card ───────────────────────────────────────────────────────────────
+function WalletCard({
+  balance,
+  studentCount,
+}: {
+  balance: number;
+  studentCount: number;
+}) {
+  return (
+    <div
+      className="rounded-2xl p-5 text-white"
+      style={{
+        background: "linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)",
+      }}
+    >
+      <div className="flex items-start justify-between">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <Wallet className="h-4 w-4 opacity-80" />
+            <span className="text-xs font-semibold uppercase tracking-widest opacity-80">
+              Sponsor Wallet
+            </span>
+          </div>
+          <p className="text-3xl font-extrabold tracking-tight">
+            {formatCurrency(balance)}
+          </p>
+          <p className="mt-1 text-xs opacity-75">
+            Supports {studentCount} student{studentCount !== 1 ? "s" : ""}
+          </p>
+        </div>
+        <Button
+          size="sm"
+          className="bg-white/20 hover:bg-white/30 text-white border-0 gap-1.5"
+          leftIcon={<PlusCircle className="h-4 w-4" />}
+        >
+          Add Funds
+        </Button>
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 gap-3">
+        <div className="rounded-xl bg-white/15 p-3">
+          <p className="text-[10px] font-semibold uppercase opacity-75">
+            Allocated
+          </p>
+          <p className="text-sm font-bold mt-0.5">
+            {formatCurrency(balance * 0.72)}
+          </p>
+        </div>
+        <div className="rounded-xl bg-white/15 p-3">
+          <p className="text-[10px] font-semibold uppercase opacity-75">
+            Available
+          </p>
+          <p className="text-sm font-bold mt-0.5">
+            {formatCurrency(balance * 0.28)}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Supported Institutions ────────────────────────────────────────────────────
+interface Institution {
+  id: number;
+  name: string;
+  location: string;
+  student_count: number;
+}
+
+const demoInstitutions: Institution[] = [
+  {
+    id: 1,
+    name: "Greenfield Academy",
+    location: "Uyo, Akwa Ibom",
+    student_count: 1,
+  },
+  {
+    id: 2,
+    name: "Govt. Secondary, Uyo",
+    location: "Uyo, Akwa Ibom",
+    student_count: 1,
+  },
+];
+
+function SupportedInstitutions({
+  institutions,
+}: {
+  institutions: Institution[];
+}) {
+  return (
+    <Card>
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base flex items-center gap-2">
+          <Building2 className="h-4 w-4 text-gray-500" />
+          Supported Institutions
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-0">
+        <ul className="divide-y dark:divide-gray-800">
+          {institutions.map((inst) => (
+            <li
+              key={inst.id}
+              className="flex items-center gap-3 px-5 py-3 border-l-4 border-yellow-400"
+            >
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-yellow-50 dark:bg-yellow-900/20 shrink-0">
+                <Building2 className="h-4 w-4 text-yellow-600" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                  {inst.name}
+                </p>
+                <div className="flex items-center gap-1 mt-0.5">
+                  <MapPin className="h-3 w-3 text-gray-400" />
+                  <span className="text-xs text-gray-500">{inst.location}</span>
+                </div>
+              </div>
+              <Badge variant="yellow">
+                {inst.student_count} student
+                {inst.student_count !== 1 ? "s" : ""}
+              </Badge>
+            </li>
+          ))}
+        </ul>
+      </CardContent>
+    </Card>
+  );
+}
+
+// ── Financial Ledger ──────────────────────────────────────────────────────────
+interface LedgerEntry {
+  id: number;
+  icon: "credit" | "debit";
+  title: string;
+  reference: string;
+  amount: number;
+  date: string;
+}
+
+const demoLedger: LedgerEntry[] = [
+  {
+    id: 1,
+    icon: "credit",
+    title: "Wallet Top-Up",
+    reference: "TXN-WLT-001",
+    amount: 500000,
+    date: "2024-09-01",
+  },
+  {
+    id: 2,
+    icon: "debit",
+    title: "Term Fees – Mercy Udo",
+    reference: "TXN-SCH-003",
+    amount: 200000,
+    date: "2024-09-10",
+  },
+  {
+    id: 3,
+    icon: "debit",
+    title: "Books & Stationery",
+    reference: "TXN-MTR-005",
+    amount: 45000,
+    date: "2024-09-15",
+  },
+  {
+    id: 4,
+    icon: "credit",
+    title: "Stripe Top-Up",
+    reference: "TXN-STR-007",
+    amount: 250000,
+    date: "2024-10-01",
+  },
+  {
+    id: 5,
+    icon: "debit",
+    title: "Term Fees – Daniel Obi",
+    reference: "TXN-SCH-008",
+    amount: 180000,
+    date: "2024-11-01",
+  },
+];
+
+function FinancialLedger({ entries }: { entries: LedgerEntry[] }) {
+  return (
+    <Card>
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-base flex items-center gap-2">
+            <BarChart3 className="h-4 w-4 text-gray-500" />
+            Financial Ledger
+          </CardTitle>
+          <Button variant="outline" size="sm" className="gap-1.5 text-xs">
+            <Download className="h-3.5 w-3.5" />
+            Export
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent className="p-0">
+        <ul className="divide-y dark:divide-gray-800">
+          {entries.map((e) => (
+            <li key={e.id} className="flex items-center gap-4 px-5 py-3">
+              <div
+                className={`h-8 w-8 flex-shrink-0 rounded-full flex items-center justify-center ${
+                  e.icon === "credit"
+                    ? "bg-green-50 dark:bg-green-900/20"
+                    : "bg-red-50 dark:bg-red-900/20"
+                }`}
+              >
+                {e.icon === "credit" ? (
+                  <ArrowDownLeft className="h-3.5 w-3.5 text-green-600" />
+                ) : (
+                  <ArrowUpRight className="h-3.5 w-3.5 text-red-600" />
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                  {e.title}
+                </p>
+                <p className="text-[11px] font-mono text-gray-400">
+                  #{e.reference} ·{" "}
+                  {new Date(e.date).toLocaleDateString("en-NG", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </p>
+              </div>
+              <p
+                className={`text-sm font-bold ${
+                  e.icon === "credit" ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {e.icon === "credit" ? "+" : "−"}
+                {formatCurrency(e.amount)}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </CardContent>
+    </Card>
+  );
+}
+
+// ── Upkeep Allocation ─────────────────────────────────────────────────────────
+function UpkeepAllocation() {
+  const items = [
+    {
+      label: "Books & Stationery",
+      amount: 45000,
+      icon: BookOpen,
+      color: "text-blue-600",
+      bg: "bg-blue-50 dark:bg-blue-900/20",
+    },
+    {
+      label: "Uniform & Shoes",
+      amount: 80000,
+      icon: Shirt,
+      color: "text-purple-600",
+      bg: "bg-purple-50 dark:bg-purple-900/20",
+    },
+  ];
+  return (
+    <Card>
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base">Upkeep Allocation</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-2 gap-3">
+          {items.map(({ label, amount, icon: Icon, color, bg }) => (
+            <div key={label} className={`rounded-xl ${bg} p-4`}>
+              <Icon className={`h-5 w-5 ${color} mb-2`} />
+              <p className="text-[11px] text-gray-500 font-medium">{label}</p>
+              <p className={`text-base font-bold ${color} mt-0.5`}>
+                {formatCurrency(amount)}
+              </p>
+            </div>
+          ))}
+        </div>
+        <Button
+          className="mt-4 w-full"
+          size="sm"
+          leftIcon={<HeartHandshake className="h-4 w-4" />}
+        >
+          Distribute Material
+        </Button>
+      </CardContent>
+    </Card>
+  );
+}
 function NeedyStudentSlider({ students }: { students: any[] }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -147,7 +443,34 @@ function SponsorDashboard() {
     queryFn: () => get<any>("/students/needy").then((r) => r.data?.data ?? []),
   });
 
+  const { data: walletData } = useQuery({
+    queryKey: ["sponsor-wallet"],
+    queryFn: () =>
+      get<any>("/sponsor/wallet").then((r) => r.data?.data ?? null),
+  });
+
+  const { data: institutionsData } = useQuery({
+    queryKey: ["sponsor-institutions"],
+    queryFn: () =>
+      get<any>("/sponsor/institutions").then((r) => r.data?.data ?? []),
+  });
+
+  const { data: ledgerData } = useQuery({
+    queryKey: ["sponsor-ledger"],
+    queryFn: () =>
+      get<any>("/sponsor/transactions").then((r) => r.data?.data ?? []),
+  });
+
   const needyStudents: any[] = Array.isArray(needyData) ? needyData : [];
+  const walletBalance: number = walletData?.balance ?? 325000;
+  const institutions: Institution[] =
+    Array.isArray(institutionsData) && institutionsData.length > 0
+      ? institutionsData
+      : demoInstitutions;
+  const ledgerEntries: LedgerEntry[] =
+    Array.isArray(ledgerData) && ledgerData.length > 0
+      ? ledgerData
+      : demoLedger;
 
   return (
     <div className="space-y-6">
@@ -159,6 +482,12 @@ function SponsorDashboard() {
           Empowering students through your scholarship support
         </p>
       </div>
+
+      {/* Wallet Card */}
+      <WalletCard
+        balance={walletBalance}
+        studentCount={sponsoredStudents.length}
+      />
 
       {/* Featured needy students slider */}
       {needyStudents.length > 0 && (
@@ -323,6 +652,15 @@ function SponsorDashboard() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Upkeep Allocation */}
+      <UpkeepAllocation />
+
+      {/* Two column: institutions + ledger */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <SupportedInstitutions institutions={institutions} />
+        <FinancialLedger entries={ledgerEntries} />
+      </div>
     </div>
   );
 }

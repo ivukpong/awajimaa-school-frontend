@@ -112,6 +112,11 @@ const navByRole: Record<UserRole, NavGroup[]> = {
           href: "/super-admin/settings",
           icon: <Settings className="h-4 w-4" />,
         },
+        {
+          label: "Audit Log",
+          href: "/super-admin/audit-log",
+          icon: <ClipboardList className="h-4 w-4" />,
+        },
       ],
     },
     {
@@ -698,6 +703,11 @@ const navByRole: Record<UserRole, NavGroup[]> = {
           href: "/parent/fees",
           icon: <CreditCard className="h-4 w-4" />,
         },
+        {
+          label: "Transaction History",
+          href: "/parent/transactions",
+          icon: <ScrollText className="h-4 w-4" />,
+        },
       ],
     },
     {
@@ -862,6 +872,11 @@ const navByRole: Record<UserRole, NavGroup[]> = {
           label: "Help Messages",
           href: "/security",
           icon: <MessageSquare className="h-4 w-4" />,
+        },
+        {
+          label: "Roles & Permissions",
+          href: "/security/roles",
+          icon: <ShieldCheck className="h-4 w-4" />,
         },
       ],
     },
