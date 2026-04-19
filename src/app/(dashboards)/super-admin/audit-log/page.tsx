@@ -133,7 +133,7 @@ export default function AuditLogPage() {
   const { data, isLoading } = useQuery<AuditEntry[]>({
     queryKey: ["audit-log"],
     queryFn: async () => {
-      const res = await get<{ data: AuditEntry[] }>("/admin/audit-log");
+      const res = await get<AuditEntry[]>("/admin/audit-log");
       return res.data ?? [];
     },
   });

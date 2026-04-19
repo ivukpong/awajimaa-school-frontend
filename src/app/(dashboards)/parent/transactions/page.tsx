@@ -120,7 +120,7 @@ export default function ParentTransactionsPage() {
   const { data, isLoading } = useQuery<Transaction[]>({
     queryKey: ["parent-transactions"],
     queryFn: async () => {
-      const res = await get<{ data: Transaction[] }>("/finance/transactions");
+      const res = await get<Transaction[]>("/finance/transactions");
       return res.data ?? [];
     },
   });

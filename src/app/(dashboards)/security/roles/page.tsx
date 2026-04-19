@@ -133,7 +133,7 @@ export default function SecurityRolesPage() {
   const { data, isLoading } = useQuery<RoleSummary[]>({
     queryKey: ["roles-summary"],
     queryFn: async () => {
-      const res = await get<{ data: RoleSummary[] }>("/admin/roles");
+      const res = await get<RoleSummary[]>("/admin/roles");
       return res.data ?? [];
     },
   });
