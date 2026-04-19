@@ -44,6 +44,9 @@ export default function Home() {
             <a href="#who" className="hover:text-brand transition-colors">
               Who We Serve
             </a>
+            <Link href="/blog" className="hover:text-brand transition-colors">
+              Blog
+            </Link>
             <a href="#contact" className="hover:text-brand transition-colors">
               Contact
             </a>
@@ -295,6 +298,35 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ───────────── BLOG / NEWS ───────────── */}
+      <section className="py-12 md:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimatedSection className="text-center mb-10">
+            <span className="text-brand font-semibold text-sm uppercase tracking-wider">
+              Achievements & Stories
+            </span>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 mt-2">
+              Celebrating Nigerian Students
+            </h2>
+            <p className="text-gray-500 mt-3 max-w-xl mx-auto text-sm sm:text-base">
+              We spotlight the brilliance of Nigerian students and educators
+              making waves across Africa and the world.
+            </p>
+            <div className="mt-8">
+              <Link href="/blog">
+                <Button
+                  size="lg"
+                  leftIcon={<BookOpen className="h-5 w-5" />}
+                  className="bg-brand hover:bg-brand-dark text-white"
+                >
+                  Read Our Blog
+                </Button>
+              </Link>
+            </div>
+          </AnimatedSection>
+        </div>
+      </section>
+
       {/* ───────────── CTA BANNER ───────────── */}
       <section className="bg-brand-navy text-white py-12 md:py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
@@ -518,6 +550,14 @@ export default function Home() {
                     className="hover:text-brand-gold transition-colors"
                   >
                     Teaching Gigs
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/blog"
+                    className="hover:text-brand-gold transition-colors"
+                  >
+                    Blog & News
                   </Link>
                 </li>
                 <li>
