@@ -9,6 +9,7 @@ import {
   ChevronRight as ArrowRight,
   Star,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface Slide {
   src: string;
@@ -46,6 +47,12 @@ const slides: Slide[] = [
 
 const INTERVAL_MS = 5000;
 
+// function Example() {
+//   const { t } = useTranslation();
+
+//   return <h1>{t("welcome")}</h1>;
+// }
+ 
 export function HeroSlider() {
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
