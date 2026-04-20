@@ -11,13 +11,17 @@ import {
   CheckCircle,
   ArrowLeft,
   Loader2,
+  Trophy,
+  Medal,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import {
   useDonationStats,
   useDonations,
   useCreateDonation,
+  useLeaderboard,
   type DonationPayload,
+  type LeaderboardEntry,
 } from "@/hooks/useDonation";
 import toast from "react-hot-toast";
 import { Logo } from "@/components/ui/Logo";
@@ -78,7 +82,7 @@ function DonorRow({
 
   return (
     <div className="flex items-start gap-3 py-3 border-b border-gray-100 last:border-0">
-      <div className="h-9 w-9 rounded-full bg-green-100 text-green-700 font-bold text-sm flex items-center justify-center shrink-0">
+      <div className="h-9 w-9 rounded-full bg-brand/10 text-brand font-bold text-sm flex items-center justify-center shrink-0">
         {initials}
       </div>
       <div className="flex-1 min-w-0">
@@ -86,7 +90,7 @@ function DonorRow({
           <span className="font-semibold text-gray-900 text-sm truncate">
             {name || "Anonymous"}
           </span>
-          <span className="text-green-600 font-bold text-sm shrink-0">
+          <span className="text-brand font-bold text-sm shrink-0">
             {currency.toUpperCase()} {Number(amount).toLocaleString()}
           </span>
         </div>
@@ -117,13 +121,13 @@ function StatusBanners() {
   return (
     <>
       {justSucceeded && (
-        <div className="flex items-start gap-3 bg-green-50 border border-green-200 rounded-2xl p-4">
-          <CheckCircle className="h-6 w-6 text-green-600 shrink-0 mt-0.5" />
+        <div className="flex items-start gap-3 bg-brand/5 border border-brand/20 rounded-2xl p-4">
+          <CheckCircle className="h-6 w-6 text-brand shrink-0 mt-0.5" />
           <div>
-            <p className="font-semibold text-green-800">
+            <p className="font-semibold text-brand">
               Thank you for your donation!
             </p>
-            <p className="text-sm text-green-700 mt-0.5">
+            <p className="text-sm text-brand/80 mt-0.5">
               Your payment was successful. Our team will allocate the funds to a
               student in need. You&apos;ll receive a confirmation by email.
             </p>
@@ -142,16 +146,82 @@ function StatusBanners() {
   );
 }
 
+// ─── Sponsors Leaderboard ─────────────────────────────────────────────────────
+
+const MEDALS = ["🥇", "🥈", "🥉"];
+
+function LeaderboardSection({ entries }: { entries: LeaderboardEntry[] }) {
+  const fmtAmt = (n: number) =>
+    n >= 1_000_000
+      ? `$${(n / 1_000_000).toFixed(1)}M`
+      : n >= 1_000
+        ? `$${(n / 1_000).toFixed(1)}k`
+        : `$${n.toLocaleString()}`;
+
+  if (entries.length === 0) return null;
+
+  return (
+    <div
+      id="leaderboard"
+      className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6"
+    >
+      <div className="flex items-center gap-3 mb-5">
+        <Trophy className="h-6 w-6 text-brand" />
+        <div>
+          <h2 className="text-xl font-bold text-gray-900 leading-tight">
+            Top Sponsors
+          </h2>
+          <p className="text-sm text-gray-500">
+            Donors who are making the biggest difference
+          </p>
+        </div>
+      </div>
+      <div className="space-y-3">
+        {entries.map((entry, i) => (
+          <div
+            key={i}
+            className={`flex items-center gap-4 p-3 rounded-xl transition-colors ${i < 3 ? "bg-brand/5 border border-brand/10" : "hover:bg-gray-50"}`}
+          >
+            <span className="text-2xl w-8 text-center shrink-0">
+              {i < 3 ? (
+                MEDALS[i]
+              ) : (
+                <Medal className="h-5 w-5 text-gray-300 mx-auto" />
+              )}
+            </span>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-gray-900 text-sm truncate">
+                {entry.donor_name}
+              </p>
+              <p className="text-xs text-gray-400">
+                {entry.donations_count} donation
+                {entry.donations_count !== 1 ? "s" : ""} ·{" "}
+                {entry.students_supported} student
+                {entry.students_supported !== 1 ? "s" : ""} supported
+              </p>
+            </div>
+            <span className="text-brand font-extrabold text-base shrink-0">
+              {fmtAmt(entry.total_donated)}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function DonatePage() {
   const { data: stats, isLoading: statsLoading } = useDonationStats();
   const { data: donationsRes } = useDonations();
   const { mutateAsync: createDonation, isPending } = useCreateDonation();
+  const { data: leaderboardRes } = useLeaderboard();
 
   const [form, setForm] = useState<DonationPayload>({
     donor_name: "",
     donor_email: "",
+    donor_phone: "",
     amount: 25,
     currency: "USD",
     message: "",
@@ -168,6 +238,15 @@ export default function DonatePage() {
         : n >= 1_000
           ? `$${(n / 1_000).toFixed(1)}k`
           : `$${n.toLocaleString()}`;
+
+  const fmtCount = (n?: number) =>
+    n == null
+      ? "—"
+      : n >= 1_000_000
+        ? `${(n / 1_000_000).toFixed(1)}M`
+        : n >= 1_000
+          ? `${(n / 1_000).toFixed(1)}k`
+          : String(n);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -222,8 +301,8 @@ export default function DonatePage() {
         {/* ─── Hero headline ─── */}
         <div className="text-center">
           <div className="flex items-center justify-center gap-2 mb-2">
-            <Heart className="h-6 w-6 text-green-500 fill-green-500" />
-            <span className="text-green-600 font-semibold text-sm uppercase tracking-widest">
+            <Heart className="h-6 w-6 text-brand fill-brand" />
+            <span className="text-brand font-semibold text-sm uppercase tracking-widest">
               Donation Wallet
             </span>
           </div>
@@ -243,7 +322,7 @@ export default function DonatePage() {
             label="Total Donated"
             value={statsLoading ? "..." : fmt(stats?.data?.total_donated)}
             icon={<TrendingUp className="h-6 w-6 text-white" />}
-            accent="bg-green-500"
+            accent="bg-brand"
           />
           <BigStat
             label="Available Balance"
@@ -253,17 +332,13 @@ export default function DonatePage() {
           />
           <BigStat
             label="Students Helped"
-            value={
-              statsLoading ? "..." : String(stats?.data?.students_paid ?? "—")
-            }
+            value={statsLoading ? "..." : fmtCount(stats?.data?.students_paid)}
             icon={<Users className="h-6 w-6 text-white" />}
             accent="bg-blue-500"
           />
           <BigStat
             label="Total Donations"
-            value={
-              statsLoading ? "..." : String(stats?.data?.sponsors_count ?? "—")
-            }
+            value={statsLoading ? "..." : fmtCount(stats?.data?.sponsors_count)}
             icon={<HandHeart className="h-6 w-6 text-white" />}
             accent="bg-purple-500"
           />
@@ -290,8 +365,8 @@ export default function DonatePage() {
                       onClick={() => setForm((f) => ({ ...f, amount: preset }))}
                       className={`px-4 py-1.5 rounded-lg text-sm font-semibold border transition-colors ${
                         form.amount === preset
-                          ? "bg-green-600 text-white border-green-600"
-                          : "bg-white text-gray-600 border-gray-200 hover:border-green-400"
+                          ? "bg-brand text-white border-brand"
+                          : "bg-white text-gray-600 border-gray-200 hover:border-brand/50"
                       }`}
                     >
                       ${preset}
@@ -311,7 +386,7 @@ export default function DonatePage() {
                       }))
                     }
                     placeholder="Custom amount"
-                    className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+                    className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand/50"
                   />
                   <select
                     value={form.currency}
@@ -321,7 +396,7 @@ export default function DonatePage() {
                         currency: e.target.value as "USD" | "NGN",
                       }))
                     }
-                    className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+                    className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand/50"
                   >
                     <option value="USD">USD</option>
                     <option value="NGN">NGN</option>
@@ -338,8 +413,8 @@ export default function DonatePage() {
                   onClick={() =>
                     setForm((f) => ({ ...f, is_anonymous: !f.is_anonymous }))
                   }
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-green-400 ${
-                    form.is_anonymous ? "bg-green-600" : "bg-gray-200"
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand/50 ${
+                    form.is_anonymous ? "bg-brand" : "bg-gray-200"
                   }`}
                 >
                   <span
@@ -367,7 +442,7 @@ export default function DonatePage() {
                         setForm((f) => ({ ...f, donor_name: e.target.value }))
                       }
                       placeholder="John Doe"
-                      className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand/50"
                     />
                   </div>
                   <div>
@@ -381,7 +456,24 @@ export default function DonatePage() {
                         setForm((f) => ({ ...f, donor_email: e.target.value }))
                       }
                       placeholder="john@example.com"
-                      className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand/50"
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      WhatsApp Number{" "}
+                      <span className="text-gray-400 font-normal">
+                        (optional — for thank-you message)
+                      </span>
+                    </label>
+                    <input
+                      type="tel"
+                      value={form.donor_phone ?? ""}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, donor_phone: e.target.value }))
+                      }
+                      placeholder="+1 555 000 0000"
+                      className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand/50"
                     />
                   </div>
                 </div>
@@ -400,14 +492,14 @@ export default function DonatePage() {
                     setForm((f) => ({ ...f, message: e.target.value }))
                   }
                   placeholder="Share a word of encouragement..."
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400 resize-none"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand/50 resize-none"
                 />
               </div>
 
               <Button
                 type="submit"
                 disabled={isPending}
-                className="w-full bg-green-600 hover:bg-green-700 text-white py-3 text-base font-semibold"
+                className="w-full bg-brand hover:bg-brand-dark text-white py-3 text-base font-semibold"
               >
                 {isPending ? (
                   <span className="flex items-center justify-center gap-2">
@@ -460,6 +552,9 @@ export default function DonatePage() {
             )}
           </div>
         </div>
+
+        {/* ─── Sponsors Leaderboard ─── */}
+        <LeaderboardSection entries={leaderboardRes?.data ?? []} />
       </main>
     </div>
   );

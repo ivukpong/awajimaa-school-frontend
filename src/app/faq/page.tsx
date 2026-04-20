@@ -68,7 +68,7 @@ const faqs = [
   {
     question: "How do I contact Awajimaa Schools?",
     answer:
-      "Email: admin@awajimaaschools.com\nSupport: Lumgwunsolutions@gmail.com\nWhatsApp: +234 703 884 3102\nUS: +1 (917) 821-8640\nTelegram: https://t.me/AwaApp\nWhatsApp Channel: https://whatsapp.com/channel/0029Va9imXKFMqrb3qX1SR2T\nUS Office: 16501 Shady Grove Road, Suite 8885, Gaithersburg, MD 20898, USA\nNigeria Office: Techcreek, ICT Center, Opposite Pleasure Park, Port Harcourt, Nigeria",
+      "Email: admin@awajimaaschools.com\nSupport: Lumgwunsolutions@gmail.com\nWhatsApp: +234 703 884 3102\nUS: +1 (917) 821-8640\nTelegram: https://t.me/AwaApp\nWhatsApp Channel: https://whatsapp.com/channel/0029Va9imXKFMqrb3qX1SR2T\nUS Office: 16501 Shady Grove Road, Suite 8885, Gaithersburg, MD 20898, USA\nNigeria Office: Pyale Workhub, 21 Bekwere Wosu Street, D-Line, Diobu, Port Harcourt, Rivers State",
   },
 ];
 
