@@ -5,6 +5,7 @@ import { DonationCard } from "@/components/ui/DonationCard";
 import { MobileNav } from "@/components/ui/MobileNav";
 import { HeroSlider } from "@/components/ui/HeroSlider";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
+import { RecruitmentSection } from "@/components/ui/RecruitmentSection";
 import {
   GraduationCap,
   Building2,
@@ -47,6 +48,9 @@ export default function Home() {
             <a href="#who" className="hover:text-brand transition-colors">
               Who We Serve
             </a>
+            <Link href="/blog" className="hover:text-brand transition-colors">
+              Blog
+            </Link>
             <a href="#contact" className="hover:text-brand transition-colors">
               Contact
             </a>
@@ -257,11 +261,76 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ───────────── OPEN RECRUITMENT ───────────── */}
+      <RecruitmentSection />
+
       {/* ───────────── DONATION WALLET ───────────── */}
       <section className="py-12 md:py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection fadeOnly>
             <DonationCard />
+          </AnimatedSection>
+        </div>
+      </section>
+
+      {/* ───────────── SPONSOR A STUDENT ───────────── */}
+      <section className="py-14 md:py-20 bg-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimatedSection className="text-center mb-10">
+            <span className="inline-flex items-center gap-2 rounded-full bg-brand/10 px-4 py-1.5 text-brand font-semibold text-sm uppercase tracking-wider">
+              <HeartHandshake className="h-4 w-4" /> Sponsor a Student
+            </span>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 mt-4">
+              Change a Child&apos;s Life Today
+            </h2>
+            <p className="text-gray-500 mt-3 max-w-xl mx-auto text-base">
+              Browse real students in need of financial support. Select as many
+              as you like and pay securely — 100% goes to their school fees.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-4 justify-center">
+              <Link href="/sponsor-students">
+                <Button
+                  size="lg"
+                  leftIcon={<HeartHandshake className="h-5 w-5" />}
+                >
+                  Sponsor a Student
+                </Button>
+              </Link>
+              <Link href="/sponsor-students">
+                <Button size="lg" variant="outline">
+                  View All Students
+                </Button>
+              </Link>
+            </div>
+          </AnimatedSection>
+        </div>
+      </section>
+
+      {/* ───────────── BLOG / NEWS ───────────── */}
+      <section className="py-12 md:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AnimatedSection className="text-center mb-10">
+            <span className="text-brand font-semibold text-sm uppercase tracking-wider">
+              Achievements & Stories
+            </span>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 mt-2">
+              Celebrating Nigerian Students
+            </h2>
+            <p className="text-gray-500 mt-3 max-w-xl mx-auto text-sm sm:text-base">
+              We spotlight the brilliance of Nigerian students and educators
+              making waves across Africa and the world.
+            </p>
+            <div className="mt-8">
+              <Link href="/blog">
+                <Button
+                  size="lg"
+                  leftIcon={<BookOpen className="h-5 w-5" />}
+                  className="bg-brand hover:bg-brand-dark text-white"
+                >
+                  Read Our Blog
+                </Button>
+              </Link>
+            </div>
           </AnimatedSection>
         </div>
       </section>
@@ -442,10 +511,12 @@ export default function Home() {
       </section>
 
       {/* ───────────── FOOTER ───────────── */}
-      <footer className="bg-brand-navy text-gray-400 py-12">
+      <footer className="bg-brand-navy text-gray-400 py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-10">
-            <div className="md:col-span-2">
+          {/* ── Main link columns ── */}
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-8 mb-10">
+            {/* About */}
+            <div className="col-span-2 md:col-span-3 xl:col-span-2">
               <div className="mb-4">
                 <Logo height={36} onDark />
               </div>
@@ -455,6 +526,8 @@ export default function Home() {
                 — empowering education across Africa and the diaspora.
               </p>
             </div>
+
+            {/* Platform */}
             <div>
               <h4 className="text-white font-semibold mb-4">Platform</h4>
               <ul className="space-y-2 text-sm">
@@ -487,7 +560,15 @@ export default function Home() {
                     href="/freelancer-teacher/recruitment"
                     className="hover:text-brand-gold transition-colors"
                   >
-                    Teaching Gigs
+                    Teachers Recruitment
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/blog"
+                    className="hover:text-brand-gold transition-colors"
+                  >
+                    Blog & News
                   </Link>
                 </li>
                 <li>
@@ -500,9 +581,101 @@ export default function Home() {
                 </li>
               </ul>
             </div>
+
+            {/* For Education */}
             <div>
-              <h4 className="text-white font-semibold mb-4">Our Websites</h4>
+              <h4 className="text-white font-semibold mb-4">For Education</h4>
               <ul className="space-y-2 text-sm">
+                <li>
+                  <Link
+                    href="/ministry"
+                    className="hover:text-brand-gold transition-colors"
+                  >
+                    Ministries of Education
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/teachers"
+                    className="hover:text-brand-gold transition-colors"
+                  >
+                    Teachers
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/curriculums"
+                    className="hover:text-brand-gold transition-colors"
+                  >
+                    Curriculums
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/schools"
+                    className="hover:text-brand-gold transition-colors"
+                  >
+                    Schools
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/announcements"
+                    className="hover:text-brand-gold transition-colors"
+                  >
+                    Announcements
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* For Students */}
+            <div>
+              <h4 className="text-white font-semibold mb-4">For Students</h4>
+              <ul className="space-y-2 text-sm">
+                <li>
+                  <Link
+                    href="/sponsor-students"
+                    className="hover:text-brand-gold transition-colors"
+                  >
+                    Students in Need
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/e-learning"
+                    className="hover:text-brand-gold transition-colors"
+                  >
+                    E-Learning
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/e-library"
+                    className="hover:text-brand-gold transition-colors"
+                  >
+                    E-Library
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/schools-insurance"
+                    className="hover:text-brand-gold transition-colors"
+                  >
+                    Schools Insurance
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* ── Secondary row: Our Websites + Legal ── */}
+          <div className="border-t border-white/10 pt-8 pb-6 grid grid-cols-2 sm:grid-cols-4 gap-8">
+            <div className="col-span-2 sm:col-span-2">
+              <h4 className="text-white font-semibold mb-3 text-sm">
+                Our Websites
+              </h4>
+              <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
                 <li>
                   <a
                     href="https://www.awajimaaschools.com"
@@ -534,8 +707,10 @@ export default function Home() {
                   </a>
                 </li>
               </ul>
-              <h4 className="text-white font-semibold mt-6 mb-4">Legal</h4>
-              <ul className="space-y-2 text-sm">
+            </div>
+            <div className="col-span-2 sm:col-span-2 sm:text-right">
+              <h4 className="text-white font-semibold mb-3 text-sm">Legal</h4>
+              <ul className="flex flex-wrap sm:justify-end gap-x-6 gap-y-2 text-sm">
                 <li>
                   <Link
                     href="/privacy-policy"
@@ -555,6 +730,8 @@ export default function Home() {
               </ul>
             </div>
           </div>
+
+          {/* ── Copyright ── */}
           <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
             <p>
               &copy; {new Date().getFullYear()} Awajimaa School Platform. All

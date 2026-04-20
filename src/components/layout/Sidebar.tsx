@@ -41,6 +41,8 @@ import {
   ScrollText,
   FolderKanban,
   AtSign,
+  BookMarked,
+  Trophy,
 } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
@@ -65,6 +67,7 @@ const dashboardHomeByRole: Record<UserRole, string> = {
   insurance_operator: "/insurance-operator",
   platform_accountant: "/platform-accountant",
   school_accountant: "/school-accountant",
+  state_ministry: "/ministry",
 };
 
 interface NavItem {
@@ -108,6 +111,21 @@ const navByRole: Record<UserRole, NavGroup[]> = {
           label: "Settings",
           href: "/super-admin/settings",
           icon: <Settings className="h-4 w-4" />,
+        },
+        {
+          label: "Audit Log",
+          href: "/super-admin/audit-log",
+          icon: <ClipboardList className="h-4 w-4" />,
+        },
+      ],
+    },
+    {
+      group: "Freelancer Platform",
+      items: [
+        {
+          label: "Teacher Verifications",
+          href: "/super-admin/teachers",
+          icon: <ShieldCheck className="h-4 w-4" />,
         },
       ],
     },
@@ -685,6 +703,11 @@ const navByRole: Record<UserRole, NavGroup[]> = {
           href: "/parent/fees",
           icon: <CreditCard className="h-4 w-4" />,
         },
+        {
+          label: "Transaction History",
+          href: "/parent/transactions",
+          icon: <ScrollText className="h-4 w-4" />,
+        },
       ],
     },
     {
@@ -823,6 +846,16 @@ const navByRole: Record<UserRole, NavGroup[]> = {
           href: "/freelancer-teacher/recruitment",
           icon: <Briefcase className="h-4 w-4" />,
         },
+        {
+          label: "Teaching Gigs",
+          href: "/freelancer-teacher/gigs",
+          icon: <BookOpen className="h-4 w-4" />,
+        },
+        {
+          label: "KYC & Verification",
+          href: "/freelancer-teacher/kyc",
+          icon: <ShieldCheck className="h-4 w-4" />,
+        },
       ],
     },
   ],
@@ -839,6 +872,11 @@ const navByRole: Record<UserRole, NavGroup[]> = {
           label: "Help Messages",
           href: "/security",
           icon: <MessageSquare className="h-4 w-4" />,
+        },
+        {
+          label: "Roles & Permissions",
+          href: "/security/roles",
+          icon: <ShieldCheck className="h-4 w-4" />,
         },
       ],
     },
@@ -910,6 +948,133 @@ const navByRole: Record<UserRole, NavGroup[]> = {
           label: "Payroll",
           href: "/school-accountant",
           icon: <DollarSign className="h-4 w-4" />,
+        },
+      ],
+    },
+  ],
+  state_ministry: [
+    {
+      group: "Overview",
+      items: [
+        {
+          label: "Dashboard",
+          href: "/ministry",
+          icon: <LayoutDashboard className="h-4 w-4" />,
+        },
+      ],
+    },
+    {
+      group: "Recruitment",
+      items: [
+        {
+          label: "Campaigns",
+          href: "/ministry/recruitment",
+          icon: <Briefcase className="h-4 w-4" />,
+        },
+        {
+          label: "Interviews",
+          href: "/ministry/interviews",
+          icon: <Video className="h-4 w-4" />,
+        },
+        {
+          label: "Postings",
+          href: "/ministry/postings",
+          icon: <MapPin className="h-4 w-4" />,
+        },
+      ],
+    },
+    {
+      group: "Schools",
+      items: [
+        {
+          label: "All Schools",
+          href: "/ministry/schools",
+          icon: <School className="h-4 w-4" />,
+        },
+        {
+          label: "Approval Requests",
+          href: "/ministry/schools?tab=approvals",
+          icon: <FileCheck className="h-4 w-4" />,
+        },
+      ],
+    },
+    {
+      group: "Academic",
+      items: [
+        {
+          label: "Academic Year",
+          href: "/ministry/academic",
+          icon: <Calendar className="h-4 w-4" />,
+        },
+        {
+          label: "E-Library",
+          href: "/ministry/academic?tab=elibrary",
+          icon: <BookOpen className="h-4 w-4" />,
+        },
+      ],
+    },
+    {
+      group: "Administration",
+      items: [
+        {
+          label: "Staff & Roles",
+          href: "/ministry/users",
+          icon: <Users className="h-4 w-4" />,
+        },
+      ],
+    },
+    {
+      group: "Organizations",
+      items: [
+        {
+          label: "Regulators",
+          href: "/ministry/regulators",
+          icon: <Building2 className="h-4 w-4" />,
+        },
+      ],
+    },
+    {
+      group: "Communications",
+      items: [
+        {
+          label: "Announcements",
+          href: "/ministry/holidays",
+          icon: <Bell className="h-4 w-4" />,
+        },
+        {
+          label: "Meetings",
+          href: "/ministry/meetings",
+          icon: <Video className="h-4 w-4" />,
+        },
+        {
+          label: "Email Accounts",
+          href: "/ministry/email-accounts",
+          icon: <AtSign className="h-4 w-4" />,
+        },
+      ],
+    },
+    {
+      group: "Student Support",
+      items: [
+        {
+          label: "Scholarships & Bursaries",
+          href: "/ministry/scholarships",
+          icon: <GraduationCap className="h-4 w-4" />,
+        },
+        {
+          label: "Curriculum & Books",
+          href: "/ministry/curriculum",
+          icon: <BookMarked className="h-4 w-4" />,
+        },
+      ],
+    },
+    {
+      group: "Programs",
+      items: [
+        {
+          label: "Competitions",
+          href: "/ministry/competitions",
+          icon: <Trophy className="h-4 w-4" />,
         },
       ],
     },
