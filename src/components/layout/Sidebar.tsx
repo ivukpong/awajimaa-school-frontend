@@ -43,6 +43,7 @@ import {
   AtSign,
   BookMarked,
   Trophy,
+  Send,
 } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
@@ -534,6 +535,11 @@ const navByRole: Record<UserRole, NavGroup[]> = {
           label: "Approvals",
           href: "/school-admin/approvals",
           icon: <FileCheck className="h-4 w-4" />,
+        },
+        {
+          label: "Broadcast",
+          href: "/school-admin/communications",
+          icon: <Send className="h-4 w-4" />,
         },
         {
           label: "Messages",
@@ -1050,6 +1056,11 @@ const navByRole: Record<UserRole, NavGroup[]> = {
           label: "Email Accounts",
           href: "/ministry/email-accounts",
           icon: <AtSign className="h-4 w-4" />,
+        },
+        {
+          label: "Broadcast",
+          href: "/ministry/communications",
+          icon: <Send className="h-4 w-4" />,
         },
       ],
     },
