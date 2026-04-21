@@ -67,7 +67,7 @@ function buildFormData(payload: Partial<BlogPostPayload>): FormData {
         const val = payload[key];
         if (key === 'cover_image') {
             if (val instanceof File) fd.append('cover_image', val);
-        } else if (val !== undefined && val !== null) {
+        } else if (val !== undefined && val !== null && val !== '') {
             fd.append(key, typeof val === 'boolean' ? (val ? '1' : '0') : String(val));
         }
     });
