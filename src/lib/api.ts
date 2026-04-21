@@ -20,6 +20,11 @@ api.interceptors.request.use(
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
+        // For FormData payloads, remove the hardcoded JSON Content-Type so the
+        // browser can set the correct multipart/form-data with its boundary.
+        if (config.data instanceof FormData) {
+            delete config.headers["Content-Type"];
+        }
         return config;
     },
     (error) => Promise.reject(error)
