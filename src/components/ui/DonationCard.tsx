@@ -5,6 +5,7 @@ import { Heart, TrendingUp, Users, HandHeart } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useDonationStats } from "@/hooks/useDonation";
 
+ 
 function StatTile({
   label,
   value,
@@ -19,20 +20,33 @@ function StatTile({
   accent: string;
 }) {
   return (
-    <div className="flex items-start gap-3 p-4 rounded-xl bg-white/60 backdrop-blur-sm border border-white/80 shadow-sm">
+    <div
+      className="group flex items-start gap-3 p-4 rounded-xl bg-white/60 backdrop-blur-sm border border-white/80 shadow-sm
+                 transition-all duration-300 ease-out hover:shadow-lg hover:-translate-y-1 hover:bg-white"
+    >
+      {/* Icon */}
       <div
-        className={`h-10 w-10 rounded-xl ${accent} flex items-center justify-center shrink-0`}
+        className={`h-10 w-10 rounded-xl ${accent} flex items-center justify-center shrink-0 transition-all duration-300 
+                    group-hover:scale-110`}
       >
         {icon}
       </div>
+
+      {/* Content */}
       <div className="min-w-0">
-        <p className="text-xs text-gray-500 font-medium leading-tight">
+        <p className="text-xs text-gray-500 font-medium leading-tight group-hover:text-gray-700">
           {label}
         </p>
+
         <p className="text-xl font-extrabold text-gray-900 leading-tight mt-0.5">
           {value}
         </p>
-        {sub && <p className="text-xs text-gray-400 mt-0.5">{sub}</p>}
+
+        {sub && (
+          <p className="text-xs text-gray-400 mt-0.5 group-hover:text-gray-500">
+            {sub}
+          </p>
+        )}
       </div>
     </div>
   );
@@ -79,14 +93,14 @@ export function DonationCard() {
       value: isLoading ? "..." : fmtCount(stats?.data?.students_paid),
       sub: "fees paid so far",
       icon: <Users className="h-5 w-5 text-white" />,
-      accent: "bg-blue-500",
+      accent: "bg-yellow-600",
     },
     {
       label: "Total Donations",
       value: isLoading ? "..." : fmtCount(stats?.data?.sponsors_count),
       sub: "individual contributions",
       icon: <HandHeart className="h-5 w-5 text-white" />,
-      accent: "bg-purple-500",
+      accent: "bg-red-500",
     },
   ];
 
