@@ -1,7 +1,7 @@
 "use client";
 
-import { use } from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import {
   ArrowLeft,
   ExternalLink,
@@ -14,6 +14,7 @@ import { useBlogPost } from "@/hooks/useBlog";
 import { BlogCategory } from "@/types";
 import { Logo } from "@/components/ui/Logo";
 import { Badge } from "@/components/ui/Badge";
+import { normalizeApiAssetUrl } from "@/lib/media";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -39,15 +40,13 @@ function formatDate(iso?: string) {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default function BlogPostPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = use(params);
+export default function BlogPostPage() {
+  const params = useParams<{ slug: string }>();
+  const slug = params?.slug ?? "";
   const { data, isLoading, isError } = useBlogPost(slug);
 
   const post = data?.data;
+  const coverImageUrl = normalizeApiAssetUrl(post?.cover_image);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -83,9 +82,9 @@ export default function BlogPostPage({
         {post && (
           <article>
             {/* Cover */}
-            {post.cover_image ? (
+            {coverImageUrl ? (
               <img
-                src={post.cover_image}
+                src={coverImageUrl}
                 alt={post.title}
                 className="w-full rounded-2xl object-cover max-h-80 mb-8"
               />

@@ -31,7 +31,7 @@ export function usePublicBlogPosts(category?: BlogCategory, q?: string) {
 export function useBlogPost(slug: string) {
     return useQuery({
         queryKey: ['blog-post', slug],
-        queryFn: () => get<BlogPost>(`/blog/${slug}`),
+        queryFn: () => get<BlogPost>(`/blog/${encodeURIComponent(slug)}`),
         enabled: Boolean(slug),
         staleTime: 5 * 60_000,
     });
