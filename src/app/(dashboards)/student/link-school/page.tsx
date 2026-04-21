@@ -32,17 +32,17 @@ interface LinkRequest {
 const STATUS_CONFIG = {
   pending: {
     label: "Pending",
-    variant: "warning" as const,
+    variant: "yellow" as const,
     icon: <Clock className="h-3 w-3" />,
   },
   approved: {
     label: "Approved",
-    variant: "success" as const,
+    variant: "green" as const,
     icon: <CheckCircle2 className="h-3 w-3" />,
   },
   rejected: {
     label: "Rejected",
-    variant: "destructive" as const,
+    variant: "red" as const,
     icon: <XCircle className="h-3 w-3" />,
   },
 };
@@ -59,7 +59,10 @@ export default function LinkSchoolPage() {
   // Fetch my existing link requests
   const { data: requestsData, isLoading: loadingRequests } = useQuery({
     queryKey: ["student-link-requests"],
-    queryFn: () => get<{ data: LinkRequest[] }>("/student/link-requests"),
+    queryFn: () =>
+      get<{ data: LinkRequest[] }>("/student/link-requests").then(
+        (r) => r.data,
+      ),
   });
 
   // Search schools
@@ -68,7 +71,7 @@ export default function LinkSchoolPage() {
     queryFn: () =>
       get<{ data: School[] }>(
         `/schools?search=${encodeURIComponent(schoolSearch)}&per_page=10`,
-      ),
+      ).then((r) => r.data),
     enabled: schoolSearch.length >= 2,
   });
 

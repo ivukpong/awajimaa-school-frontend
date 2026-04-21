@@ -34,13 +34,10 @@ interface RequestsResponse {
   data: { data: LinkRequest[]; meta: any };
 }
 
-const STATUS_VARIANTS: Record<
-  string,
-  "warning" | "success" | "destructive" | "gray"
-> = {
-  pending: "warning",
-  approved: "success",
-  rejected: "destructive",
+const STATUS_VARIANTS: Record<string, "yellow" | "green" | "red" | "gray"> = {
+  pending: "yellow",
+  approved: "green",
+  rejected: "red",
 };
 
 // ── Approve modal ─────────────────────────────────────────────────────────────
@@ -272,14 +269,14 @@ export default function LinkRequestsPage() {
     queryFn: () =>
       get<RequestsResponse["data"]>(
         `/school/link-requests?status=${statusFilter}&per_page=50`,
-      ),
+      ).then((r) => r.data),
     enabled: !!user?.school_id,
   });
 
   const { data: studentsData } = useStudents({});
   const students: Student[] = studentsData?.data?.data ?? [];
 
-  const requests: LinkRequest[] = (data as any)?.data ?? [];
+  const requests: LinkRequest[] = data?.data ?? [];
 
   const onMutated = () => {
     qc.invalidateQueries({ queryKey: ["school-link-requests"] });
