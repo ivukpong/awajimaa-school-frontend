@@ -4,6 +4,7 @@ import { get, post, put, del } from '@/lib/api';
 export interface Student {
     id: number; full_name: string; admission_number: string; public_token: string;
     gender: string; date_of_birth: string; is_active: boolean;
+    user_id?: number | null;
     class_room?: { id: number; name: string };
     school?: { id: number; name: string };
 }
