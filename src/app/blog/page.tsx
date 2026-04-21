@@ -13,6 +13,7 @@ import { usePublicBlogPosts } from "@/hooks/useBlog";
 import { BlogCategory } from "@/types";
 import { Logo } from "@/components/ui/Logo";
 import { Badge } from "@/components/ui/Badge";
+import { normalizeApiAssetUrl } from "@/lib/media";
 
 // ─── Category filter pills ────────────────────────────────────────────────────
 
@@ -64,14 +65,16 @@ function PostCard({
   published_at?: string;
   source_credit?: string;
 }) {
+  const coverImageUrl = normalizeApiAssetUrl(cover_image);
+
   return (
     <Link
       href={`/blog/${slug}`}
       className="group flex flex-col rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-md transition-shadow overflow-hidden"
     >
-      {cover_image ? (
+      {coverImageUrl ? (
         <img
-          src={cover_image}
+          src={coverImageUrl}
           alt={title}
           className="h-44 w-full object-cover"
         />

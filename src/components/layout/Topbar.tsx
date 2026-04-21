@@ -5,6 +5,7 @@ import { useTheme } from "next-themes";
 import { useAuthStore } from "@/store/authStore";
 import { getInitials } from "@/lib/utils";
 import { cn } from "@/lib/utils";
+import { useUnreadCount } from "@/hooks/useNotifications";
 
 interface TopbarProps {
   title?: string;
@@ -14,6 +15,8 @@ interface TopbarProps {
 export function Topbar({ title, onMenuClick }: TopbarProps) {
   const { resolvedTheme, setTheme } = useTheme();
   const { user, hasHydrated } = useAuthStore();
+  const { data: unreadData } = useUnreadCount();
+  const unreadCount = unreadData?.count ?? 0;
 
   return (
     <header className="flex h-16 items-center justify-between border-b border-gray-200 bg-white px-4 md:px-6 dark:border-gray-800 dark:bg-gray-900 shadow-sm">
@@ -63,7 +66,11 @@ export function Topbar({ title, onMenuClick }: TopbarProps) {
         {/* Notifications */}
         <button className="relative rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-300 transition-colors">
           <Bell className="h-5 w-5" />
-          <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-gray-900" />
+          {unreadCount > 0 && (
+            <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+              {unreadCount > 99 ? "99+" : unreadCount}
+            </span>
+          )}
         </button>
 
         {/* Divider */}

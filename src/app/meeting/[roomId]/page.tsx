@@ -1,21 +1,22 @@
 "use client";
 
 import "@livekit/components-styles";
-import {
-  LiveKitRoom,
-  VideoConference,
-  RoomAudioRenderer,
-} from "@livekit/components-react";
+import { LiveKitRoom } from "@livekit/components-react";
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { post } from "@/lib/api";
 import toast from "react-hot-toast";
+import MeetingRoom from "@/components/meeting/MeetingRoom";
+import { useAuthStore } from "@/store/authStore";
 
 export default function MeetingRoomPage() {
   const params = useParams();
   const searchParams = useSearchParams();
+  // roomId is used as the LiveKit room name; meetingId is the DB record ID
   const roomId = params.roomId as string;
   const meetingId = searchParams.get("meeting") ?? "";
+
+  const authUser = useAuthStore((s) => s.user);
 
   const [displayName, setDisplayName] = useState(
     searchParams.get("name") ?? "",
@@ -24,6 +25,7 @@ export default function MeetingRoomPage() {
   const [token, setToken] = useState<string | null>(null);
   const [wsUrl, setWsUrl] = useState<string>("");
   const [loading, setLoading] = useState(false);
+  const [isHost, setIsHost] = useState(false);
 
   const fetchToken = async (name: string) => {
     setLoading(true);
@@ -31,6 +33,7 @@ export default function MeetingRoomPage() {
       const res = await post<{
         token: string;
         ws_url: string;
+        is_host?: boolean;
       }>("/meetings/livekit/token", {
         meeting_id: meetingId,
         participant_name: name,
@@ -40,6 +43,7 @@ export default function MeetingRoomPage() {
         setWsUrl(
           res.data.ws_url || process.env.NEXT_PUBLIC_LIVEKIT_WS_URL || "",
         );
+        setIsHost(res.data.is_host ?? false);
       } else {
         toast.error("Failed to get meeting token.");
       }
@@ -112,13 +116,13 @@ export default function MeetingRoomPage() {
         connect={true}
         video={true}
         audio={true}
-        onDisconnected={() => {
-          window.close();
-        }}
         style={{ height: "100%" }}
       >
-        <VideoConference />
-        <RoomAudioRenderer />
+        <MeetingRoom
+          meetingId={meetingId}
+          isHost={isHost}
+          onDisconnected={() => window.close()}
+        />
       </LiveKitRoom>
     </div>
   );

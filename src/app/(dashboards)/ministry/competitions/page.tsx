@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Trophy, Plus, AlertCircle, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
@@ -391,6 +392,12 @@ export default function MinistryCompetitionsPage() {
                       </td>
                       <td className="py-3">
                         <div className="flex items-center gap-2">
+                          <Link
+                            href={`/ministry/competitions/${c.id}`}
+                            className="text-xs text-blue-600 hover:underline"
+                          >
+                            View
+                          </Link>
                           <button
                             onClick={() => openEdit(c)}
                             className="text-xs text-blue-600 hover:underline"

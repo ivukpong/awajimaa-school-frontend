@@ -10,6 +10,7 @@ import {
   X,
   Loader2,
   Newspaper,
+  ImagePlus,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
@@ -62,6 +63,7 @@ const EMPTY: BlogPostPayload = {
   excerpt: "",
   body: "",
   category: "education",
+  cover_image: null,
   source_url: "",
   source_credit: "",
   is_published: false,
@@ -82,11 +84,16 @@ function PostModal({
           excerpt: post.excerpt ?? "",
           body: post.body,
           category: post.category,
+          cover_image: null,
           source_url: post.source_url ?? "",
           source_credit: post.source_credit ?? "",
           is_published: post.is_published,
         }
       : EMPTY,
+  );
+  // coverPreview is either an existing URL (on edit) or a local object URL for a newly picked file
+  const [coverPreview, setCoverPreview] = useState<string | null>(
+    post?.cover_image ?? null,
   );
 
   const create = useCreateBlogPost();
@@ -195,6 +202,52 @@ function PostModal({
               className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-y font-mono"
               placeholder="Full article content (HTML supported)"
             />
+          </div>
+
+          {/* Cover Image */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Cover Image
+            </label>
+            {coverPreview && (
+              <div className="relative mb-2 w-full h-40 rounded-xl overflow-hidden border border-gray-200">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={coverPreview}
+                  alt="Cover preview"
+                  className="w-full h-full object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    set("cover_image", null);
+                    setCoverPreview(null);
+                  }}
+                  className="absolute top-2 right-2 bg-white rounded-full p-1 shadow text-gray-400 hover:text-red-500"
+                >
+                  <X size={14} />
+                </button>
+              </div>
+            )}
+            <label className="inline-flex items-center gap-2 cursor-pointer px-3 py-2 rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-50">
+              <ImagePlus size={16} />
+              {coverPreview ? "Change image" : "Upload cover image"}
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0] ?? null;
+                  set("cover_image", file);
+                  if (file) {
+                    setCoverPreview(URL.createObjectURL(file));
+                  }
+                }}
+              />
+            </label>
+            <p className="text-xs text-gray-400 mt-1">
+              Max 5 MB · JPEG, PNG, WebP
+            </p>
           </div>
 
           {/* Source URL */}

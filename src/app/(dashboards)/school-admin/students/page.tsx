@@ -6,7 +6,17 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Input";
 import { Table, type Column } from "@/components/ui/Table";
-import { Plus, Search, Download, Eye, Edit, Copy, Flag, X } from "lucide-react";
+import {
+  Plus,
+  Search,
+  Download,
+  Eye,
+  Edit,
+  Copy,
+  Flag,
+  X,
+  Link2,
+} from "lucide-react";
 import { buildStudentPublicUrl } from "@/lib/utils";
 import { useStudents, type Student } from "@/hooks/useStudents";
 import { get, post } from "@/lib/api";
@@ -33,6 +43,8 @@ export default function SchoolAdminStudentsPage() {
   const [search, setSearch] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(emptyForm);
+  const [showLinkModal, setShowLinkModal] = useState<number | null>(null); // student id
+  const [linkUserId, setLinkUserId] = useState("");
   const qc = useQueryClient();
   const { user } = useAuthStore();
 
@@ -90,6 +102,25 @@ export default function SchoolAdminStudentsPage() {
       qc.invalidateQueries({ queryKey: ["students"] });
     },
     onError: () => toast.error("Failed to update"),
+  });
+
+  const linkUser = useMutation({
+    mutationFn: ({
+      studentId,
+      userId,
+    }: {
+      studentId: number;
+      userId: number;
+    }) => post(`/students/${studentId}/link-user`, { user_id: userId }),
+    onSuccess: () => {
+      toast.success("User linked to student successfully");
+      qc.invalidateQueries({ queryKey: ["students"] });
+      setShowLinkModal(null);
+      setLinkUserId("");
+    },
+    onError: (err: any) => {
+      toast.error(err?.response?.data?.message ?? "Failed to link user");
+    },
   });
 
   const columns: Column<Student>[] = [
@@ -170,6 +201,19 @@ export default function SchoolAdminStudentsPage() {
           >
             <Flag className="h-4 w-4 text-yellow-500" />
           </button>
+          {!r.user_id && (
+            <button
+              className="rounded p-1 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+              title="Link User Account"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowLinkModal(r.id);
+                setLinkUserId("");
+              }}
+            >
+              <Link2 className="h-4 w-4 text-blue-500" />
+            </button>
+          )}
         </div>
       ),
     },
@@ -345,6 +389,53 @@ export default function SchoolAdminStudentsPage() {
         loading={isLoading}
         emptyMessage="No students found."
       />
+
+      {/* Link User Modal */}
+      {showLinkModal !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-sm rounded-2xl bg-white dark:bg-gray-900 p-6 shadow-xl">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                Link User Account
+              </h2>
+              <button
+                onClick={() => setShowLinkModal(null)}
+                className="rounded p-1 hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <p className="text-sm text-gray-500 mb-4">
+              Enter the User ID of the account to link to this student record.
+            </p>
+            <Input
+              label="User ID"
+              type="number"
+              placeholder="e.g. 42"
+              value={linkUserId}
+              onChange={(e) => setLinkUserId(e.target.value)}
+            />
+            <div className="mt-5 flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setShowLinkModal(null)}>
+                Cancel
+              </Button>
+              <Button
+                leftIcon={<Link2 className="h-4 w-4" />}
+                loading={linkUser.isPending}
+                disabled={!linkUserId}
+                onClick={() =>
+                  linkUser.mutate({
+                    studentId: showLinkModal,
+                    userId: Number(linkUserId),
+                  })
+                }
+              >
+                Link User
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
