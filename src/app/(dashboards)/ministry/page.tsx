@@ -192,7 +192,7 @@ export default function MinistryDashboardPage() {
               return (
                 <Link
                   key={role.label}
-                  href={role.href}
+                  href={`${role.href}?demoView=1`}
                   className="group rounded-xl border border-gray-200 p-4 hover:border-brand/40 hover:bg-brand/5 transition"
                 >
                   <div className="flex items-start justify-between gap-3">
