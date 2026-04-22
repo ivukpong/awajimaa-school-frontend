@@ -1,13 +1,19 @@
 "use client";
 import React from "react";
+import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import {
+  ArrowRight,
   School,
   Users,
+  GraduationCap,
   Briefcase,
   MapPin,
   FileCheck,
   ClipboardList,
+  HeartHandshake,
+  UserRound,
+  ShieldCheck,
 } from "lucide-react";
 import { get } from "@/lib/api";
 import { StatCard } from "@/components/ui/StatCard";
@@ -60,6 +66,45 @@ const STATUS_VARIANT: Record<
   queried: "blue",
   rejected: "red",
 };
+
+const VIEW_AS_ROLES = [
+  {
+    label: "School",
+    href: "/school-admin",
+    description: "School operations and admissions",
+    icon: School,
+  },
+  {
+    label: "Parent",
+    href: "/parent",
+    description: "Child progress and school updates",
+    icon: Users,
+  },
+  {
+    label: "Teacher",
+    href: "/teacher",
+    description: "Classes, attendance, and teaching tools",
+    icon: GraduationCap,
+  },
+  {
+    label: "Sponsor",
+    href: "/sponsor",
+    description: "Scholarships and sponsored students",
+    icon: HeartHandshake,
+  },
+  {
+    label: "Student",
+    href: "/student",
+    description: "Learning hub, classes, and results",
+    icon: UserRound,
+  },
+  {
+    label: "Regulator",
+    href: "/regulator",
+    description: "Compliance and school inspections",
+    icon: ShieldCheck,
+  },
+] as const;
 
 export default function MinistryDashboardPage() {
   const { data, isLoading } = useQuery<MinistryDashboard>({
@@ -131,6 +176,46 @@ export default function MinistryDashboardPage() {
           color="green"
         />
       </div>
+
+      {/* View As */}
+      <Card>
+        <CardHeader>
+          <CardTitle>View As</CardTitle>
+          <p className="text-sm text-gray-500">
+            Demo the experience across different user roles.
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+            {VIEW_AS_ROLES.map((role) => {
+              const Icon = role.icon;
+              return (
+                <Link
+                  key={role.label}
+                  href={role.href}
+                  className="group rounded-xl border border-gray-200 p-4 hover:border-brand/40 hover:bg-brand/5 transition"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                        {role.label}
+                      </p>
+                      <p className="mt-1 text-xs text-gray-500">
+                        {role.description}
+                      </p>
+                    </div>
+                    <Icon className="h-4 w-4 text-gray-400 group-hover:text-brand" />
+                  </div>
+                  <div className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-brand">
+                    Open dashboard
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Applications */}

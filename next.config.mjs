@@ -7,6 +7,7 @@ const nextConfig = {
       { protocol: "http", hostname: "localhost" },
       { protocol: "https", hostname: "api.awajimaaschool.com" },
       { protocol: "https", hostname: "images.unsplash.com" },
+      { protocol: "https", hostname: "res.cloudinary.com" },
     ],
   },
   async rewrites() {
