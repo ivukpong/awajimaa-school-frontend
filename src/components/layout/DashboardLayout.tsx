@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
@@ -9,6 +9,7 @@ import { canRoleAccessPath, getDashboardPathForRole } from "@/lib/routeAccess";
 
 const IDLE_TIMEOUT_MS = 1000 * 60 * 60; // 60 minutes
 const LAST_ACTIVITY_KEY = "awajimaa:last-activity";
+const DEMO_VIEW_KEY = "awajimaa:demo-view";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -20,9 +21,12 @@ export default function DashboardLayout({
   title,
 }: DashboardLayoutProps) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const { user, isAuthenticated, hasHydrated, clearAuth } = useAuthStore();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [isDemoView, setIsDemoView] = useState(false);
+  const canBypassRoleCheck = isDemoView && user?.role === "state_ministry";
 
   // Close mobile sidebar on route change
   useEffect(() => {
@@ -34,15 +38,50 @@ export default function DashboardLayout({
       return;
     }
 
+    if (user?.role !== "state_ministry") {
+      sessionStorage.removeItem(DEMO_VIEW_KEY);
+      setIsDemoView(false);
+      return;
+    }
+
+    const queryWantsDemo = searchParams.get("demoView") === "1";
+
+    if (queryWantsDemo) {
+      sessionStorage.setItem(DEMO_VIEW_KEY, "1");
+      setIsDemoView(true);
+      return;
+    }
+
+    if (pathname === "/ministry") {
+      sessionStorage.removeItem(DEMO_VIEW_KEY);
+      setIsDemoView(false);
+      return;
+    }
+
+    setIsDemoView(sessionStorage.getItem(DEMO_VIEW_KEY) === "1");
+  }, [hasHydrated, pathname, searchParams, user?.role]);
+
+  useEffect(() => {
+    if (!hasHydrated) {
+      return;
+    }
+
     if (!isAuthenticated || !user) {
       router.replace("/login");
       return;
     }
 
-    if (!canRoleAccessPath(user.role, pathname)) {
+    if (!canRoleAccessPath(user.role, pathname) && !canBypassRoleCheck) {
       router.replace(getDashboardPathForRole(user.role));
     }
-  }, [hasHydrated, isAuthenticated, pathname, router, user]);
+  }, [
+    canBypassRoleCheck,
+    hasHydrated,
+    isAuthenticated,
+    pathname,
+    router,
+    user,
+  ]);
 
   useEffect(() => {
     if (!hasHydrated || !isAuthenticated) {
@@ -101,7 +140,7 @@ export default function DashboardLayout({
     return null;
   }
 
-  if (!canRoleAccessPath(user.role, pathname)) {
+  if (!canRoleAccessPath(user.role, pathname) && !canBypassRoleCheck) {
     return null;
   }
 
