@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -63,6 +63,22 @@ interface NavGroup {
   group: string;
   items: NavItem[];
 }
+
+const SIDEBAR_DEMO_ROLE_KEY = "awajimaa:sidebar-demo-role";
+
+const MINISTRY_ROLE_SWITCH_OPTIONS: Array<{
+  role: UserRole;
+  label: string;
+  path: string;
+}> = [
+  { role: "state_ministry", label: "Ministry Admin", path: "/ministry" },
+  { role: "school_admin", label: "School", path: "/school-admin" },
+  { role: "parent", label: "Parent", path: "/parent" },
+  { role: "teacher", label: "Teacher", path: "/teacher" },
+  { role: "sponsor", label: "Sponsor", path: "/sponsor" },
+  { role: "student", label: "Student", path: "/student" },
+  { role: "regulator", label: "Regulator", path: "/regulator" },
+];
 
 const navByRole: Record<UserRole, NavGroup[]> = {
   super_admin: [
@@ -1125,7 +1141,41 @@ export function Sidebar({
   const router = useRouter();
   const { user, logout, hasHydrated } = useAuthStore();
   const role = user?.role as UserRole | undefined;
-  const navGroups = role ? (navByRole[role] ?? []) : [];
+  const [selectedDemoRole, setSelectedDemoRole] = useState<UserRole | null>(
+    null,
+  );
+
+  useEffect(() => {
+    if (!hasHydrated || !role) {
+      return;
+    }
+
+    if (role !== "state_ministry") {
+      setSelectedDemoRole(role);
+      return;
+    }
+
+    const matched = MINISTRY_ROLE_SWITCH_OPTIONS.find(
+      (option) =>
+        pathname === option.path || pathname.startsWith(`${option.path}/`),
+    );
+
+    if (matched) {
+      sessionStorage.setItem(SIDEBAR_DEMO_ROLE_KEY, matched.role);
+      setSelectedDemoRole(matched.role);
+      return;
+    }
+
+    const stored = sessionStorage.getItem(
+      SIDEBAR_DEMO_ROLE_KEY,
+    ) as UserRole | null;
+    const fallback = stored ?? "state_ministry";
+    setSelectedDemoRole(fallback);
+  }, [hasHydrated, pathname, role]);
+
+  const effectiveRole =
+    role === "state_ministry" ? (selectedDemoRole ?? role) : role;
+  const navGroups = effectiveRole ? (navByRole[effectiveRole] ?? []) : [];
 
   const SCHOOL_ROLES = new Set<UserRole>([
     "school_admin",
@@ -1136,7 +1186,7 @@ export function Sidebar({
     "school_accountant",
     "security",
   ]);
-  const isSchoolRole = role ? SCHOOL_ROLES.has(role) : false;
+  const isSchoolRole = effectiveRole ? SCHOOL_ROLES.has(effectiveRole) : false;
   const school = user?.school;
   const sidebarStyle =
     isSchoolRole && school?.primary_color
@@ -1257,9 +1307,44 @@ export function Sidebar({
               {user.name}
             </p>
             <p className="truncate text-xs text-white/60 capitalize">
-              {user.role?.replace(/_/g, " ")}
+              {effectiveRole?.replace(/_/g, " ")}
             </p>
           </div>
+        </div>
+      )}
+
+      {!collapsed && role === "state_ministry" && (
+        <div className="mx-3 mt-2 rounded-xl bg-white/10 px-3 py-2.5">
+          <label className="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-white/60">
+            View As
+          </label>
+          <select
+            value={selectedDemoRole ?? "state_ministry"}
+            onChange={(e) => {
+              const nextRole = e.target.value as UserRole;
+              const nextTarget = MINISTRY_ROLE_SWITCH_OPTIONS.find(
+                (option) => option.role === nextRole,
+              );
+
+              sessionStorage.setItem(SIDEBAR_DEMO_ROLE_KEY, nextRole);
+              setSelectedDemoRole(nextRole);
+
+              if (nextTarget) {
+                router.push(nextTarget.path);
+              }
+            }}
+            className="w-full rounded-md border border-white/20 bg-black/25 px-2 py-1.5 text-xs font-medium text-white focus:outline-none focus:ring-2 focus:ring-white/40"
+          >
+            {MINISTRY_ROLE_SWITCH_OPTIONS.map((option) => (
+              <option
+                key={option.role}
+                value={option.role}
+                className="text-gray-900"
+              >
+                {option.label}
+              </option>
+            ))}
+          </select>
         </div>
       )}
 
