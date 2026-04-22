@@ -7,6 +7,9 @@ import { Topbar } from "./Topbar";
 import { useAuthStore } from "@/store/authStore";
 import { canRoleAccessPath, getDashboardPathForRole } from "@/lib/routeAccess";
 
+const IDLE_TIMEOUT_MS = 1000 * 60 * 60; // 60 minutes
+const LAST_ACTIVITY_KEY = "awajimaa:last-activity";
+
 interface DashboardLayoutProps {
   children: React.ReactNode;
   title?: string;
@@ -18,7 +21,7 @@ export default function DashboardLayout({
 }: DashboardLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, isAuthenticated, hasHydrated } = useAuthStore();
+  const { user, isAuthenticated, hasHydrated, clearAuth } = useAuthStore();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   // Close mobile sidebar on route change
@@ -40,6 +43,59 @@ export default function DashboardLayout({
       router.replace(getDashboardPathForRole(user.role));
     }
   }, [hasHydrated, isAuthenticated, pathname, router, user]);
+
+  useEffect(() => {
+    if (!hasHydrated || !isAuthenticated) {
+      return;
+    }
+
+    const touchActivity = () => {
+      localStorage.setItem(LAST_ACTIVITY_KEY, String(Date.now()));
+    };
+
+    const hasExpired = () => {
+      const lastActivityRaw = localStorage.getItem(LAST_ACTIVITY_KEY);
+      if (!lastActivityRaw) {
+        return false;
+      }
+      const lastActivity = Number(lastActivityRaw);
+      return Date.now() - lastActivity > IDLE_TIMEOUT_MS;
+    };
+
+    if (hasExpired()) {
+      clearAuth();
+      router.replace("/login");
+      return;
+    }
+
+    touchActivity();
+
+    const activityEvents: Array<keyof WindowEventMap> = [
+      "click",
+      "keydown",
+      "mousemove",
+      "scroll",
+      "touchstart",
+    ];
+
+    activityEvents.forEach((eventName) => {
+      window.addEventListener(eventName, touchActivity, { passive: true });
+    });
+
+    const intervalId = window.setInterval(() => {
+      if (hasExpired()) {
+        clearAuth();
+        router.replace("/login");
+      }
+    }, 60000);
+
+    return () => {
+      window.clearInterval(intervalId);
+      activityEvents.forEach((eventName) => {
+        window.removeEventListener(eventName, touchActivity);
+      });
+    };
+  }, [clearAuth, hasHydrated, isAuthenticated, router]);
 
   if (!hasHydrated || !isAuthenticated || !user) {
     return null;

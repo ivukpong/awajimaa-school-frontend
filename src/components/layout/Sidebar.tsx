@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   School,
@@ -45,32 +45,12 @@ import {
   Trophy,
   Send,
   Newspaper,
+  Activity,
 } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
 import type { UserRole } from "@/types";
 import { Logo, LogoIcon } from "@/components/ui/Logo";
-
-const dashboardHomeByRole: Record<UserRole, string> = {
-  super_admin: "/super-admin",
-  regulator: "/regulator",
-  state_regulator: "/regulator",
-  lga_regulator: "/regulator",
-  school_admin: "/school-admin",
-  branch_admin: "/admin",
-  teacher: "/teacher",
-  student: "/student",
-  parent: "/parent",
-  sponsor: "/sponsor",
-  revenue_collector: "/revenue",
-  affiliate: "/affiliate",
-  freelancer_teacher: "/freelancer-teacher",
-  security: "/security",
-  insurance_operator: "/insurance-operator",
-  platform_accountant: "/platform-accountant",
-  school_accountant: "/school-accountant",
-  state_ministry: "/ministry",
-};
 
 interface NavItem {
   label: string;
@@ -448,6 +428,11 @@ const navByRole: Record<UserRole, NavGroup[]> = {
           icon: <BookOpen className="h-4 w-4" />,
         },
         {
+          label: "All E-Libraries",
+          href: "/school-admin/e-library",
+          icon: <BookMarked className="h-4 w-4" />,
+        },
+        {
           label: "Announcements",
           href: "/school-admin/announcements",
           icon: <Bell className="h-4 w-4" />,
@@ -611,6 +596,11 @@ const navByRole: Record<UserRole, NavGroup[]> = {
           href: "/teacher/e-learning",
           icon: <BookOpen className="h-4 w-4" />,
         },
+        {
+          label: "All E-Libraries",
+          href: "/teacher/e-library",
+          icon: <BookMarked className="h-4 w-4" />,
+        },
       ],
     },
     {
@@ -652,6 +642,11 @@ const navByRole: Record<UserRole, NavGroup[]> = {
           label: "E-Learning",
           href: "/student/e-learning",
           icon: <BookOpen className="h-4 w-4" />,
+        },
+        {
+          label: "All E-Libraries",
+          href: "/student/e-library",
+          icon: <BookMarked className="h-4 w-4" />,
         },
         {
           label: "Schedule",
@@ -1023,6 +1018,11 @@ const navByRole: Record<UserRole, NavGroup[]> = {
           href: "/ministry/academic?tab=elibrary",
           icon: <BookOpen className="h-4 w-4" />,
         },
+        {
+          label: "All E-Libraries",
+          href: "/ministry/academic?tab=all-elibraries",
+          icon: <BookMarked className="h-4 w-4" />,
+        },
       ],
     },
     {
@@ -1032,6 +1032,21 @@ const navByRole: Record<UserRole, NavGroup[]> = {
           label: "Staff & Roles",
           href: "/ministry/users",
           icon: <Users className="h-4 w-4" />,
+        },
+        {
+          label: "Timeline",
+          href: "/ministry/timeline",
+          icon: <ClipboardList className="h-4 w-4" />,
+        },
+      ],
+    },
+    {
+      group: "Analytics",
+      items: [
+        {
+          label: "Overview Analytics",
+          href: "/ministry/analytics",
+          icon: <Activity className="h-4 w-4" />,
         },
       ],
     },
@@ -1107,6 +1122,7 @@ export function Sidebar({
 }) {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
   const { user, logout, hasHydrated } = useAuthStore();
   const role = user?.role as UserRole | undefined;
   const navGroups = role ? (navByRole[role] ?? []) : [];
@@ -1131,6 +1147,16 @@ export function Sidebar({
     return null;
   }
 
+  const handleLogoClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    const shouldGoHome = window.confirm(
+      "Return to the homepage? Your login session will stay active.",
+    );
+    if (shouldGoHome) {
+      router.push("/");
+    }
+  };
+
   return (
     <aside
       className={cn(
@@ -1152,7 +1178,7 @@ export function Sidebar({
           collapsed ? "lg:justify-center" : "justify-between",
         )}
       >
-        <Link href={role ? dashboardHomeByRole[role] : "/"}>
+        <Link href="/" onClick={handleLogoClick}>
           {!collapsed &&
             (school?.logo ? (
               <img

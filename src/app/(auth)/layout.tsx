@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
 import {
   GraduationCap,
@@ -179,7 +180,9 @@ export default function AuthLayout({
       <div className="hidden lg:flex lg:w-[48%] xl:w-1/2 flex-col overflow-hidden relative">
         {/* White logo strip at the very top */}
         <div className="relative z-20 bg-white flex items-center px-8 h-20 shrink-0 shadow-sm">
-          <Logo height={42} />
+          <Link href="/" aria-label="Go to homepage">
+            <Logo height={42} />
+          </Link>
         </div>
 
         {/* Slide area */}
@@ -302,7 +305,9 @@ export default function AuthLayout({
       <div className="flex flex-1 flex-col items-center justify-center px-6 py-12">
         {/* Mobile logo */}
         <div className="mb-8 lg:hidden">
-          <Logo height={40} />
+          <Link href="/" aria-label="Go to homepage">
+            <Logo height={40} />
+          </Link>
         </div>
         <div className="w-full max-w-md">{children}</div>
       </div>
