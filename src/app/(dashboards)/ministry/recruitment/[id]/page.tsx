@@ -13,6 +13,8 @@ import {
   CheckSquare,
   Square,
   ClipboardList,
+  Bot,
+  Sparkles,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
@@ -31,6 +33,13 @@ interface Campaign {
   application_deadline?: string;
   status: string;
   description?: string;
+  ai_screening_enabled?: boolean;
+  ai_screening_criteria?: {
+    min_qualification?: string;
+    min_experience_years?: number;
+    required_subject_keywords?: string[];
+    score_threshold?: number;
+  };
 }
 
 interface Application {
@@ -47,6 +56,10 @@ interface Application {
   final_status: string;
   review_notes?: string;
   created_at: string;
+  ai_score?: number;
+  ai_screening_notes?: string;
+  is_ai_selected?: boolean;
+  position_selected_for?: string;
 }
 
 interface InterviewSchedule {
@@ -126,7 +139,7 @@ export default function RecruitmentDetailPage() {
   const qc = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const [tab, setTab] = useState<"applications" | "import" | "interviews">("applications");
+  const [tab, setTab] = useState<"applications" | "import" | "interviews" | "ai_screening">("applications");
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [searchQ, setSearchQ] = useState("");
   const [stageFilter, setStageFilter] = useState("");
@@ -158,6 +171,19 @@ export default function RecruitmentDetailPage() {
   const [importing, setImporting] = useState(false);
   const [importResult, setImportResult] = useState<{ imported: number; errors: string[] } | null>(null);
 
+  const [showBulkPersonalizedEmailModal, setShowBulkPersonalizedEmailModal] = useState(false);
+  const [aiScreenResult, setAiScreenResult] = useState<{ selected: number; not_qualified: number; pending_review: number; total_screened: number } | null>(null);
+  const [aiSettings, setAiSettings] = useState({
+    ai_screening_enabled: false,
+    min_qualification: "",
+    min_experience_years: "",
+    required_subject_keywords: "",
+    score_threshold: "70",
+  });
+  const [editingPositionId, setEditingPositionId] = useState<number | null>(null);
+  const [editingPositionVal, setEditingPositionVal] = useState("");
+  const [bulkPersonalizedEmailForm, setBulkPersonalizedEmailForm] = useState({ subject: "", message_template: "" });
+
   // Queries
   const { data: campaignRes, isLoading: loadingCampaign } = useQuery({
     queryKey: ["ministry-campaign", id],
@@ -165,9 +191,26 @@ export default function RecruitmentDetailPage() {
   });
   const campaign = (campaignRes as any)?.data?.data ?? (campaignRes as any)?.data;
 
+  React.useEffect(() => {
+    if (campaign) {
+      setAiSettings({
+        ai_screening_enabled: campaign.ai_screening_enabled ?? false,
+        min_qualification: campaign.ai_screening_criteria?.min_qualification ?? "",
+        min_experience_years: campaign.ai_screening_criteria?.min_experience_years?.toString() ?? "",
+        required_subject_keywords: (campaign.ai_screening_criteria?.required_subject_keywords ?? []).join(", "),
+        score_threshold: campaign.ai_screening_criteria?.score_threshold?.toString() ?? "70",
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [campaign?.id]);
+
   const appsParams = new URLSearchParams({
     ...(searchQ && { search: searchQ }),
-    ...(stageFilter && { [stageFilter.split(":")[0]]: stageFilter.split(":")[1] }),
+    ...(stageFilter === "ai_selected"
+      ? { is_ai_selected: "1" }
+      : stageFilter
+        ? { [stageFilter.split(":")[0]]: stageFilter.split(":")[1] }
+        : {}),
   });
   const { data: appsRes, isLoading: appsLoading } = useQuery({
     queryKey: ["ministry-apps", id, searchQ, stageFilter],
@@ -264,6 +307,75 @@ export default function RecruitmentDetailPage() {
       }),
     onSuccess: () => toast.success("Invites sent"),
     onError: () => toast.error("Failed to send invites"),
+  });
+
+  const aiScreen = useMutation({
+    mutationFn: () => post(`/ministry/campaigns/${id}/ai-screen`, {}),
+    onSuccess: (res: any) => {
+      const result = res?.data?.data ?? res?.data;
+      setAiScreenResult(result);
+      qc.invalidateQueries({ queryKey: ["ministry-apps", id] });
+      toast.success(`AI screening complete — ${result?.selected ?? 0} selected`);
+    },
+    onError: () => toast.error("AI screening failed"),
+  });
+
+  const updateCampaignAiSettings = useMutation({
+    mutationFn: () =>
+      patch(`/ministry/campaigns/${id}`, {
+        ai_screening_enabled: aiSettings.ai_screening_enabled,
+        ai_screening_criteria: {
+          ...(aiSettings.min_qualification && { min_qualification: aiSettings.min_qualification }),
+          ...(aiSettings.min_experience_years && { min_experience_years: parseInt(aiSettings.min_experience_years) }),
+          ...(aiSettings.required_subject_keywords && {
+            required_subject_keywords: aiSettings.required_subject_keywords
+              .split(",")
+              .map((k) => k.trim())
+              .filter(Boolean),
+          }),
+          ...(aiSettings.score_threshold && { score_threshold: parseInt(aiSettings.score_threshold) }),
+        },
+      }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["ministry-campaign", id] });
+      toast.success("AI settings saved");
+    },
+    onError: () => toast.error("Failed to save settings"),
+  });
+
+  const bulkPersonalizedEmail = useMutation({
+    mutationFn: () =>
+      post(`/ministry/applications/bulk-email-selected`, {
+        application_ids: [...selected],
+        subject: bulkPersonalizedEmailForm.subject,
+        message_template: bulkPersonalizedEmailForm.message_template,
+      }),
+    onSuccess: () => {
+      setShowBulkPersonalizedEmailModal(false);
+      setBulkPersonalizedEmailForm({ subject: "", message_template: "" });
+      toast.success("Personalized emails sent");
+    },
+    onError: () => toast.error("Failed to send emails"),
+  });
+
+  const updatePosition = useMutation({
+    mutationFn: ({ appId, position }: { appId: number; position: string }) =>
+      patch(`/ministry/applications/${appId}/position`, { position_selected_for: position }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["ministry-apps", id] });
+      setEditingPositionId(null);
+      toast.success("Position updated");
+    },
+    onError: () => toast.error("Failed to update position"),
+  });
+
+  const toggleSelected = useMutation({
+    mutationFn: ({ appId, value }: { appId: number; value: boolean }) =>
+      patch(`/ministry/applications/${appId}/toggle-selected`, { is_ai_selected: value }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["ministry-apps", id] });
+    },
+    onError: () => toast.error("Failed to update selection"),
   });
 
   async function handleImport() {
@@ -365,8 +477,8 @@ export default function RecruitmentDetailPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 border-b border-gray-200 dark:border-gray-700">
-        {(["applications", "import", "interviews"] as const).map((t) => (
+      <div className="flex gap-1 border-b border-gray-200 dark:border-gray-700 flex-wrap">
+        {(["applications", "ai_screening", "import", "interviews"] as const).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
@@ -380,7 +492,9 @@ export default function RecruitmentDetailPage() {
               ? `Applications (${applications.length})`
               : t === "import"
                 ? "Import from Google Forms"
-                : `Interviews (${interviews.length})`}
+                : t === "ai_screening"
+                  ? "AI Screening"
+                  : `Interviews (${interviews.length})`}
           </button>
         ))}
       </div>
@@ -405,6 +519,7 @@ export default function RecruitmentDetailPage() {
                   onChange={(e) => setStageFilter(e.target.value)}
                 >
                   <option value="">All stages</option>
+                  <option value="ai_selected">AI Selected</option>
                   <option value="stage1_status:qualified">Stage 1: Qualified</option>
                   <option value="stage1_status:not_qualified">Stage 1: Not Qualified</option>
                   <option value="stage2_status:shortlisted">Stage 2: Shortlisted</option>
@@ -460,6 +575,7 @@ export default function RecruitmentDetailPage() {
                       </th>
                       <th className="py-2 pr-4 font-medium text-gray-600 dark:text-gray-400">Applicant</th>
                       <th className="py-2 pr-4 font-medium text-gray-600 dark:text-gray-400">Subject</th>
+                      <th className="py-2 pr-4 font-medium text-gray-600 dark:text-gray-400">AI Score</th>
                       <th className="py-2 pr-4 font-medium text-gray-600 dark:text-gray-400">Stage 1</th>
                       <th className="py-2 pr-4 font-medium text-gray-600 dark:text-gray-400">Stage 2</th>
                       <th className="py-2 pr-4 font-medium text-gray-600 dark:text-gray-400">Interview</th>
@@ -492,18 +608,39 @@ export default function RecruitmentDetailPage() {
                         <td className="py-3 pr-4 text-gray-600 dark:text-gray-400">
                           {app.subject_area ?? "—"}
                         </td>
+                        <td className="py-3 pr-4">
+                          {app.ai_score !== undefined && app.ai_score !== null ? (
+                            <span className="inline-flex items-center gap-1">
+                              {app.is_ai_selected && <Sparkles className="h-3.5 w-3.5 text-amber-500" />}
+                              <Badge variant={app.ai_score >= 70 ? "green" : app.ai_score >= 50 ? "yellow" : "red"}>
+                                {app.ai_score.toFixed(0)}
+                              </Badge>
+                            </span>
+                          ) : "—"}
+                        </td>
                         <td className="py-3 pr-4">{statusBadge(app.stage1_status)}</td>
                         <td className="py-3 pr-4">{statusBadge(app.stage2_status)}</td>
                         <td className="py-3 pr-4">{statusBadge(app.interview_status)}</td>
                         <td className="py-3 pr-4">{statusBadge(app.final_status)}</td>
                         <td className="py-3">
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => openStageModal(app)}
-                          >
-                            Update
-                          </Button>
+                          <div className="flex gap-1">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => openStageModal(app)}
+                            >
+                              Update
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              title={app.is_ai_selected ? "Remove from selected list" : "Add to selected list"}
+                              onClick={() => toggleSelected.mutate({ appId: app.id, value: !app.is_ai_selected })}
+                              disabled={toggleSelected.isPending}
+                            >
+                              <Sparkles className={`h-4 w-4 ${app.is_ai_selected ? "text-amber-500" : "text-gray-400"}`} />
+                            </Button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -659,7 +796,291 @@ export default function RecruitmentDetailPage() {
         </div>
       )}
 
-      {/* Add Application Modal */}
+      {/* AI Screening Tab */}
+      {tab === "ai_screening" && (
+        <div className="space-y-6">
+          {/* AI Settings Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Bot className="h-5 w-5 text-brand" />
+                AI Screening Settings
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  id="ai_enabled"
+                  className="h-4 w-4 accent-brand"
+                  checked={aiSettings.ai_screening_enabled}
+                  onChange={(e) => setAiSettings((f) => ({ ...f, ai_screening_enabled: e.target.checked }))}
+                />
+                <label htmlFor="ai_enabled" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Enable AI Screening for this campaign
+                </label>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Minimum Qualification
+                  </label>
+                  <select
+                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm"
+                    value={aiSettings.min_qualification}
+                    onChange={(e) => setAiSettings((f) => ({ ...f, min_qualification: e.target.value }))}
+                  >
+                    <option value="">No minimum</option>
+                    <option value="SSCE">SSCE / WAEC</option>
+                    <option value="OND">OND</option>
+                    <option value="NCE">NCE</option>
+                    <option value="HND">HND</option>
+                    <option value="B.Sc">B.Sc / B.Ed</option>
+                    <option value="Masters">Masters</option>
+                    <option value="PhD">PhD</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Minimum Years of Experience
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm"
+                    value={aiSettings.min_experience_years}
+                    onChange={(e) => setAiSettings((f) => ({ ...f, min_experience_years: e.target.value }))}
+                    placeholder="e.g. 2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Required Subject Keywords
+                  </label>
+                  <input
+                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm"
+                    value={aiSettings.required_subject_keywords}
+                    onChange={(e) => setAiSettings((f) => ({ ...f, required_subject_keywords: e.target.value }))}
+                    placeholder="Math, Physics, Chemistry (comma-separated)"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Score Threshold (0–100)
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    max={100}
+                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm"
+                    value={aiSettings.score_threshold}
+                    onChange={(e) => setAiSettings((f) => ({ ...f, score_threshold: e.target.value }))}
+                  />
+                </div>
+              </div>
+              <div className="flex justify-end">
+                <Button onClick={() => updateCampaignAiSettings.mutate()} disabled={updateCampaignAiSettings.isPending}>
+                  {updateCampaignAiSettings.isPending ? "Saving..." : "Save AI Settings"}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Run Screening Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-amber-500" />
+                Run AI Screening
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                The AI will score all pending Stage 1 applications based on the criteria above and automatically move qualified applicants to the Selected List.
+              </p>
+              <div className="flex flex-wrap items-center gap-3">
+                <Button
+                  onClick={() => aiScreen.mutate()}
+                  disabled={aiScreen.isPending || !campaign?.ai_screening_enabled}
+                  className="gap-2"
+                >
+                  <Bot className="h-4 w-4" />
+                  {aiScreen.isPending ? "Screening..." : "Run AI Screening"}
+                </Button>
+                {!campaign?.ai_screening_enabled && (
+                  <p className="text-xs text-amber-600">Enable AI Screening in settings above and save before running.</p>
+                )}
+              </div>
+              {aiScreenResult && (
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-green-700 dark:text-green-400">{aiScreenResult.selected}</p>
+                    <p className="text-xs text-green-600 dark:text-green-500 mt-1">AI Selected</p>
+                  </div>
+                  <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-red-700 dark:text-red-400">{aiScreenResult.not_qualified}</p>
+                    <p className="text-xs text-red-600 dark:text-red-500 mt-1">Not Qualified</p>
+                  </div>
+                  <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-yellow-700 dark:text-yellow-400">{aiScreenResult.pending_review}</p>
+                    <p className="text-xs text-yellow-600 dark:text-yellow-500 mt-1">Pending Manual Review</p>
+                  </div>
+                  <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-gray-700 dark:text-gray-300">{aiScreenResult.total_screened}</p>
+                    <p className="text-xs text-gray-500 mt-1">Total Screened</p>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Selected Applicants List */}
+          <Card>
+            <CardHeader>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+                <CardTitle>Selected Applicants</CardTitle>
+                {selected.size > 0 && (
+                  <div className="flex gap-2 flex-wrap">
+                    <Button size="sm" variant="ghost" onClick={() => setShowBulkPersonalizedEmailModal(true)}>
+                      <Mail className="h-4 w-4 mr-1" /> Personalized Email
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={() => openStageModal()}>
+                      <ClipboardList className="h-4 w-4 mr-1" /> Move to Stage 2
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={() => setShowInterviewModal(true)}>
+                      <Calendar className="h-4 w-4 mr-1" /> Schedule Interview
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </CardHeader>
+            <CardContent>
+              {(() => {
+                const selectedApps = applications.filter((a) => a.is_ai_selected);
+                if (selectedApps.length === 0) {
+                  return (
+                    <p className="text-sm text-gray-500 py-4">
+                      No selected applicants yet. Run AI Screening above, or use the <Sparkles className="h-3.5 w-3.5 inline text-gray-400" /> button in the Applications tab to manually add applicants.
+                    </p>
+                  );
+                }
+                return (
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-gray-200 dark:border-gray-700 text-left">
+                          <th className="py-2 pr-3">
+                            <button onClick={() => {
+                              const ids = selectedApps.map((a) => a.id);
+                              setSelected((prev) => {
+                                const s = new Set(prev);
+                                const allSel = ids.every((i) => s.has(i));
+                                if (allSel) ids.forEach((i) => s.delete(i));
+                                else ids.forEach((i) => s.add(i));
+                                return s;
+                              });
+                            }}>
+                              {selectedApps.every((a) => selected.has(a.id)) && selectedApps.length > 0 ? (
+                                <CheckSquare className="h-4 w-4 text-brand" />
+                              ) : (
+                                <Square className="h-4 w-4 text-gray-400" />
+                              )}
+                            </button>
+                          </th>
+                          <th className="py-2 pr-4 font-medium text-gray-600 dark:text-gray-400">Applicant</th>
+                          <th className="py-2 pr-4 font-medium text-gray-600 dark:text-gray-400">Qualification</th>
+                          <th className="py-2 pr-4 font-medium text-gray-600 dark:text-gray-400">Exp.</th>
+                          <th className="py-2 pr-4 font-medium text-gray-600 dark:text-gray-400">AI Score</th>
+                          <th className="py-2 pr-4 font-medium text-gray-600 dark:text-gray-400">Position</th>
+                          <th className="py-2 font-medium text-gray-600 dark:text-gray-400">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {selectedApps.map((app) => (
+                          <tr
+                            key={app.id}
+                            className="border-b border-gray-100 dark:border-gray-800 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                          >
+                            <td className="py-3 pr-3">
+                              <button onClick={() => toggleSelect(app.id)}>
+                                {selected.has(app.id) ? (
+                                  <CheckSquare className="h-4 w-4 text-brand" />
+                                ) : (
+                                  <Square className="h-4 w-4 text-gray-400" />
+                                )}
+                              </button>
+                            </td>
+                            <td className="py-3 pr-4">
+                              <p className="font-medium text-gray-900 dark:text-white">{app.applicant_name}</p>
+                              <p className="text-xs text-gray-500">{app.applicant_email}</p>
+                            </td>
+                            <td className="py-3 pr-4 text-xs text-gray-600 dark:text-gray-400">
+                              {app.highest_qualification ?? "—"}
+                            </td>
+                            <td className="py-3 pr-4 text-xs text-gray-600 dark:text-gray-400">
+                              {app.years_experience !== undefined ? `${app.years_experience}yr` : "—"}
+                            </td>
+                            <td className="py-3 pr-4">
+                              {app.ai_score !== undefined && app.ai_score !== null ? (
+                                <Badge variant={app.ai_score >= 70 ? "green" : app.ai_score >= 50 ? "yellow" : "red"}>
+                                  {app.ai_score.toFixed(0)}
+                                </Badge>
+                              ) : "—"}
+                            </td>
+                            <td className="py-3 pr-4">
+                              {editingPositionId === app.id ? (
+                                <div className="flex gap-1 items-center">
+                                  <input
+                                    className="rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-2 py-1 text-xs w-32"
+                                    value={editingPositionVal}
+                                    onChange={(e) => setEditingPositionVal(e.target.value)}
+                                    autoFocus
+                                    onKeyDown={(e) => {
+                                      if (e.key === "Enter") updatePosition.mutate({ appId: app.id, position: editingPositionVal });
+                                      if (e.key === "Escape") setEditingPositionId(null);
+                                    }}
+                                  />
+                                  <Button
+                                    size="sm"
+                                    onClick={() => updatePosition.mutate({ appId: app.id, position: editingPositionVal })}
+                                    disabled={updatePosition.isPending}
+                                  >
+                                    ✓
+                                  </Button>
+                                </div>
+                              ) : (
+                                <button
+                                  className="text-xs text-gray-600 dark:text-gray-400 hover:text-brand underline-offset-2 hover:underline"
+                                  onClick={() => { setEditingPositionId(app.id); setEditingPositionVal(app.position_selected_for ?? ""); }}
+                                >
+                                  {app.position_selected_for ?? "— click to set —"}
+                                </button>
+                              )}
+                            </td>
+                            <td className="py-3">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                title="Remove from selected list"
+                                onClick={() => toggleSelected.mutate({ appId: app.id, value: false })}
+                                disabled={toggleSelected.isPending}
+                              >
+                                ✕
+                              </Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                );
+              })()}
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Add Application Modal */}}
       <Modal open={showAddModal} onClose={() => { setShowAddModal(false); setAddForm(EMPTY_ADD); }} title="Add Application">
         <form
           onSubmit={(e) => {
@@ -930,6 +1351,54 @@ export default function RecruitmentDetailPage() {
               disabled={createInterview.isPending}
             >
               {createInterview.isPending ? "Scheduling..." : "Schedule"}
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Bulk Personalized Email Modal */}
+      <Modal
+        open={showBulkPersonalizedEmailModal}
+        onClose={() => setShowBulkPersonalizedEmailModal(false)}
+        title={`Send Personalized Email to ${selected.size} applicant(s)`}
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Use <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">{`{name}`}</code> for the applicant's name and{" "}
+            <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">{`{position}`}</code> for their selected position.
+          </p>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Subject *</label>
+            <input
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm"
+              value={bulkPersonalizedEmailForm.subject}
+              onChange={(e) => setBulkPersonalizedEmailForm((f) => ({ ...f, subject: e.target.value }))}
+              placeholder="e.g. Congratulations, {name} — Teacher Recruitment"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Message *</label>
+            <textarea
+              rows={7}
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm font-mono"
+              value={bulkPersonalizedEmailForm.message_template}
+              onChange={(e) => setBulkPersonalizedEmailForm((f) => ({ ...f, message_template: e.target.value }))}
+              placeholder={`Dear {name},\n\nWe are pleased to inform you that you have been selected for the position of {position}...`}
+            />
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button variant="ghost" onClick={() => setShowBulkPersonalizedEmailModal(false)}>Cancel</Button>
+            <Button
+              onClick={() => {
+                if (!bulkPersonalizedEmailForm.subject || !bulkPersonalizedEmailForm.message_template) {
+                  toast.error("Subject and message are required");
+                  return;
+                }
+                bulkPersonalizedEmail.mutate();
+              }}
+              disabled={bulkPersonalizedEmail.isPending}
+            >
+              {bulkPersonalizedEmail.isPending ? "Sending..." : "Send Emails"}
             </Button>
           </div>
         </div>
