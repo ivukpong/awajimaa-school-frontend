@@ -219,7 +219,7 @@ export default function StudentAppointmentsPage() {
                 </Button>
                 <Button
                   onClick={handleCreate}
-                  isLoading={createMutation.isPending}
+                  loading={createMutation.isPending}
                   disabled={
                     !form.title ||
                     !form.appointment_date ||
@@ -260,9 +260,9 @@ export default function StudentAppointmentsPage() {
                   Back
                 </Button>
                 <Button
-                  variant="destructive"
+                  variant="danger"
                   onClick={handleCancel}
-                  isLoading={cancelMutation.isPending}
+                  loading={cancelMutation.isPending}
                   disabled={!cancelReason.trim()}
                 >
                   Confirm Cancellation
@@ -333,7 +333,7 @@ export default function StudentAppointmentsPage() {
                       appt.status === "confirmed") && (
                       <Button
                         size="sm"
-                        variant="destructive"
+                        variant="danger"
                         leftIcon={<XCircle size={14} />}
                         onClick={() => setCancelId(appt.id)}
                       >
