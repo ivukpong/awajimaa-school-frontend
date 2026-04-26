@@ -160,6 +160,18 @@ export default function Home() {
                 title: "Government Compliance",
                 desc: "Built-in tools for state/LGA regulators — approvals, charges, and reporting.",
               },
+              {
+                icon: <Briefcase className="h-7 w-7 text-brand" />,
+                title: "Engage a Subject Teacher",
+                desc: "Find and hire qualified subject teachers for physical or virtual gigs.",
+                action: (
+                  <Link href="/gigs">
+                    <Button className="mt-3 w-full bg-brand text-white hover:bg-brand-dark">
+                      Engage Now
+                    </Button>
+                  </Link>
+                ),
+              },
             ].map((f, idx) => (
               <AnimatedSection
                 key={f.title}
@@ -174,6 +186,7 @@ export default function Home() {
                     {f.title}
                   </h3>
                   <p className="text-gray-600 text-sm">{f.desc}</p>
+                  {f.action}
                 </div>
               </AnimatedSection>
             ))}
