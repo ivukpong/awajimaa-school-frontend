@@ -1,3 +1,17 @@
+import axios from "axios";
+
+export async function get<T = any>(url: string, config?: any) {
+    return axios.get<T>(url, config);
+}
+export async function post<T = any>(url: string, data?: any, config?: any) {
+    return axios.post<T>(url, data, config);
+}
+export async function patch<T = any>(url: string, data?: any, config?: any) {
+    return axios.patch<T>(url, data, config);
+}
+export async function del<T = any>(url: string, config?: any) {
+    return axios.delete<T>(url, config);
+}
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import Cookies from "js-cookie";
