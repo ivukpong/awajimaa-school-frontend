@@ -21,7 +21,8 @@ export default function DashboardLayout({
 }: DashboardLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { isAuthenticated, hasHydrated, clearAuth, setAuth } = useAuthStore();
+  const { user, isAuthenticated, hasHydrated, clearAuth, setAuth } =
+    useAuthStore();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [isRestoringSession, setIsRestoringSession] = useState(false);
 
@@ -37,7 +38,7 @@ export default function DashboardLayout({
 
     const token = getToken();
 
-    if (!isAuthenticated && token) {
+    if ((!isAuthenticated || !user) && token) {
       setIsRestoringSession(true);
 
       getMe()
@@ -59,7 +60,7 @@ export default function DashboardLayout({
       router.replace("/login");
       return;
     }
-  }, [clearAuth, hasHydrated, isAuthenticated, router, setAuth]);
+  }, [clearAuth, hasHydrated, isAuthenticated, router, setAuth, user]);
 
   useEffect(() => {
     if (!hasHydrated || !isAuthenticated || isRestoringSession) {

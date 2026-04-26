@@ -10,7 +10,7 @@ import { Lock, User as UserIcon } from "lucide-react";
 import Cookies from "js-cookie";
 import { useAuthStore } from "@/store/authStore";
 import { getDashboardPathForRole } from "@/lib/routeAccess";
-import { login as apiLogin } from "@/lib/auth";
+import { getMe, getToken, login as apiLogin } from "@/lib/auth";
 import type { User } from "@/types";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
@@ -28,8 +28,10 @@ type FormData = z.infer<typeof schema>;
 
 export default function LoginPage() {
   const router = useRouter();
-  const { setAuth, isAuthenticated, user, hasHydrated } = useAuthStore();
+  const { setAuth, clearAuth, isAuthenticated, user, hasHydrated } =
+    useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
+  const [isRestoringSession, setIsRestoringSession] = useState(false);
 
   const {
     register,
@@ -58,14 +60,46 @@ export default function LoginPage() {
   }, [router]);
 
   useEffect(() => {
-    if (!hasHydrated || !isAuthenticated || !user?.role) {
+    if (!hasHydrated) {
+      return;
+    }
+
+    const token = getToken();
+
+    if (isAuthenticated && !user && token) {
+      setIsRestoringSession(true);
+
+      getMe()
+        .then((nextUser) => {
+          setAuth(token, nextUser);
+        })
+        .catch(() => {
+          clearAuth();
+        })
+        .finally(() => {
+          setIsRestoringSession(false);
+        });
+
+      return;
+    }
+
+    if (!isAuthenticated || !user?.role) {
       return;
     }
 
     const nextPath = getNextPath();
     const fallbackPath = getDashboardPathForRole(user.role);
     navigateToPath(nextPath || fallbackPath);
-  }, [getNextPath, hasHydrated, isAuthenticated, navigateToPath, user?.role]);
+  }, [
+    clearAuth,
+    getNextPath,
+    hasHydrated,
+    isAuthenticated,
+    navigateToPath,
+    setAuth,
+    user,
+    user?.role,
+  ]);
 
   const finalizeLogin = useCallback(
     (token: string, user: User | undefined | null) => {
@@ -145,7 +179,7 @@ export default function LoginPage() {
           </Link>
         </div>
         <Button type="submit" className="w-full" size="lg" loading={isLoading}>
-          Sign In
+          {isRestoringSession ? "Restoring session..." : "Sign In"}
         </Button>
         <p className="text-center text-sm text-gray-500">
           Don&apos;t have an account?{" "}
