@@ -80,7 +80,7 @@ export default function MinistryMeetingsPage() {
         meeting_id: meeting.id,
         participant_name: userName,
       });
-      if (res.success && meeting.livekit_room_name) {
+      if (res.data.success && meeting.livekit_room_name) {
         const url = `/meeting/${meeting.livekit_room_name}?meeting=${meeting.id}&name=${encodeURIComponent(userName)}`;
         window.open(url, "_blank", "noopener,noreferrer");
       } else {

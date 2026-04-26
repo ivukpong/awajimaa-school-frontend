@@ -12,6 +12,30 @@ export async function patch<T = any>(url: string, data?: any, config?: any) {
 export async function del<T = any>(url: string, config?: any) {
     return axios.delete<T>(url, config);
 }
+export async function postForm<T = any>(url: string, data?: any, config?: any) {
+    // For multipart/form-data
+    const formData = new FormData();
+    if (data && typeof data === 'object') {
+        Object.entries(data).forEach(([key, value]) => {
+            formData.append(key, value as any);
+        });
+    }
+    return axios.post<T>(url, formData, {
+        ...(config || {}),
+        headers: {
+            ...(config?.headers || {}),
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+}
+
+export async function put<T = any>(url: string, data?: any, config?: any) {
+    return axios.put<T>(url, data, config);
+}
+
+// Default export for api helpers
+const api = { get, post, patch, del, postForm, put };
+export default api;
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import Cookies from "js-cookie";
