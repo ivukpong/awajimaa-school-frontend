@@ -1,13 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { useAuthStore } from "@/store/authStore";
 import { getMe, getToken } from "@/lib/auth";
 
-const IDLE_TIMEOUT_MS = 1000 * 60 * 60; // 60 minutes
+const IDLE_TIMEOUT_MS = 1000 * 60 * 60;
 const LAST_ACTIVITY_KEY = "awajimaa:last-activity";
 
 interface DashboardLayoutProps {
@@ -25,59 +24,57 @@ export default function DashboardLayout({
     useAuthStore();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [isRestoringSession, setIsRestoringSession] = useState(false);
+  const restorationAttempted = useRef(false);
 
-  // Close mobile sidebar on route change
   useEffect(() => {
     setMobileSidebarOpen(false);
   }, [pathname]);
 
   useEffect(() => {
-    if (!hasHydrated) {
-      return;
-    }
+    if (!hasHydrated) return;
 
     const token = getToken();
 
-    if ((!isAuthenticated || !user) && token) {
+    // No token — send to login
+    if (!token) {
+      router.replace("/login");
+      return;
+    }
+
+    // Fully authenticated — nothing to do
+    if (isAuthenticated && user) return;
+
+    // Has token but store is missing user — restore once
+    if (!restorationAttempted.current) {
+      restorationAttempted.current = true;
       setIsRestoringSession(true);
 
       getMe()
-        .then((user) => {
-          setAuth(token, user);
+        .then((restoredUser) => {
+          setAuth(token, restoredUser);
         })
         .catch(() => {
-          clearAuth();
+          // Don't clearAuth() — just redirect, let login page handle state
           router.replace("/login");
         })
         .finally(() => {
           setIsRestoringSession(false);
         });
-
-      return;
     }
+  }, [hasHydrated, isAuthenticated, user, setAuth, router]);
 
-    if (!isAuthenticated) {
-      router.replace("/login");
-      return;
-    }
-  }, [clearAuth, hasHydrated, isAuthenticated, router, setAuth, user]);
-
+  // Idle timeout
   useEffect(() => {
-    if (!hasHydrated || !isAuthenticated || isRestoringSession) {
-      return;
-    }
+    if (!hasHydrated || !isAuthenticated || isRestoringSession) return;
 
     const touchActivity = () => {
       localStorage.setItem(LAST_ACTIVITY_KEY, String(Date.now()));
     };
 
     const hasExpired = () => {
-      const lastActivityRaw = localStorage.getItem(LAST_ACTIVITY_KEY);
-      if (!lastActivityRaw) {
-        return false;
-      }
-      const lastActivity = Number(lastActivityRaw);
-      return Date.now() - lastActivity > IDLE_TIMEOUT_MS;
+      const raw = localStorage.getItem(LAST_ACTIVITY_KEY);
+      if (!raw) return false;
+      return Date.now() - Number(raw) > IDLE_TIMEOUT_MS;
     };
 
     if (hasExpired()) {
@@ -88,40 +85,35 @@ export default function DashboardLayout({
 
     touchActivity();
 
-    const activityEvents: Array<keyof WindowEventMap> = [
+    const events: Array<keyof WindowEventMap> = [
       "click",
       "keydown",
       "mousemove",
       "scroll",
       "touchstart",
     ];
-
-    activityEvents.forEach((eventName) => {
-      window.addEventListener(eventName, touchActivity, { passive: true });
-    });
+    events.forEach((e) =>
+      window.addEventListener(e, touchActivity, { passive: true }),
+    );
 
     const intervalId = window.setInterval(() => {
       if (hasExpired()) {
         clearAuth();
         router.replace("/login");
       }
-    }, 60000);
+    }, 60_000);
 
     return () => {
       window.clearInterval(intervalId);
-      activityEvents.forEach((eventName) => {
-        window.removeEventListener(eventName, touchActivity);
-      });
+      events.forEach((e) => window.removeEventListener(e, touchActivity));
     };
   }, [clearAuth, hasHydrated, isAuthenticated, isRestoringSession, router]);
 
-  if (!hasHydrated || isRestoringSession || !isAuthenticated) {
-    return null;
-  }
+  if (!hasHydrated || isRestoringSession) return null;
+  if (!isAuthenticated || !user) return null;
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-950">
-      {/* Mobile overlay backdrop */}
       {mobileSidebarOpen && (
         <div
           className="fixed inset-0 z-30 bg-black/50 lg:hidden"

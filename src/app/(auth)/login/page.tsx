@@ -16,7 +16,7 @@ import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 
-// ── Form schema ─────────────────────────────────────────────────────────────────
+// ── Form schema ──────────────────────────────────────────────────────────────
 
 const schema = z.object({
   identifier: z.string().min(1, "Please enter your email or matric number"),
@@ -24,7 +24,7 @@ const schema = z.object({
 });
 type FormData = z.infer<typeof schema>;
 
-// ── Page ───────────────────────────────────────────────────────────────────────
+// ── Page ─────────────────────────────────────────────────────────────────────
 
 export default function LoginPage() {
   const router = useRouter();
@@ -42,9 +42,7 @@ export default function LoginPage() {
   });
 
   const getNextPath = useCallback(() => {
-    if (typeof window === "undefined") {
-      return null;
-    }
+    if (typeof window === "undefined") return null;
 
     const nextPath = new URLSearchParams(window.location.search).get("next");
     if (
@@ -66,28 +64,38 @@ export default function LoginPage() {
     return nextPath;
   }, []);
 
-  const navigateToPath = useCallback((path: string) => {
-    if (typeof window !== "undefined") {
-      window.location.assign(path);
-      return;
-    }
+  const navigateToPath = useCallback(
+    (path: string) => {
+      router.replace(path);
+    },
+    [router],
+  );
 
-    router.replace(path);
-  }, [router]);
-
+  // Only runs once on hydration — handles:
+  // 1. Already fully authenticated (e.g. user navigated back to /login)
+  // 2. Token exists but user missing — restore session from API
   useEffect(() => {
-    if (!hasHydrated) {
-      return;
-    }
+    if (!hasHydrated) return;
 
     const token = getToken();
 
+    // Case 1: Fully authenticated, redirect away from login
+    if (isAuthenticated && user?.role) {
+      const nextPath = getNextPath();
+      navigateToPath(nextPath || getDashboardPathForRole(user.role));
+      return;
+    }
+
+    // Case 2: Authenticated flag set but user object missing — restore from API
     if (isAuthenticated && !user && token) {
       setIsRestoringSession(true);
-
       getMe()
-        .then((nextUser) => {
-          setAuth(token, nextUser);
+        .then((restoredUser) => {
+          setAuth(token, restoredUser);
+          const nextPath = getNextPath();
+          navigateToPath(
+            nextPath || getDashboardPathForRole(restoredUser.role),
+          );
         })
         .catch(() => {
           clearAuth();
@@ -95,44 +103,26 @@ export default function LoginPage() {
         .finally(() => {
           setIsRestoringSession(false);
         });
-
-      return;
     }
-
-    if (!isAuthenticated || !user?.role) {
-      return;
-    }
-
-    const nextPath = getNextPath();
-    const fallbackPath = getDashboardPathForRole(user.role);
-    navigateToPath(nextPath || fallbackPath);
-  }, [
-    clearAuth,
-    getNextPath,
-    hasHydrated,
-    isAuthenticated,
-    navigateToPath,
-    setAuth,
-    user,
-    user?.role,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasHydrated]); // Intentionally only fires on hydration
 
   const finalizeLogin = useCallback(
     (token: string, user: User | undefined | null) => {
-      Cookies.set("auth_token", token, {
-        expires: 7,
-        sameSite: "strict",
-        secure: process.env.NODE_ENV === "production",
-      });
-      if (user) {
-        setAuth(token, user);
-        const nextPath = getNextPath();
-        const path = nextPath || getDashboardPathForRole(user.role);
-        navigateToPath(path);
-        toast.success("Welcome back!");
-      } else {
+      if (!user) {
         toast.error("Login failed: user information missing.");
+        return;
       }
+
+      // Cookie is already set in auth.ts login()
+      // localStorage token is already set in auth.ts login()
+      setAuth(token, user);
+
+      const nextPath = getNextPath();
+      const path = nextPath || getDashboardPathForRole(user.role);
+
+      toast.success("Welcome back!");
+      setTimeout(() => navigateToPath(path), 0);
     },
     [getNextPath, navigateToPath, setAuth],
   );

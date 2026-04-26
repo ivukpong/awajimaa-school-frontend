@@ -31,18 +31,25 @@ export async function login(payload: LoginPayload): Promise<LoginResponse> {
     );
 
     if (response.status >= 400) {
-        const msg =
-            (response.data as { message?: string }).message ?? "Login failed";
+        const msg = (response.data as { message?: string }).message ?? "Login failed";
         throw new Error(msg);
     }
 
     const data = response.data as LoginResponse;
-    Cookies.set("auth_token", data.token, {
-        expires: 7,
-        sameSite: "strict",
-        secure: process.env.NODE_ENV === "production",
-    });
+
+    // Store in localStorage — reliable, synchronous, no cookie quirks
+    localStorage.setItem("auth_token", data.token);
+
     return data;
+}
+
+export function getToken(): string | undefined {
+    if (typeof window === "undefined") return undefined;
+    return localStorage.getItem("auth_token") ?? undefined;
+}
+
+export function isLoggedIn(): boolean {
+    return !!getToken();
 }
 
 export async function logout(): Promise<void> {
@@ -58,14 +65,6 @@ export async function getMe(): Promise<User> {
         m.default.get<{ user: User }>("/auth/me")
     );
     return res.data.user;
-}
-
-export function getToken(): string | undefined {
-    return Cookies.get("auth_token");
-}
-
-export function isLoggedIn(): boolean {
-    return !!Cookies.get("auth_token");
 }
 
 export function getAuthState(): AuthState {

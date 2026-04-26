@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import type { User } from "@/types";
 import { login as apiLogin, logout as apiLogout } from "@/lib/auth";
 import type { LoginPayload } from "@/lib/auth";
+import { tokenStore } from "@/lib/tokenStore";
 
 interface AuthStore {
     user: User | null;
@@ -33,7 +34,12 @@ export const useAuthStore = create<AuthStore>()(
                 set({ isLoading: true });
                 try {
                     const { user, token } = await apiLogin(payload);
-                    set({ user, token, isAuthenticated: true, isLoading: false });
+                    Cookies.set("auth_token", token, {
+                        expires: 7,
+                        sameSite: "strict",
+                        secure: process.env.NODE_ENV === "production",
+                    });
+                    set({ user, token, isAuthenticated: true, isLoading: false, hasHydrated: true });
                     return user;
                 } catch (error) {
                     set({ isLoading: false });
@@ -41,31 +47,35 @@ export const useAuthStore = create<AuthStore>()(
                 }
             },
 
-            logout: async () => {
-                await apiLogout();
-                set({ user: null, token: null, isAuthenticated: false });
-            },
-
             setUser: (user) => set({ user, hasHydrated: true }),
 
-            setAuth: (token, user) =>
-                set({
-                    token,
-                    user,
-                    isAuthenticated: true,
-                    hasHydrated: true,
-                }),
+            setAuth: (token, user) => {
+                tokenStore.set(token); // ← sync, no circular dep
+                set({ token, user, isAuthenticated: true, hasHydrated: true });
+            },
 
-            clearAuth: () =>
-                {
+            clearAuth: () => {
+                console.trace("clearAuth called");
+                tokenStore.set(null);
+                Cookies.remove("auth_token");
+                localStorage.removeItem("awajimaa-auth");
+                set({ user: null, token: null, isAuthenticated: false, hasHydrated: true });
+            },
+
+            logout: async () => {
+                try {
+                    await apiLogout();
+                } catch {
+                    // ignore
+                } finally {
+                    if (typeof window !== "undefined") {
+                        localStorage.removeItem("auth_token");
+                        localStorage.removeItem("awajimaa-auth");
+                    }
                     Cookies.remove("auth_token");
-                    set({
-                        user: null,
-                        token: null,
-                        isAuthenticated: false,
-                        hasHydrated: true,
-                    });
-                },
+                    set({ user: null, token: null, isAuthenticated: false, hasHydrated: true });
+                }
+            },
 
             setHasHydrated: (hasHydrated) => set({ hasHydrated }),
         }),
