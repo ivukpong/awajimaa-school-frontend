@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { useAuthStore } from "@/store/authStore";
+import { getMe, getToken } from "@/lib/auth";
 
 const IDLE_TIMEOUT_MS = 1000 * 60 * 60; // 60 minutes
 const LAST_ACTIVITY_KEY = "awajimaa:last-activity";
@@ -20,8 +21,9 @@ export default function DashboardLayout({
 }: DashboardLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { isAuthenticated, hasHydrated, clearAuth } = useAuthStore();
+  const { isAuthenticated, hasHydrated, clearAuth, setAuth } = useAuthStore();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [isRestoringSession, setIsRestoringSession] = useState(false);
 
   // Close mobile sidebar on route change
   useEffect(() => {
@@ -33,14 +35,34 @@ export default function DashboardLayout({
       return;
     }
 
+    const token = getToken();
+
+    if (!isAuthenticated && token) {
+      setIsRestoringSession(true);
+
+      getMe()
+        .then((user) => {
+          setAuth(token, user);
+        })
+        .catch(() => {
+          clearAuth();
+          router.replace("/login");
+        })
+        .finally(() => {
+          setIsRestoringSession(false);
+        });
+
+      return;
+    }
+
     if (!isAuthenticated) {
       router.replace("/login");
       return;
     }
-  }, [hasHydrated, isAuthenticated, router]);
+  }, [clearAuth, hasHydrated, isAuthenticated, router, setAuth]);
 
   useEffect(() => {
-    if (!hasHydrated || !isAuthenticated) {
+    if (!hasHydrated || !isAuthenticated || isRestoringSession) {
       return;
     }
 
@@ -90,9 +112,9 @@ export default function DashboardLayout({
         window.removeEventListener(eventName, touchActivity);
       });
     };
-  }, [clearAuth, hasHydrated, isAuthenticated, router]);
+  }, [clearAuth, hasHydrated, isAuthenticated, isRestoringSession, router]);
 
-  if (!hasHydrated || !isAuthenticated) {
+  if (!hasHydrated || isRestoringSession || !isAuthenticated) {
     return null;
   }
 
