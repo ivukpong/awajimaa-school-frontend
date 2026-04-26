@@ -1,15 +1,16 @@
 "use client";
-import React, { useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import { Lock, User as UserIcon } from "lucide-react";
 import Cookies from "js-cookie";
 import { useAuthStore } from "@/store/authStore";
-import { roleDashboardPath, login as apiLogin } from "@/lib/auth";
+import { getDashboardPathForRole } from "@/lib/routeAccess";
+import { login as apiLogin } from "@/lib/auth";
 import type { User } from "@/types";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
@@ -27,7 +28,8 @@ type FormData = z.infer<typeof schema>;
 
 export default function LoginPage() {
   const router = useRouter();
-  const { setAuth } = useAuthStore();
+  const searchParams = useSearchParams();
+  const { setAuth, isAuthenticated, user, hasHydrated } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -38,6 +40,16 @@ export default function LoginPage() {
     resolver: zodResolver(schema),
   });
 
+  useEffect(() => {
+    if (!hasHydrated || !isAuthenticated) {
+      return;
+    }
+
+    const nextPath = searchParams.get("next");
+    const fallbackPath = getDashboardPathForRole(user?.role);
+    router.replace(nextPath || fallbackPath);
+  }, [hasHydrated, isAuthenticated, router, searchParams, user?.role]);
+
   const finalizeLogin = useCallback(
     (token: string, user: User | undefined | null) => {
       Cookies.set("auth_token", token, {
@@ -45,16 +57,17 @@ export default function LoginPage() {
         sameSite: "strict",
         secure: process.env.NODE_ENV === "production",
       });
-      if (user && user.email) {
+      if (user) {
         setAuth(token, user);
-        const path = roleDashboardPath[user.role ?? "student"] ?? "/";
-        router.push(path);
+        const nextPath = searchParams.get("next");
+        const path = nextPath || getDashboardPathForRole(user.role);
+        router.replace(path);
         toast.success("Welcome back!");
       } else {
         toast.error("Login failed: user information missing.");
       }
     },
-    [router, setAuth],
+    [router, searchParams, setAuth],
   );
 
   async function onSubmit(data: FormData) {
