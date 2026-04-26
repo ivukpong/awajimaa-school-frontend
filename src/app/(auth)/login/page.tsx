@@ -47,7 +47,23 @@ export default function LoginPage() {
     }
 
     const nextPath = new URLSearchParams(window.location.search).get("next");
-    return nextPath?.startsWith("/") ? nextPath : null;
+    if (
+      !nextPath ||
+      !nextPath.startsWith("/") ||
+      nextPath.startsWith("//") ||
+      nextPath === "/login" ||
+      nextPath.startsWith("/login?") ||
+      nextPath === "/register" ||
+      nextPath.startsWith("/register?") ||
+      nextPath === "/forgot-password" ||
+      nextPath.startsWith("/forgot-password?") ||
+      nextPath === "/reset-password" ||
+      nextPath.startsWith("/reset-password?")
+    ) {
+      return null;
+    }
+
+    return nextPath;
   }, []);
 
   const navigateToPath = useCallback((path: string) => {

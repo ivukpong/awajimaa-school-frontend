@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+import Cookies from "js-cookie";
 import type { User } from "@/types";
 import { login as apiLogin, logout as apiLogout } from "@/lib/auth";
 import type { LoginPayload } from "@/lib/auth";
@@ -56,12 +57,15 @@ export const useAuthStore = create<AuthStore>()(
                 }),
 
             clearAuth: () =>
-                set({
-                    user: null,
-                    token: null,
-                    isAuthenticated: false,
-                    hasHydrated: true,
-                }),
+                {
+                    Cookies.remove("auth_token");
+                    set({
+                        user: null,
+                        token: null,
+                        isAuthenticated: false,
+                        hasHydrated: true,
+                    });
+                },
 
             setHasHydrated: (hasHydrated) => set({ hasHydrated }),
         }),
