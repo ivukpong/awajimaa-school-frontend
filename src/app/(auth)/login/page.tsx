@@ -44,8 +44,18 @@ export default function LoginPage() {
       return null;
     }
 
-    return new URLSearchParams(window.location.search).get("next");
+    const nextPath = new URLSearchParams(window.location.search).get("next");
+    return nextPath?.startsWith("/") ? nextPath : null;
   }, []);
+
+  const navigateToPath = useCallback((path: string) => {
+    if (typeof window !== "undefined") {
+      window.location.assign(path);
+      return;
+    }
+
+    router.replace(path);
+  }, [router]);
 
   useEffect(() => {
     if (!hasHydrated || !isAuthenticated) {
@@ -54,8 +64,8 @@ export default function LoginPage() {
 
     const nextPath = getNextPath();
     const fallbackPath = getDashboardPathForRole(user?.role);
-    router.replace(nextPath || fallbackPath);
-  }, [getNextPath, hasHydrated, isAuthenticated, router, user?.role]);
+    navigateToPath(nextPath || fallbackPath);
+  }, [getNextPath, hasHydrated, isAuthenticated, navigateToPath, user?.role]);
 
   const finalizeLogin = useCallback(
     (token: string, user: User | undefined | null) => {
@@ -68,13 +78,13 @@ export default function LoginPage() {
         setAuth(token, user);
         const nextPath = getNextPath();
         const path = nextPath || getDashboardPathForRole(user.role);
-        router.replace(path);
+        navigateToPath(path);
         toast.success("Welcome back!");
       } else {
         toast.error("Login failed: user information missing.");
       }
     },
-    [getNextPath, router, setAuth],
+    [getNextPath, navigateToPath, setAuth],
   );
 
   async function onSubmit(data: FormData) {
