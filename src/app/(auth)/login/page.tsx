@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Lock, User as UserIcon } from "lucide-react";
 import Cookies from "js-cookie";
@@ -28,7 +28,6 @@ type FormData = z.infer<typeof schema>;
 
 export default function LoginPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { setAuth, isAuthenticated, user, hasHydrated } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -40,15 +39,23 @@ export default function LoginPage() {
     resolver: zodResolver(schema),
   });
 
+  const getNextPath = useCallback(() => {
+    if (typeof window === "undefined") {
+      return null;
+    }
+
+    return new URLSearchParams(window.location.search).get("next");
+  }, []);
+
   useEffect(() => {
     if (!hasHydrated || !isAuthenticated) {
       return;
     }
 
-    const nextPath = searchParams.get("next");
+    const nextPath = getNextPath();
     const fallbackPath = getDashboardPathForRole(user?.role);
     router.replace(nextPath || fallbackPath);
-  }, [hasHydrated, isAuthenticated, router, searchParams, user?.role]);
+  }, [getNextPath, hasHydrated, isAuthenticated, router, user?.role]);
 
   const finalizeLogin = useCallback(
     (token: string, user: User | undefined | null) => {
@@ -59,7 +66,7 @@ export default function LoginPage() {
       });
       if (user) {
         setAuth(token, user);
-        const nextPath = searchParams.get("next");
+        const nextPath = getNextPath();
         const path = nextPath || getDashboardPathForRole(user.role);
         router.replace(path);
         toast.success("Welcome back!");
@@ -67,7 +74,7 @@ export default function LoginPage() {
         toast.error("Login failed: user information missing.");
       }
     },
-    [router, searchParams, setAuth],
+    [getNextPath, router, setAuth],
   );
 
   async function onSubmit(data: FormData) {

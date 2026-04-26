@@ -30,10 +30,13 @@ export default function TeacherSearch() {
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) {
-    const { name, value, type, checked } = e.target;
+    const target = e.target;
     setFilters((f) => ({
       ...f,
-      [name]: type === "checkbox" ? checked : value,
+      [target.name]:
+        target instanceof HTMLInputElement && target.type === "checkbox"
+          ? target.checked
+          : target.value,
     }));
   }
 

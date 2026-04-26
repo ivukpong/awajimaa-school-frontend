@@ -18,11 +18,12 @@ export default function ComplaintsPage() {
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) {
-    const { name, value, type, files } = e.target;
-    if (type === "file" && files) {
-      setForm((f) => ({ ...f, evidence: files[0] }));
+    const target = e.target;
+
+    if (target instanceof HTMLInputElement && target.type === "file") {
+      setForm((f) => ({ ...f, evidence: target.files?.[0] ?? null }));
     } else {
-      setForm((f) => ({ ...f, [name]: value }));
+      setForm((f) => ({ ...f, [target.name]: target.value }));
     }
   }
 
