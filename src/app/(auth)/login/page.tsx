@@ -58,12 +58,12 @@ export default function LoginPage() {
   }, [router]);
 
   useEffect(() => {
-    if (!hasHydrated || !isAuthenticated) {
+    if (!hasHydrated || !isAuthenticated || !user?.role) {
       return;
     }
 
     const nextPath = getNextPath();
-    const fallbackPath = getDashboardPathForRole(user?.role);
+    const fallbackPath = getDashboardPathForRole(user.role);
     navigateToPath(nextPath || fallbackPath);
   }, [getNextPath, hasHydrated, isAuthenticated, navigateToPath, user?.role]);
 

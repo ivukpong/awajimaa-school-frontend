@@ -54,8 +54,10 @@ export async function logout(): Promise<void> {
 }
 
 export async function getMe(): Promise<User> {
-    const res = await import("./api").then((m) => m.get<User>("/auth/me"));
-    return res.data;
+    const res = await import("./api").then((m) =>
+        m.default.get<{ user: User }>("/auth/me")
+    );
+    return res.data.user;
 }
 
 export function getToken(): string | undefined {
