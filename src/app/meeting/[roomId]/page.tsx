@@ -38,7 +38,7 @@ export default function MeetingRoomPage() {
         meeting_id: meetingId,
         participant_name: name,
       });
-      if (res.success) {
+      if ((res.data as any).success) {
         setToken(res.data.token);
         setWsUrl(
           res.data.ws_url || process.env.NEXT_PUBLIC_LIVEKIT_WS_URL || "",
